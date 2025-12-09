@@ -3,7 +3,9 @@ import jwt from 'jsonwebtoken';
 import { GymOwner } from '../model/GymOwner.js';
 import { Member } from '../model/Member.js';
 import { Trainer } from '../model/Trainer.js';
-import { Gym } from '../model/Gym.js';
+import { Gym } from '../model/gym.js';
+
+
 
 // Helper function to check email across all user types
 const checkEmailExists = async (email) => {
