@@ -208,7 +208,8 @@ const SignupPage = () => {
         
         // Redirect to waiting page for pending users
         setTimeout(() => {
-          router.push('/waiting-approval')
+          if(date.user.userType = "gym_owner")
+          router.push('/dashboard/gymOwner')
         }, 2000)
         return
       }

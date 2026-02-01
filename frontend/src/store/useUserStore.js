@@ -1,29 +1,30 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export const useUserStore = create(
+const useUserStore = create(
   persist(
     (set, get) => ({
-      // State
       user: null,
       token: null,
-      
-      // Actions
+      hasHydrated: false,
+
       login: (user, token) => set({ user, token }),
       logout: () => set({ user: null, token: null }),
       
-      // Getters
-      getUserType: () => get().user?.userType || null,
-      isAuthenticated: () => !!get().user && !!get().token,
-      isActive: () => get().user?.status || inactive,
-      // Optional: Update user profile
-      updateUser: (updates) => 
-        set((state) => ({ 
-          user: { ...state.user, ...updates } 
+      setHasHydrated: (state) => set({ hasHydrated: state }),
+      
+      updateUser: (updates) =>
+        set((state) => ({
+          user: { ...state.user, ...updates },
         })),
     }),
     {
-      name: "gym-user-store"
+      name: 'gym-user-store',
+      onRehydrateStorage: () => {
+        return (state) => {
+          state?.setHasHydrated?.(true);
+        };
+      },
     }
   )
 );

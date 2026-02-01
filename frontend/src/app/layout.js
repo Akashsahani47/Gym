@@ -1,5 +1,8 @@
+// app/layout.jsx
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthGuard from "@/components/important/AuthGuard";
+import { Providers } from "./providers"; // Add this import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +25,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers> {/* Wrap with Providers */}
+          {children}
+        </Providers>
       </body>
     </html>
   );

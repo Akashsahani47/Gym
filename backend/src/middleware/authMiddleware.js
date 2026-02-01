@@ -50,20 +50,22 @@ export const verifyToken = async (req, res, next) => {
     }
     
     // Check if account is active
-    if (user.status !== 'active') {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is not activated yet"
-      });
-    }
+    // if (user.status !== 'active') {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message: "Your account is not activated yet"
+    //   });
+    // }
     
-    // Attach user info to request
-    req.userId = user._id;
-    req.userType = user.userType;
-    req.userEmail = user.email;
-    req.userStatus = user.status;
-    
-    next();
+   // Attach user info to request
+req.user = user;
+req.userId = user._id;
+req.userType = user.userType;
+req.userEmail = user.email;
+req.userStatus = user.status;
+
+next();
+
     
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

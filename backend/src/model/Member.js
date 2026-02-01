@@ -1,55 +1,36 @@
 import mongoose from "mongoose";
 
 const MemberSchema = new mongoose.Schema({
-  // Authentication
   email: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
-    lowercase: true,
+    lowercase: true
   },
+
   password: {
     type: String,
-    required: true,
+    select: false
   },
-  
-  // User Type & Status
+
   userType: {
     type: String,
     default: 'member',
     immutable: true
   },
+
   status: {
     type: String,
     enum: ['pending', 'active', 'inactive', 'suspended'],
     default: 'pending'
   },
-  
-  // Profile Information
+
   profile: {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    phone: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    dateOfBirth: {
-      type: Date
-    },
-    emergencyContact: {
-      type: String,
-      trim: true
-    },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    phone: { type: String, required: true },
+    dateOfBirth: Date,
+    emergencyContact: String,
     address: {
       street: String,
       city: String,
@@ -58,58 +39,57 @@ const MemberSchema = new mongoose.Schema({
       country: String
     }
   },
-  
-  // Member Specific
+
   gymId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Gym',
-    required: true
+    required: true,
+    index: true
   },
-  
+
   membership: {
-    planId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'MembershipPlan' 
-    },
+    planId: mongoose.Schema.Types.ObjectId,
     planName: String,
     startDate: Date,
     endDate: Date,
-    status: { 
-      type: String, 
-      enum: ['pending', 'active', 'expired', 'cancelled'], 
-      default: 'pending' 
+    status: {
+      type: String,
+      enum: ['pending', 'active', 'expired', 'cancelled'],
+      default: 'pending'
     }
   },
-  
-  assignedBy: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'GymOwner' 
+
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
+
+  assignedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+
   assignedAt: Date,
-  
-  activationData: {
-    activatedBy: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'GymOwner' 
-    },
-    activatedAt: Date,
-    activationReason: String
-  },
-  
+
   healthMetrics: {
     height: Number,
     weight: Number,
     fitnessGoals: [String]
   },
-  
+
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+
   lastLogin: Date,
-  emailVerified: { 
-    type: Boolean, 
-    default: false 
+  emailVerified: {
+    type: Boolean,
+    default: false
   }
-  
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
+
+MemberSchema.index({ email: 1, gymId: 1 }, { unique: true });
 
 export const Member = mongoose.model("Member", MemberSchema);
