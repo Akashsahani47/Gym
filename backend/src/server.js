@@ -12,12 +12,27 @@ const app = express();
 const port = process.env.PORT || 4000;
 import cookieParser from "cookie-parser";
 /* ---------- MIDDLEWARE ---------- */
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://gym-kr5l.vercel.app",
+];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === "production"
-    ? process.env.NEXT_FRONTEND_URL
-    : "http://localhost:3000",
+  origin: function (origin, callback) {
+    // allow non-browser clients (Postman, curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 
 app.use(express.json());
