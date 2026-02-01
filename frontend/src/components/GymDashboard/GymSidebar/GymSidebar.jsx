@@ -32,16 +32,17 @@ const GymSidebar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const menuItems = [
-    { id: 'profile', label: 'Dashboard', href: "/dashboard/gymOwner/profile", icon: <Home className="w-5 h-5" />, badge: null },
-    { id: 'gym', label: 'Gym', href: "/dashboard/gymOwner/gymInfo", icon: <Dumbbell className="w-5 h-5" />, badge: '3' },
-    { id: 'members', label: 'Customer', href: "/dashboard/gymOwner/members", icon: <Users className="w-5 h-5" />, badge: null },
+  const menuItems = [ 
+    { id: 'Dashboard', label: 'Dashboard', href: "/dashboard/gymOwner/profile", icon: <Home className="w-5 h-5" />, badge: null },
+    { id: 'Gyms', label: 'Gyms', href: "/dashboard/gymOwner/gymInfo", icon: <Dumbbell className="w-5 h-5" />, badge: '3' },
+    { id: 'Add members', label: 'Add members', href: "/dashboard/gymOwner/members", icon: <Users className="w-5 h-5" />, badge: null },
+    { id: 'Members', label: 'All Members', href: "/dashboard/gymOwner/Members", icon: <Users className="w-5 h-5" />, badge: null },
     { id: 'trainers', label: 'Trainers', href: "/dashboard/gymOwner/trainers", icon: <User className="w-5 h-5" />, badge: '5' },
-    { id: 'schedule', label: 'Schedule', href: "/dashboard/gymOwner/schedule", icon: <Calendar className="w-5 h-5" />, badge: null },
-    { id: 'progress', label: 'Progress', href: "/dashboard/gymOwner/progress", icon: <BarChart className="w-5 h-5" />, badge: 'New' },
-    { id: 'goals', label: 'Goals', href: "/dashboard/gymOwner/goals", icon: <Target className="w-5 h-5" />, badge: null },
-    { id: 'analytics', label: 'Analytics', href: "/dashboard/gymOwner/analytics", icon: <BarChart className="w-5 h-5" />, badge: null },
-    { id: 'achievements', label: 'Achievements', href: "/dashboard/gymOwner/achievements", icon: <Trophy className="w-5 h-5" />, badge: '2' },
+    // { id: 'schedule', label: 'Schedule', href: "/dashboard/gymOwner/schedule", icon: <Calendar className="w-5 h-5" />, badge: null },
+    // { id: 'progress', label: 'Progress', href: "/dashboard/gymOwner/progress", icon: <BarChart className="w-5 h-5" />, badge: 'New' },
+    // { id: 'goals', label: 'Goals', href: "/dashboard/gymOwner/goals", icon: <Target className="w-5 h-5" />, badge: null },
+    // { id: 'analytics', label: 'Analytics', href: "/dashboard/gymOwner/analytics", icon: <BarChart className="w-5 h-5" />, badge: null },
+    // { id: 'achievements', label: 'Achievements', href: "/dashboard/gymOwner/achievements", icon: <Trophy className="w-5 h-5" />, badge: '2' },
   ];
 
   const quickStats = [
@@ -92,7 +93,7 @@ const GymSidebar = () => {
     <>
       {/* Mobile Menu Button */}
       <motion.button
-        className="fixed top-4 left-4 z-50 lg:hidden p-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white"
+        className="fixed top-4 right-4 z-50 lg:hidden p-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white"
         onClick={() => setMobileOpen(true)}
         whileTap={{ scale: 0.95 }}
       >

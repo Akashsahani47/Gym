@@ -1,5 +1,6 @@
 
 import { GymOwner } from "../model/GymOwner.js";
+import { Member } from "../model/Member.js";
 import { Gym } from "../model/gym.js";
 import bcrypt from "bcryptjs";
 
@@ -125,8 +126,9 @@ export const createGym = async (req, res) => {
 
 export const getGymOwnerinfo = async (req, res) => {
   try {
-    const user = req.user; // ✅ now exists
+    const user = req.user;
 
+    // Role check
     if (user.userType !== "gym_owner") {
       return res.status(403).json({
         success: false,
@@ -134,19 +136,36 @@ export const getGymOwnerinfo = async (req, res) => {
       });
     }
 
-    const gyms = await Gym.find({ owner: user._id });
+    // Fetch gyms
+    const gyms = await Gym.find({
+      owner: user._id,
+      isDeleted: false
+    }).lean();
 
+    // Aggregate stats
     const stats = {
-      totalMembers: gyms.reduce((sum, g) => sum + (g.stats?.totalMembers || 0), 0),
-      activeMembers: gyms.reduce((sum, g) => sum + (g.stats?.activeMembers || 0), 0),
-      monthlyRevenue: gyms.reduce((sum, g) => sum + (g.stats?.monthlyRevenue || 0), 0),
-      occupancyRate: gyms.length ? Math.round(
-        gyms.reduce((a, g) => a + (g.stats?.activeMembers || 0), 0) /
-        gyms.reduce((a, g) => a + (g.settings?.maxCapacity || 1), 0) * 100
-      ) : 0
+      totalGyms: gyms.length,
+      totalMembers: gyms.reduce(
+        (sum, g) => sum + (g.stats?.totalMembers || 0),
+        0
+      ),
+      activeMembers: gyms.reduce(
+        (sum, g) => sum + (g.stats?.activeMembers || 0),
+        0
+      ),
+      monthlyRevenue: gyms.reduce(
+        (sum, g) => sum + (g.stats?.monthlyRevenue || 0),
+        0
+      ),
+      occupancyRate: gyms.length
+        ? Math.round(
+            gyms.reduce((a, g) => a + (g.stats?.activeMembers || 0), 0) /
+            gyms.reduce((a, g) => a + (g.settings?.maxCapacity || 1), 0) * 100
+          )
+        : 0
     };
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       user,
       gyms,
@@ -154,13 +173,14 @@ export const getGymOwnerinfo = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("getGymOwnerInfo error:", error);
-    res.status(500).json({
+    console.error("getGymOwnerinfo error:", error);
+    return res.status(500).json({
       success: false,
       message: "Internal server error"
     });
   }
 };
+
 
 
 export const updateGymOwnerinfo = async (req, res) => {
@@ -204,6 +224,90 @@ export const updateGymOwnerinfo = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+
+export const addMember = async (req, res) => {
+  try {
+    const gymOwnerId = req.user.id;
+
+    const {
+      email,
+      password,
+      profile,
+      gymId,
+      membership,
+      healthMetrics,
+      status,
+      sendWelcomeEmail
+    } = req.body;
+
+    /* ---------- VALIDATION ---------- */
+    if (!email || !password || !profile?.firstName || !profile?.lastName || !profile?.phone || !gymId) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields"
+      });
+    }
+
+    /* ---------- CHECK GYM OWNERSHIP ---------- */
+    const gym = await Gym.findOne({ _id: gymId, owner: gymOwnerId, isDeleted: false });
+    if (!gym) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized gym access"
+      });
+    }
+
+    /* ---------- CHECK MEMBER EXISTENCE (PER GYM) ---------- */
+    const existingMember = await Member.findOne({ email, gymId });
+    if (existingMember) {
+      return res.status(409).json({
+        success: false,
+        error: "Member already exists in this gym"
+      });
+    }
+
+    /* ---------- CREATE MEMBER ---------- */
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const member = await Member.create({
+      email,
+      password: hashedPassword,
+      status: status || "pending",
+      profile,
+      gymId,                     // ✅ FIXED
+      membership: membership || {},
+      healthMetrics: healthMetrics || {},
+      createdBy: gymOwnerId,
+      assignedBy: gymOwnerId,     // ✅ IMPROVED
+      assignedAt: new Date()      // ✅ IMPROVED
+    });
+
+    if (sendWelcomeEmail) {
+      console.log("📧 Send welcome email to:", email);
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Member added successfully",
+      member: {
+        id: member._id,
+        email: member.email,
+        name: `${member.profile.firstName} ${member.profile.lastName}`
+      }
+    });
+
+  } catch (error) {
+    console.error("Add Member Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error while adding member"
+    });
   }
 };
 
