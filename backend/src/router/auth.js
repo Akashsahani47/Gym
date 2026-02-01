@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { verifyToken } from "../middleware/authmiddleware.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 import { getCurrentUser, login, logout, signUp } from '../controller/authController.js';
 
 
