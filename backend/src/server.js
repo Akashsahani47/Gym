@@ -13,11 +13,12 @@ const port = process.env.PORT || 4000;
 import cookieParser from "cookie-parser";
 /* ---------- MIDDLEWARE ---------- */
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.NODE_ENV === "production"
+    ? process.env.NEXT_FRONTEND_URL
+    : "http://localhost:3000",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());
