@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+
 import { GymOwner } from "../model/GymOwner.js";
 import { Gym } from "../model/gym.js";
 import bcrypt from "bcryptjs";
