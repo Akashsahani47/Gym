@@ -38,7 +38,7 @@ const port = process.env.PORT || 4000;
 const allowedOrigin = process.env.NEXT_FRONTEND_URL
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: process.env.NEXT_FRONTEND_URL || "http://localhost:3000",
   credentials: true, // Important for cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
