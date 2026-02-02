@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000;
 
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL,
+  process.env.NEXT_FRONTEND_URL,
 ];
 
 app.use(cors({
