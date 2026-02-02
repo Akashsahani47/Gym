@@ -13,7 +13,7 @@ import gymOwnerRoutes from "./router/gymOwner.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// const allowedOrigins = [
+
 //   "http://localhost:3000",
 //   "process.env.NEXT_FRONTEND_URL",
 // ];
@@ -35,19 +35,46 @@ const port = process.env.PORT || 4000;
 //   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 // }));
 
-const allowedOrigin = process.env.NEXT_FRONTEND_URL
+
+
+// app.use(cors({
+//   origin: process.env.NEXT_FRONTEND_URL || "http://localhost:3000",
+//   credentials: true, // Important for cookies
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// }));
+// app.use(express.json());
+// app.use(cookieParser());
+
+// console.log("✅ Allowed frontend:", process.env.NEXT_FRONTEND_URL);
+
+
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.NEXT_FRONTEND_URL, // https://gym-eight-dun.vercel.app
+];
 
 app.use(cors({
-  origin: process.env.NEXT_FRONTEND_URL || "http://localhost:3000",
-  credentials: true, // Important for cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  origin: (origin, callback) => {
+    console.log("🌐 Incoming origin:", origin);
+
+    // Allow Postman / server-to-server
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log("❌ Blocked by CORS:", origin);
+    return callback(null, false); // DO NOT throw error
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 }));
-app.use(express.json());
+ app.use(express.json());
 app.use(cookieParser());
-
-console.log(allowedOrigin)
-
 
 
 connectDB();

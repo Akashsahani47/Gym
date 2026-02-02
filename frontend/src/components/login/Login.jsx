@@ -354,7 +354,7 @@ const SignupPage = () => {
         credentials: 'include',
         body: JSON.stringify(requestData),
       })
-
+  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
       const data = await response.json()
 
       if (!response.ok) {
