@@ -4,9 +4,11 @@ import {
   addMember,
   createGym,
   deleteGym,
+  getAllMembers,
   getGymOwnerinfo,
   getOwnerGyms,
   updateGymOwnerinfo,
+  
 } from "../controller/gymOwner.js";
 
 const router = express.Router();
@@ -17,4 +19,5 @@ router.post("/addgyms", verifyToken, createGym);
 router.get("/gyms", verifyToken, getOwnerGyms);
 router.delete("/gyms/:id", verifyToken, deleteGym);
 router.post("/addmembers", verifyToken, addMember);
+router.get("/members",verifyToken,getAllMembers);
 export default router;

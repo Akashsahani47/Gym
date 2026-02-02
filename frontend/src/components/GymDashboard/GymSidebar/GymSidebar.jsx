@@ -36,7 +36,7 @@ const GymSidebar = () => {
     { id: 'Dashboard', label: 'Dashboard', href: "/dashboard/gymOwner/profile", icon: <Home className="w-5 h-5" />, badge: null },
     { id: 'Gyms', label: 'Gyms', href: "/dashboard/gymOwner/gymInfo", icon: <Dumbbell className="w-5 h-5" />, badge: '3' },
     { id: 'Add members', label: 'Add members', href: "/dashboard/gymOwner/members", icon: <Users className="w-5 h-5" />, badge: null },
-    { id: 'Members', label: 'All Members', href: "/dashboard/gymOwner/Members", icon: <Users className="w-5 h-5" />, badge: null },
+    { id: 'Members', label: 'All Members', href: "/dashboard/gymOwner/all_members", icon: <Users className="w-5 h-5" />, badge: null },
     { id: 'trainers', label: 'Trainers', href: "/dashboard/gymOwner/trainers", icon: <User className="w-5 h-5" />, badge: '5' },
     // { id: 'schedule', label: 'Schedule', href: "/dashboard/gymOwner/schedule", icon: <Calendar className="w-5 h-5" />, badge: null },
     // { id: 'progress', label: 'Progress', href: "/dashboard/gymOwner/progress", icon: <BarChart className="w-5 h-5" />, badge: 'New' },

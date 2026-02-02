@@ -231,6 +231,7 @@ export const updateGymOwnerinfo = async (req, res) => {
 
 
 
+
 export const addMember = async (req, res) => {
   try {
     const gymOwnerId = req.user.id;
@@ -313,3 +314,31 @@ export const addMember = async (req, res) => {
 
 
 
+// Backend route example
+// controllers/gymOwnerController.js
+
+export const getAllMembers = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    const members = await Member.find({
+      createdBy: ownerId,
+      isDeleted: false,
+    })
+      .populate("gymId", "name")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      members,
+    });
+
+  } catch (error) {
+    console.error("Get Members Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch members",
+    });
+  }
+};
