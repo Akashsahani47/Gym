@@ -1,4 +1,3 @@
-// app/(auth)/signup/page.js
 'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -201,18 +200,18 @@ const SignupPage = () => {
         localStorage.removeItem('rememberedEmail')
       }
 
-      // Check if user is active
-      if (data.user.status !== 'active') {
-        const message = getUserStatusMessage(data.user)
-        toast.warning(message)
+      // // Check if user is active
+      // if (data.user.status !== 'active') {
+      //   const message = getUserStatusMessage(data.user)
+      //   toast.warning(message)
         
-        // Redirect to waiting page for pending users
-        setTimeout(() => {
-          if(date.user.userType = "gym_owner")
-          router.push('/dashboard/gymOwner')
-        }, 2000)
-        return
-      }
+      //   // Redirect to waiting page for pending users
+      //   setTimeout(() => {
+      //     if(date.user.userType = "gym_owner")
+      //     router.push('/dashboard/gymOwner')
+      //   }, 2000)
+      //   return
+      // }
 
       toast.success('Login successful! Welcome back! 💪')
       
@@ -230,7 +229,7 @@ const SignupPage = () => {
               router.push('/dashboard/member')
           }
         } else {
-          router.push('/waiting-approval')
+          router.push('/notice/waiting-approval')
         }
       }, 1000)
       
