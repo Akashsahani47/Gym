@@ -320,13 +320,8 @@ const token = useUserStore((s) => s.token);
       {/* Mobile Header */}
       <div className="lg:hidden mb-6">
         <div className="flex items-center justify-between mb-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-xl font-bold">Profile</h1>
+         
+          <h1 className="text-xl ml-40 font-bold">Profile</h1>
           <div className="w-10"></div> {/* Spacer for alignment */}
         </div>
       </div>

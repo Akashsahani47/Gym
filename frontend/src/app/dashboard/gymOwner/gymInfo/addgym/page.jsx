@@ -22,7 +22,8 @@ import {
   Instagram,
   Twitter,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  IndianRupee,
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
@@ -818,7 +819,7 @@ const AddGymPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center flex-shrink-0">
-                        <DollarSign className="w-5 h-5 text-white" />
+                        <IndianRupee className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1">
                         <input
