@@ -1,4 +1,4 @@
-// /app/dashboard/gymOwner/gyms/add/page.jsx
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -23,7 +23,7 @@ import {
   Twitter,
   ChevronLeft,
   ChevronRight,
-  IndianRupee,
+  
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
