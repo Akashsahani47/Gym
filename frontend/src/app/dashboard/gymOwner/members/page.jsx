@@ -87,7 +87,7 @@ const AddCustomerPage = () => {
     if (!token) {
       router.push('/loginPage');
     }
-  }, [, token, router]);
+  }, [token, router]);
 
   useEffect(() => {
     const fetchGyms = async () => {
@@ -123,37 +123,27 @@ const AddCustomerPage = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    const fetchMembershipPlans = async () => {
-      if (!formData.gymId || !token) {
-        setMembershipPlans([]);
-        return;
+  const handleGymChange = (gymId) => {
+    setFormData(prev => ({
+      ...prev,
+      gymId,
+      membership: {
+        ...prev.membership,
+        planId: '',
+        planName: '',
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: ''
       }
+    }));
 
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/gyms/${formData.gymId}/plans`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          }
-        );
-
-        const data = await response.json();
-        
-        if (response.ok) {
-          setMembershipPlans(data.plans || []);
-        } else {
-          toast.error(data.error || 'Failed to load membership plans');
-        }
-      } catch (error) {
-        toast.error('Failed to load membership plans');
-      }
-    };
-
-    fetchMembershipPlans();
-  }, [formData.gymId, token]);
+    // Find the selected gym from the gyms array
+    const selectedGym = gyms.find(gym => gym._id === gymId);
+    if (selectedGym) {
+      setMembershipPlans(selectedGym.membershipPlans || []);
+    } else {
+      setMembershipPlans([]);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -198,6 +188,8 @@ const AddCustomerPage = () => {
           [field]: field === 'height' || field === 'weight' ? (value ? parseFloat(value) : '') : value
         }
       }));
+    } else if (name === 'gymId') {
+      handleGymChange(value);
     } else {
       setFormData(prev => ({
         ...prev,
@@ -212,7 +204,7 @@ const AddCustomerPage = () => {
 
     const startDate = new Date().toISOString().split('T')[0];
     const endDate = new Date();
-    endDate.setDate(endDate.getDate() + selectedPlan.duration);
+    endDate.setDate(endDate.getDate() + (selectedPlan.duration || 30));
     const endDateStr = endDate.toISOString().split('T')[0];
 
     setFormData(prev => ({
@@ -378,7 +370,6 @@ const AddCustomerPage = () => {
   };
 
   return (
-    // FIX 1: Added overflow-x-hidden to the root container to block any child overflow
     <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700">
@@ -396,7 +387,6 @@ const AddCustomerPage = () => {
         </div>
       </div>
 
-      {/* FIX 2: Wrap content in a container that also clips overflow */}
       <div className="w-full max-w-full overflow-x-hidden">
         <div className="p-4">
           <form onSubmit={handleSubmit}>
@@ -430,7 +420,6 @@ const AddCustomerPage = () => {
                       <label className="block text-sm text-gray-400 mb-2">
                         Email Address <span className="text-red-500">*</span>
                       </label>
-                      {/* FIX 3: Added min-w-0 on flex icon-input wrappers so input can shrink */}
                       <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
                         <Mail className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
                         <input
@@ -767,42 +756,42 @@ const AddCustomerPage = () => {
                     </div>
                   </div>
 
-                  {formData.gymId && (
+                  {formData.gymId && membershipPlans.length > 0 && (
                     <div>
                       <label className="block text-sm text-gray-400 mb-2">
                         Membership Plan (Optional)
                       </label>
-                      {membershipPlans.length === 0 ? (
-                        <div className="p-4 bg-gray-900 border border-gray-700 rounded-lg">
-                          <p className="text-gray-400">No membership plans available for this gym</p>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {membershipPlans.map(plan => (
-                            <div
-                              key={plan._id}
-                              onClick={() => handleMembershipPlanChange(plan._id)}
-                              className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                                formData.membership.planId === plan._id
-                                  ? 'bg-red-600/10 border-red-500'
-                                  : 'bg-gray-900 border-gray-700 hover:border-gray-600'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-semibold truncate mr-2">{plan.name}</h4>
-                                {formData.membership.planId === plan._id && (
-                                  <Check className="w-5 h-5 text-red-400 shrink-0" />
-                                )}
-                              </div>
-                              <p className="text-sm text-gray-400 mb-2">{plan.description}</p>
-                              <div className="flex justify-between items-center">
-                                <span className="font-bold text-lg">${plan.price}</span>
-                                <span className="text-sm text-gray-400">{plan.duration} days</span>
-                              </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {membershipPlans.map(plan => (
+                          <div
+                            key={plan._id}
+                            onClick={() => handleMembershipPlanChange(plan._id)}
+                            className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                              formData.membership.planId === plan._id
+                                ? 'bg-red-600/10 border-red-500'
+                                : 'bg-gray-900 border-gray-700 hover:border-gray-600'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold truncate mr-2">{plan.name}</h4>
+                              {formData.membership.planId === plan._id && (
+                                <Check className="w-5 h-5 text-red-400 shrink-0" />
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      )}
+                            <p className="text-sm text-gray-400 mb-2 truncate">{plan.description}</p>
+                            <div className="flex justify-between items-center">
+                              <span className="font-bold text-lg">${plan.price || 0}</span>
+                              <span className="text-sm text-gray-400">{plan.duration || 30} days</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.gymId && membershipPlans.length === 0 && (
+                    <div className="p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                      <p className="text-gray-400">No membership plans available for this gym</p>
                     </div>
                   )}
 
@@ -872,12 +861,11 @@ const AddCustomerPage = () => {
 
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">Fitness Goals (Optional)</label>
-                    {/* FIX 4: Added overflow-x-auto so goal tags wrap or scroll within bounds */}
-                    <div className="flex flex-wrap gap-2 mb-3 max-w-full">
+                    <div className="flex flex-wrap gap-2 mb-3 max-w-full overflow-x-auto">
                       {formData.healthMetrics.fitnessGoals.map((goal, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-gray-800 rounded-full text-sm flex items-center space-x-2 max-w-full"
+                          className="px-3 py-1 bg-gray-800 rounded-full text-sm flex items-center space-x-2 max-w-full shrink-0"
                         >
                           <span className="truncate">{goal}</span>
                           <button
@@ -890,8 +878,7 @@ const AddCustomerPage = () => {
                         </span>
                       ))}
                     </div>
-                    {/* FIX 5: Goal input row — ensure it doesn't overflow */}
-                    <div className="flex w-full">
+                    <div className="flex w-full max-w-full">
                       <input
                         type="text"
                         value={newGoal}
@@ -972,7 +959,7 @@ const AddCustomerPage = () => {
               </div>
             </div>
 
-            {/* Form Actions — FIX 6: use inset-x-0 instead of left-0 right-0 for cleaner fixed positioning */}
+            {/* Form Actions */}
             <div className="fixed bottom-0 inset-x-0 p-4 bg-gray-900 border-t border-gray-700 z-50">
               <div className="flex justify-between space-x-4 max-w-screen-lg mx-auto">
                 <button

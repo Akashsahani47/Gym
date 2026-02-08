@@ -115,14 +115,12 @@ export const createGym = async (req, res) => {
       message: "Gym created successfully",
       data: gym,
     });
-  } catch (error) {
-    console.error("Create Gym Error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Failed to create gym",
-    });
+  } catch (err) {
+  return res.status(500).json({ error: err.message });
+}
+
   }
-};
+
 
 export const getGymOwnerinfo = async (req, res) => {
   try {

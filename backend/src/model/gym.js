@@ -14,7 +14,7 @@ const GymSchema = new mongoose.Schema(
 
     slug: {
       type: String,
-      unique: true,
+     
       lowercase: true
     },
 
@@ -210,7 +210,7 @@ const GymSchema = new mongoose.Schema(
     timestamps: true
   }
 );
-
+GymSchema.index({ owner: 1, slug: 1 }, { unique: true });
 /* =========================
    INDEXES
 ========================== */

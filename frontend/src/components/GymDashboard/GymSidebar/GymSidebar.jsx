@@ -182,7 +182,7 @@ const GymSidebar = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-white truncate">{user?.profile?.firstName || 'User'}</h3>
-                  <p className="text-sm text-gray-400">Professional Trainer</p>
+                  <p className="text-sm text-gray-400">Professional DashBoard</p>
                   <div className="flex items-center mt-1">
                     <div className="w-full bg-gray-700 rounded-full h-1.5 overflow-hidden">
                       <motion.div 
@@ -516,7 +516,7 @@ const GymSidebar = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{user?.profile?.firstName || 'User'}</h3>
-                    <p className="text-sm text-gray-400">Professional Trainer</p>
+                    <p className="text-sm text-gray-400">Professional Dashboard</p>
                   </div>
                 </div>
               </div>

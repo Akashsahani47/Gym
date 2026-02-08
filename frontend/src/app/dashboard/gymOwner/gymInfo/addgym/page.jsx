@@ -155,7 +155,7 @@ const AddGymPage = () => {
       {
         name: 'Basic',
         description: 'Access to basic equipment',
-        price: 29.99,
+        price: 299.99,
         duration: 30,
         features: ['Cardio Equipment', 'Weight Training', 'Locker Room'],
         isActive: true
@@ -163,7 +163,7 @@ const AddGymPage = () => {
       {
         name: 'Premium',
         description: 'All facilities + group classes',
-        price: 49.99,
+        price: 999.99,
         duration: 30,
         features: ['All Facilities', 'Group Classes', 'Personal Training Discount'],
         isActive: true
