@@ -87,76 +87,74 @@ export default function WhyDifferent() {
   ];
 
   return (
-    <section className="py-24 px-6 bg-black">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-black">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          
-          
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-20">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2">
             <span className="text-white">Manage Your Complete </span>
             <span className="text-[#DAFF00]">Fitness Platform</span>
           </h2>
           
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-2">
             While other tools only serve gym owners, Zelvoo gives you complete control over your entire fitness platform ecosystem.
           </p>
         </div>
 
-        {/* Comparison Section */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-24">
+        {/* Comparison Section - flex row on all screens, compact on mobile */}
+        <div className="flex flex-row gap-2 sm:gap-6 lg:gap-8 mb-16 sm:mb-24">
           {/* Traditional Platforms Card */}
-          <div className="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-2xl p-8 shadow-2xl">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center">
-                <X className="w-6 h-6 text-red-400" />
+          <div className="flex-1 min-w-0 bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-lg sm:rounded-xl lg:rounded-2xl p-2.5 sm:p-6 md:p-8 shadow-2xl">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-8">
+              <div className="w-7 h-7 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0">
+                <X className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-red-400" />
               </div>
-              <h3 className="text-2xl font-bold text-white">Traditional Gym Software</h3>
+              <h3 className="text-xs sm:text-xl md:text-2xl font-bold text-white leading-tight">Traditional Gym Software</h3>
             </div>
             
-            <div className="space-y-4 mb-8">
+            <div className="space-y-1.5 sm:space-y-4 mb-3 sm:mb-8">
               {traditionalLimitations.map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <X className="w-3.5 h-3.5 text-red-400" />
+                <div key={index} className="flex items-start gap-2 sm:gap-3">
+                  <div className="w-3.5 h-3.5 sm:w-6 sm:h-6 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <X className="w-2 h-2 sm:w-3.5 sm:h-3.5 text-red-400" />
                   </div>
-                  <p className="text-gray-300">{item}</p>
+                  <p className="text-gray-300 text-xs sm:text-base leading-tight">{item}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-800">
-              <p className="text-gray-400 text-sm text-center">
+            <div className="bg-gray-900/50 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-gray-800">
+              <p className="text-gray-400 text-xs sm:text-sm text-center leading-tight">
                 Built for <span className="text-purple-400">single gyms</span>, not platform owners
               </p>
             </div>
           </div>
 
           {/* Zelvoo Platform Card */}
-          <div className="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+          <div className="flex-1 min-w-0 bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-lg sm:rounded-xl lg:rounded-2xl p-2.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
             {/* Accent Border */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#DAFF00] via-green-500 to-emerald-500"></div>
+            <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-[#DAFF00] via-green-500 to-emerald-500"></div>
             
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-[#DAFF00]/10 border border-[#DAFF00]/30 flex items-center justify-center">
-                <Check className="w-6 h-6 text-[#DAFF00]" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-8">
+              <div className="w-7 h-7 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#DAFF00]/10 border border-[#DAFF00]/30 flex items-center justify-center shrink-0">
+                <Check className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-[#DAFF00]" />
               </div>
-              <h3 className="text-2xl font-bold text-white">Zelvoo Platform</h3>
+              <h3 className="text-xs sm:text-xl md:text-2xl font-bold text-white leading-tight">Zelvoo Platform</h3>
             </div>
             
-            <div className="space-y-4 mb-8">
+            <div className="space-y-1.5 sm:space-y-4 mb-3 sm:mb-8">
               {zelvooAdvantages.map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#DAFF00]/10 border border-[#DAFF00]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-3.5 h-3.5 text-[#DAFF00]" />
+                <div key={index} className="flex items-start gap-2 sm:gap-3">
+                  <div className="w-3.5 h-3.5 sm:w-6 sm:h-6 rounded-full bg-[#DAFF00]/10 border border-[#DAFF00]/30 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-2 h-2 sm:w-3.5 sm:h-3.5 text-[#DAFF00]" />
                   </div>
-                  <p className="text-gray-300">{item}</p>
+                  <p className="text-gray-300 text-xs sm:text-base leading-tight">{item}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-[#DAFF00]/5 rounded-xl p-4 border border-[#DAFF00]/20">
-              <p className="text-[#DAFF00] text-sm text-center font-medium">
+            <div className="bg-[#DAFF00]/5 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-[#DAFF00]/20">
+              <p className="text-[#DAFF00] text-xs sm:text-sm text-center font-medium leading-tight">
                 Built for <span className="font-bold">platform owners</span> who manage multiple gyms
               </p>
             </div>

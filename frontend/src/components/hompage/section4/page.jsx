@@ -61,58 +61,56 @@ export default function DashboardsSection() {
   ];
 
   return (
-    <section className=" px-6 bg-black">
+    <section className="px-4 sm:px-6 py-12 sm:py-16 lg:py-20 bg-black">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
-         
-          
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2">
             <span className="text-white">Three Dashboards. </span>
             <span className="text-[#DAFF00]">One Seamless Platform.</span>
           </h2>
           
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-2">
             Every role gets a dedicated interface designed specifically for their needs, all connected in one intelligent platform.
           </p>
         </div>
 
-        {/* Three Dashboard Cards - Horizontal Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+        {/* Three Dashboard Cards - 1 col mobile, 3 col desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-20">
           {dashboards.map((dashboard, index) => (
             <div 
               key={index} 
-              className={`bg-gradient-to-b ${dashboard.gradient} border ${dashboard.borderColor} rounded-2xl p-8 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-3xl flex flex-col h-full`}
+              className={`bg-gradient-to-b ${dashboard.gradient} border ${dashboard.borderColor} rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl transition-all duration-300 hover:scale-[1.01] lg:hover:scale-[1.02] hover:shadow-3xl flex flex-col h-full`}
             >
               {/* Card Header */}
-              <div className="mb-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`w-12 h-12 rounded-xl ${dashboard.bgColor} border ${dashboard.borderColor} flex items-center justify-center flex-shrink-0`}>
-                    <dashboard.icon className={`w-6 h-6 ${dashboard.color}`} />
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${dashboard.bgColor} border ${dashboard.borderColor} flex items-center justify-center shrink-0`}>
+                    <dashboard.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${dashboard.color}`} />
                   </div>
-                  <div>
-                    <h3 className={`text-xl font-bold ${dashboard.color} mb-1`}>
+                  <div className="min-w-0">
+                    <h3 className={`text-lg sm:text-xl font-bold ${dashboard.color} mb-0.5 sm:mb-1`}>
                       {dashboard.title}
                     </h3>
-                    <p className="text-gray-500 text-sm">{dashboard.tagline}</p>
+                    <p className="text-gray-500 text-xs sm:text-sm truncate">{dashboard.tagline}</p>
                   </div>
                 </div>
               </div>
 
               {/* Features List */}
-              <div className="space-y-3 flex-1">
+              <div className="space-y-2 sm:space-y-3 flex-1">
                 {dashboard.features.map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-start gap-3">
-                    <div className={`w-5 h-5 rounded-full ${dashboard.bgColor} border ${dashboard.borderColor} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                      <CheckCircle className={`w-3 h-3 ${dashboard.color}`} />
+                  <div key={featureIndex} className="flex items-start gap-2 sm:gap-3">
+                    <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full ${dashboard.bgColor} border ${dashboard.borderColor} flex items-center justify-center shrink-0 mt-0.5`}>
+                      <CheckCircle className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${dashboard.color}`} />
                     </div>
-                    <p className="text-gray-300 text-sm">{feature}</p>
+                    <p className="text-gray-300 text-xs sm:text-sm">{feature}</p>
                   </div>
                 ))}
               </div>
 
               {/* Dashboard Preview */}
-              <div className={`mt-8 pt-6 border-t ${dashboard.borderColor} border-opacity-30`}>
+              <div className={`mt-6 sm:mt-8 pt-4 sm:pt-6 border-t ${dashboard.borderColor} border-opacity-30`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${dashboard.color}`}></div>
@@ -145,19 +143,19 @@ export default function DashboardsSection() {
         </div>
 
         {/* How They Connect */}
-        <div className="bg-gradient-to-r from-gray-900 to-gray-950 border border-gray-800 rounded-2xl p-8 mb-16">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-[#DAFF00]" />
-              <h3 className="text-2xl font-bold text-white">How They Work Together</h3>
+        <div className="bg-gradient-to-r from-gray-900 to-gray-950 border border-gray-800 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 mb-10 sm:mb-16">
+          <div className="text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center justify-center gap-2 mb-3 sm:mb-4 flex-wrap">
+              <Zap className="w-5 h-5 text-[#DAFF00] shrink-0" />
+              <h3 className="text-xl sm:text-2xl font-bold text-white">How They Work Together</h3>
             </div>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto px-2">
               All three dashboards sync in real-time, creating a seamless workflow for your entire fitness business.
             </p>
           </div>
 
-          {/* Connection Flow */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Connection Flow - stacked on mobile */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center">
               <div className="relative mb-6">
                 <div className="w-16 h-16 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mx-auto mb-3">
@@ -206,7 +204,7 @@ export default function DashboardsSection() {
           </div>
 
           {/* Real-time Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
             <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-800">
               <div className="flex items-center gap-3 mb-3">
                 <Calendar className="w-5 h-5 text-purple-400" />
@@ -233,12 +231,12 @@ export default function DashboardsSection() {
           </div>
         </div>
 
-        {/* Final CTA */}
-        <div className="text-center">
-          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] rounded-xl font-semibold px-8 py-6 text-lg mb-4">
+        {/* Final CTA - full width button on mobile */}
+        <div className="text-center px-2">
+          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow min-h-[48px] sm:h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] active:opacity-90 rounded-xl font-semibold px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg w-full sm:w-auto mb-3 sm:mb-4">
             View All Dashboard Demos
           </button>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-xs sm:text-sm">
             See how each dashboard is tailored for its specific role
           </p>
         </div>

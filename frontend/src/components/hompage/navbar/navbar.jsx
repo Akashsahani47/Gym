@@ -77,18 +77,18 @@ export default function Navbar() {
           : 'bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          {/* Logo - smaller on mobile */}
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-h-[44px] min-w-[44px] items-center">
             <div className="relative">
               <div className="absolute inset-0 bg-[#DAFF00] blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#DAFF00] to-[#c5e600] flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                <Shield className="w-6 h-6 text-black" />
+              <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#DAFF00] to-[#c5e600] flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
             </div>
-            <span className="text-2xl font-bold">
+            <span className="text-xl sm:text-2xl font-bold">
               <span className="text-white">Zel</span>
               <span className="bg-gradient-to-r from-[#DAFF00] to-[#c5e600] bg-clip-text text-transparent">voo</span>
             </span>
@@ -213,16 +213,17 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - 44px touch target */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-lg transition-colors"
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-white hover:bg-white/10 active:bg-white/15 rounded-xl transition-colors -mr-1"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - full width, easy tap targets */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -232,19 +233,19 @@ export default function Navbar() {
               transition={{ duration: 0.3 }}
               className="md:hidden overflow-hidden"
             >
-              <div className="py-6 space-y-4 border-t border-white/10 mt-4">
+              <div className="py-5 space-y-3 border-t border-white/10 mt-4">
                 
                 {/* Not logged in - Mobile */}
                 {!token && (
                   <>
-                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full h-11 px-5 text-white font-medium border border-white/10 hover:bg-white/5 rounded-xl transition-colors">
+                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)} className="block">
+                      <button className="w-full min-h-[48px] px-5 py-3 text-white font-medium border border-white/10 hover:bg-white/5 active:bg-white/10 rounded-xl transition-colors">
                         Login
                       </button>
                     </Link>
 
-                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full h-11 px-5 bg-gradient-to-r from-[#DAFF00] to-[#c5e600] text-black font-semibold rounded-xl">
+                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)} className="block">
+                      <button className="w-full min-h-[48px] px-5 py-3 bg-gradient-to-r from-[#DAFF00] to-[#c5e600] text-black font-semibold rounded-xl active:opacity-90">
                         Get Started
                       </button>
                     </Link>
@@ -256,14 +257,14 @@ export default function Navbar() {
                   <>
                     <div className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#DAFF00] to-[#c5e600] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#DAFF00] to-[#c5e600] flex items-center justify-center shrink-0">
                           <span className="text-sm font-bold text-black">
                             {getUserDisplayName().charAt(0).toUpperCase()}
                           </span>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-white">{getUserDisplayName()}</p>
-                          <p className="text-xs text-gray-400">{user.email}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-white truncate">{getUserDisplayName()}</p>
+                          <p className="text-xs text-gray-400 truncate">{user.email}</p>
                         </div>
                       </div>
                       <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-medium ${getRoleBadgeColor()}`}>
@@ -271,8 +272,8 @@ export default function Navbar() {
                       </div>
                     </div>
 
-                    <Link href={getDashboardLink()} onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full flex items-center justify-center gap-2 h-11 px-5 bg-white/5 text-white font-medium border border-white/10 hover:bg-white/10 rounded-xl transition-colors">
+                    <Link href={getDashboardLink()} onClick={() => setMobileMenuOpen(false)} className="block">
+                      <button className="w-full flex items-center justify-center gap-2 min-h-[48px] px-5 py-3 bg-white/5 text-white font-medium border border-white/10 hover:bg-white/10 active:bg-white/15 rounded-xl transition-colors">
                         <LayoutDashboard className="w-4 h-4" />
                         Dashboard
                       </button>
@@ -283,7 +284,7 @@ export default function Navbar() {
                         logout();
                         setMobileMenuOpen(false);
                       }}
-                      className="w-full flex items-center justify-center gap-2 h-11 px-5 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20 rounded-xl transition-colors"
+                      className="w-full flex items-center justify-center gap-2 min-h-[48px] px-5 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 active:bg-red-500/20 border border-red-500/20 rounded-xl transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       Logout
@@ -294,8 +295,8 @@ export default function Navbar() {
                 {/* Token but no user - Mobile */}
                 {token && !user && (
                   <>
-                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full h-11 px-5 bg-gradient-to-r from-[#DAFF00] to-[#c5e600] text-black font-semibold rounded-xl">
+                    <Link href="/loginpage" onClick={() => setMobileMenuOpen(false)} className="block">
+                      <button className="w-full min-h-[48px] px-5 py-3 bg-gradient-to-r from-[#DAFF00] to-[#c5e600] text-black font-semibold rounded-xl">
                         Login Again
                       </button>
                     </Link>
@@ -305,7 +306,7 @@ export default function Navbar() {
                         logout();
                         setMobileMenuOpen(false);
                       }}
-                      className="w-full h-11 px-5 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20 rounded-xl transition-colors"
+                      className="w-full min-h-[48px] px-5 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20 rounded-xl transition-colors"
                     >
                       Logout
                     </button>

@@ -40,30 +40,30 @@ export default function Footer() {
   return (
     <footer className="bg-black border-t border-gray-800">
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
           
-          {/* Logo & Description */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-6">
-              <Shield className="w-10 h-10 text-[#DAFF00]" />
-              <span className="text-3xl font-bold">
+          {/* Logo & Description - full width on mobile */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2 mb-4 sm:mb-6">
+              <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-[#DAFF00] shrink-0" />
+              <span className="text-2xl sm:text-3xl font-bold">
                 <span className="text-white">Zel</span>
                 <span className="text-[#DAFF00]">voo</span>
               </span>
             </div>
             
-            <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+            <p className="text-gray-400 mb-4 sm:mb-6 text-xs sm:text-sm leading-relaxed max-w-md">
               Complete gym management ecosystem for Super Admins, Gym Owners, Trainers, and Members. 
               One platform, every role, seamless integration.
             </p>
             
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-3 sm:gap-4 mb-6">
               {socialLinks.map((social, index) => (
                 <Link
                   key={index}
                   href={social.href}
-                  className={`text-gray-400 hover:text-white transition-colors ${social.color}`}
+                  className={`min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors rounded-lg active:bg-white/5 ${social.color}`}
                   aria-label={social.name}
                 >
                   <social.icon className="w-5 h-5" />
@@ -74,19 +74,19 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
-              <div className="w-1 h-6 bg-[#DAFF00] rounded-full"></div>
+            <h3 className="text-white font-bold text-base sm:text-lg mb-4 sm:mb-6 flex items-center gap-2">
+              <div className="w-1 h-5 sm:h-6 bg-[#DAFF00] rounded-full shrink-0"></div>
               Quick Links
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-[#DAFF00] transition-colors flex items-center gap-2 group"
+                    className="text-gray-400 hover:text-[#DAFF00] transition-colors flex items-center gap-2 group py-1.5 min-h-[44px] items-center"
                   >
-                    <div className="w-1.5 h-1.5 bg-gray-700 rounded-full group-hover:bg-[#DAFF00] transition-colors"></div>
-                    {link.name}
+                    <div className="w-1.5 h-1.5 bg-gray-700 rounded-full group-hover:bg-[#DAFF00] transition-colors shrink-0"></div>
+                    <span className="text-sm sm:text-base">{link.name}</span>
                   </Link>
                 </li>
               ))}
@@ -95,21 +95,21 @@ export default function Footer() {
 
           {/* Dashboards */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
-              <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+            <h3 className="text-white font-bold text-base sm:text-lg mb-4 sm:mb-6 flex items-center gap-2">
+              <div className="w-1 h-5 sm:h-6 bg-purple-500 rounded-full shrink-0"></div>
               Dashboard Roles
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {roleLinks.map((role, index) => (
                 <li key={index}>
                   <Link
                     href={role.href}
-                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group"
+                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group py-1.5 min-h-[44px] items-center"
                   >
-                    <div className={`${role.color} opacity-80`}>
+                    <div className={`${role.color} opacity-80 shrink-0`}>
                       <role.icon className="w-4 h-4" />
                     </div>
-                    <span className={`group-hover:${role.color} transition-colors`}>
+                    <span className={`text-sm sm:text-base group-hover:${role.color} transition-colors`}>
                       {role.name}
                     </span>
                   </Link>
@@ -120,57 +120,56 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
-              <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+            <h3 className="text-white font-bold text-base sm:text-lg mb-4 sm:mb-6 flex items-center gap-2">
+              <div className="w-1 h-5 sm:h-6 bg-blue-500 rounded-full shrink-0"></div>
               Contact Us
             </h3>
-            <ul className="space-y-4">
+            <ul className="space-y-3 sm:space-y-4">
               <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#DAFF00] mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-white text-sm font-medium">Email</p>
-                  <a href="ak676964@gmail.com" className="text-gray-400 hover:text-[#DAFF00] text-sm transition-colors">
+                <Mail className="w-5 h-5 text-[#DAFF00] mt-0.5 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-white text-xs sm:text-sm font-medium">Email</p>
+                  <a href="mailto:ak676964@gmail.com" className="text-gray-400 hover:text-[#DAFF00] text-xs sm:text-sm transition-colors break-all">
                     ak676964@gmail.com
                   </a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#DAFF00] mt-0.5 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-[#DAFF00] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-white text-sm font-medium">Phone</p>
-                  <a href="tel:+18005551234" className="text-gray-400 hover:text-[#DAFF00] text-sm transition-colors">
+                  <p className="text-white text-xs sm:text-sm font-medium">Phone</p>
+                  <a href="tel:+917903983741" className="text-gray-400 hover:text-[#DAFF00] text-xs sm:text-sm transition-colors">
                     +91 7903983741
                   </a>
                 </div>
               </li>
-              
             </ul>
           </div>
         </div>
 
-        {/* Features Highlight */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Features Highlight - 1 col mobile */}
+        <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
             <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
               <div className="w-10 h-10 rounded-full bg-[#DAFF00]/10 border border-[#DAFF00]/30 flex items-center justify-center mx-auto mb-3">
                 <Shield className="w-5 h-5 text-[#DAFF00]" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Enterprise Security</h4>
-              <p className="text-gray-400 text-sm">Bank-level encryption & compliance</p>
+              <h4 className="text-white font-semibold mb-1 text-sm sm:text-base">Enterprise Security</h4>
+              <p className="text-gray-400 text-xs sm:text-sm">Bank-level encryption & compliance</p>
             </div>
             <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
               <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mx-auto mb-3">
                 <Building className="w-5 h-5 text-purple-400" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Multi-Gym Support</h4>
-              <p className="text-gray-400 text-sm">Manage unlimited gym locations</p>
+              <h4 className="text-white font-semibold mb-1 text-sm sm:text-base">Multi-Gym Support</h4>
+              <p className="text-gray-400 text-xs sm:text-sm">Manage unlimited gym locations</p>
             </div>
             <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
               <div className="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mx-auto mb-3">
                 <Users className="w-5 h-5 text-blue-400" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Real-time Sync</h4>
-              <p className="text-gray-400 text-sm">Instant updates across all roles</p>
+              <h4 className="text-white font-semibold mb-1 text-sm sm:text-base">Real-time Sync</h4>
+              <p className="text-gray-400 text-xs sm:text-sm">Instant updates across all roles</p>
             </div>
           </div>
         </div>
@@ -178,20 +177,20 @@ export default function Footer() {
 
       {/* Bottom Footer */}
       <div className="border-t border-gray-800 bg-gray-900/30">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             {/* Copyright */}
-            <div className="text-gray-400 text-sm">
+            <div className="text-gray-400 text-xs sm:text-sm order-2 sm:order-1">
               © {currentYear} Zelvoo. All rights reserved.
             </div>
 
-            {/* Legal Links */}
-            <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm">
+            {/* Legal Links - wrap on mobile */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm order-1 sm:order-2">
               {legalLinks.map((link, index) => (
                 <Link
                   key={index}
                   href={link.href}
-                  className="text-gray-400 hover:text-[#DAFF00] transition-colors"
+                  className="text-gray-400 hover:text-[#DAFF00] transition-colors min-h-[44px] flex items-center justify-center"
                 >
                   {link.name}
                 </Link>
@@ -199,7 +198,7 @@ export default function Footer() {
             </div>
 
             {/* Built With Pride */}
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <div className="flex items-center justify-center gap-2 text-gray-400 text-xs sm:text-sm order-3">
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 rounded-full bg-[#DAFF00] animate-pulse"></div>
                 <span>Built for India</span>

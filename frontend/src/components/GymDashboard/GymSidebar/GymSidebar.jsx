@@ -46,9 +46,9 @@ const GymSidebar = () => {
   ];
 
   const quickStats = [
-    { label: 'Active Now', value: '24', icon: <Flame className="w-4 h-4 text-orange-500" />, color: 'from-orange-500/20 to-orange-600/20' },
-    { label: 'Calories Burned', value: '1.2k', icon: <Heart className="w-4 h-4 text-red-500" />, color: 'from-red-500/20 to-red-600/20' },
-    { label: 'Workouts', value: '8', icon: <Award className="w-4 h-4 text-yellow-500" />, color: 'from-yellow-500/20 to-yellow-600/20' },
+    { label: 'Active Now', value: '24', icon: <Flame className="w-4 h-4 text-[#DAFF00]" />, color: 'from-[#DAFF00]/20 to-[#DAFF00]/5' },
+    { label: 'Calories Burned', value: '1.2k', icon: <Heart className="w-4 h-4 text-[#DAFF00]" />, color: 'from-[#DAFF00]/20 to-[#DAFF00]/5' },
+    { label: 'Workouts', value: '8', icon: <Award className="w-4 h-4 text-[#DAFF00]" />, color: 'from-[#DAFF00]/20 to-[#DAFF00]/5' },
   ];
 
   const recentActivities = [
@@ -93,7 +93,7 @@ const GymSidebar = () => {
     <>
       {/* Mobile Menu Button */}
       <motion.button
-        className="fixed top-4 right-4 z-50 lg:hidden p-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg text-white"
+        className="fixed top-4 right-4 z-50 lg:hidden p-2 bg-[#DAFF00] text-black rounded-xl font-semibold shadow hover:bg-[#c5e600] focus:ring-2 focus:ring-[#DAFF00] focus:ring-offset-2 focus:ring-offset-black"
         onClick={() => setMobileOpen(true)}
         whileTap={{ scale: 0.95 }}
       >
@@ -102,7 +102,7 @@ const GymSidebar = () => {
 
       {/* Desktop Sidebar */}
       <motion.div 
-        className="hidden lg:flex flex-col h-screen bg-gradient-to-b from-gray-900 to-gray-800 border-r border-gray-700 sticky left-0 top-0 z-40"
+        className="hidden lg:flex flex-col h-screen bg-black border-r border-white/10 sticky left-0 top-0 z-40"
         animate={collapsed ? "collapsed" : "expanded"}
         variants={sidebarVariants}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -111,17 +111,17 @@ const GymSidebar = () => {
       >
         
         {/* Header with Logo */}
-        <div className={`p-4 border-b border-gray-700 flex items-center justify-between ${
+        <div className={`p-4 border-b border-white/10 flex items-center justify-between ${
           collapsed ? 'flex-col space-y-2' : ''
         }`}>
           <div className={`flex items-center ${collapsed ? 'flex-col' : 'space-x-3'}`}>
             <motion.div 
-              className="p-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg"
+              className="p-2 bg-[#DAFF00]/20 rounded-xl flex items-center justify-center border border-[#DAFF00]/30"
               animate={{ rotate: collapsed ? 0 : [0, 10, -10, 0] }}
               transition={{ repeat: collapsed ? 0 : 1, duration: 0.5 }}
               whileHover={{ scale: 1.1, rotate: 10 }}
             >
-              <Dumbbell className="w-6 h-6 text-white" />
+              <Dumbbell className="w-6 h-6 text-[#DAFF00]" />
             </motion.div>
             
             <AnimatePresence>
@@ -133,7 +133,7 @@ const GymSidebar = () => {
                   transition={{ duration: 0.2 }}
                 >
                   <h1 className="text-xl font-bold text-white">
-                    Fitness<span className="text-red-500">Hub</span>
+                    Zelvoo<span className="text-[#DAFF00]"></span>
                   </h1>
                   <p className="text-xs text-gray-400">Dashboard</p>
                 </motion.div>
@@ -144,14 +144,14 @@ const GymSidebar = () => {
           {/* Collapse Button */}
           <motion.button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors border border-gray-600"
+            className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 transition-colors border border-white/10 hover:border-[#DAFF00]/30"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
             {collapsed ? (
-              <ChevronRight className="w-4 h-4 text-gray-300" />
+              <ChevronRight className="w-4 h-4 text-[#DAFF00]" />
             ) : (
-              <ChevronLeft className="w-4 h-4 text-gray-300" />
+              <ChevronLeft className="w-4 h-4 text-[#DAFF00]" />
             )}
           </motion.button>
         </div>
@@ -160,7 +160,7 @@ const GymSidebar = () => {
         <AnimatePresence>
           {!collapsed && (
             <motion.div 
-              className="p-4 border-b border-gray-700"
+              className="p-4 border-b border-white/10"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -169,13 +169,13 @@ const GymSidebar = () => {
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <motion.div 
-                    className="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center"
+                    className="w-12 h-12 rounded-full bg-[#DAFF00]/20 flex items-center justify-center border border-[#DAFF00]/30"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <User className="w-6 h-6 text-white" />
+                    <User className="w-6 h-6 text-[#DAFF00]" />
                   </motion.div>
                   <motion.div 
-                    className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900"
+                    className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#DAFF00] rounded-full border-2 border-black animate-pulse"
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
                   ></motion.div>
@@ -184,9 +184,9 @@ const GymSidebar = () => {
                   <h3 className="font-semibold text-white truncate">{user?.profile?.firstName || 'User'}</h3>
                   <p className="text-sm text-gray-400">Professional DashBoard</p>
                   <div className="flex items-center mt-1">
-                    <div className="w-full bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
                       <motion.div 
-                        className="bg-gradient-to-r from-red-500 to-orange-500 h-1.5 rounded-full"
+                        className="bg-gradient-to-r from-[#DAFF00] to-[#DAFF00]/60 h-1.5 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: '75%' }}
                         transition={{ duration: 1, ease: "easeOut" }}
@@ -204,21 +204,21 @@ const GymSidebar = () => {
         <AnimatePresence>
           {!collapsed && (
             <motion.div 
-              className="px-4 py-3 border-b border-gray-700"
+              className="px-4 py-3 border-b border-white/10"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
             >
-              <h4 className="text-xs uppercase text-gray-400 font-semibold mb-2">Today&apos;s Stats</h4>
+              <h4 className="text-xs uppercase text-gray-500 font-semibold mb-2 tracking-wider">Today&apos;s Stats</h4>
               <div className="grid grid-cols-3 gap-2">
                 {quickStats.map((stat, index) => (
                   <motion.div 
                     key={index}
-                    className={`bg-gradient-to-br ${stat.color} backdrop-blur-sm rounded-lg p-2 text-center border border-gray-700`}
+                    className={`bg-gradient-to-br ${stat.color} backdrop-blur-sm rounded-xl p-2 text-center border border-white/10`}
                     whileHover={{ 
                       scale: 1.05,
-                      boxShadow: "0 0 15px rgba(239, 68, 68, 0.4)"
+                      boxShadow: "0 0 15px rgba(218, 255, 0, 0.2)"
                     }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -226,7 +226,7 @@ const GymSidebar = () => {
                   >
                     <div className="flex justify-center mb-1">{stat.icon}</div>
                     <div className="text-white font-bold text-sm">{stat.value}</div>
-                    <div className="text-xs text-gray-300">{stat.label}</div>
+                    <div className="text-xs text-gray-400">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -251,10 +251,10 @@ const GymSidebar = () => {
                   }}
                   className={`w-full flex items-center ${
                     collapsed ? 'justify-center' : 'justify-between'
-                  } p-3 rounded-lg transition-all duration-200 group ${
+                  } p-3 rounded-xl transition-all duration-200 group ${
                     activeItem === item.id
-                      ? 'bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/30 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                      ? 'bg-[#DAFF00]/10 border border-[#DAFF00]/30 text-white'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5 hover:border-[#DAFF00]/20 border border-transparent'
                   }`}
                   variants={itemVariants}
                   whileHover={{ scale: 1.02 }}
@@ -262,10 +262,10 @@ const GymSidebar = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`p-1.5 rounded-md ${
+                      className={`p-1.5 rounded-lg ${
                         activeItem === item.id
-                          ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white'
-                          : 'bg-gray-800 text-gray-400 group-hover:bg-gray-700'
+                          ? 'bg-[#DAFF00]/20 text-[#DAFF00] border border-[#DAFF00]/30'
+                          : 'bg-white/5 text-gray-400 group-hover:bg-[#DAFF00]/10 group-hover:text-[#DAFF00] border border-white/5'
                       }`}
                     >
                       {item.icon}
@@ -275,7 +275,7 @@ const GymSidebar = () => {
                   </div>
 
                   {!collapsed && item.badge && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-red-600 to-orange-600 text-white">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#DAFF00]/20 text-[#DAFF00] border border-[#DAFF00]/30">
                       {item.badge}
                     </span>
                   )}
@@ -302,7 +302,7 @@ const GymSidebar = () => {
                   {recentActivities.map((activity, index) => (
                     <motion.div 
                       key={index}
-                      className="p-3 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-red-500/30 transition-colors"
+                      className="p-3 bg-white/5 rounded-xl border border-white/10 hover:border-[#DAFF00]/30 transition-colors"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
@@ -310,7 +310,7 @@ const GymSidebar = () => {
                     >
                       <div className="flex items-start space-x-2">
                         <motion.div 
-                          className="w-2 h-2 mt-1.5 rounded-full bg-gradient-to-r from-red-500 to-orange-500"
+                          className="w-2 h-2 mt-1.5 rounded-full bg-[#DAFF00]"
                           animate={{ scale: [1, 1.2, 1] }}
                           transition={{ repeat: Infinity, duration: 2, delay: index * 0.3 }}
                         ></motion.div>
@@ -318,7 +318,7 @@ const GymSidebar = () => {
                           <p className="text-sm text-white">
                             <span className="font-semibold">{activity.user}</span> {activity.action}
                           </p>
-                          <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+                          <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -330,14 +330,14 @@ const GymSidebar = () => {
         </div>
 
         {/* Footer Section */}
-        <div className={`border-t border-gray-700 p-4 ${collapsed ? 'space-y-3' : ''}`}>
+        <div className={`border-t border-white/10 p-4 ${collapsed ? 'space-y-3' : ''}`}>
           <motion.button
-            className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} w-full p-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors group`}
+            className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} w-full p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 hover:border-[#DAFF00]/20 border border-transparent transition-colors group`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center space-x-3">
-              <div className="p-1.5 rounded-md bg-gray-800 text-gray-400 group-hover:bg-gray-700">
+              <div className="p-1.5 rounded-lg bg-white/5 text-gray-400 group-hover:bg-[#DAFF00]/10 group-hover:text-[#DAFF00]">
                 <Settings className="w-5 h-5" />
               </div>
               
@@ -358,7 +358,7 @@ const GymSidebar = () => {
             {/* Tooltip for collapsed state */}
             {collapsed && isHovered && (
               <motion.div 
-                className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md whitespace-nowrap z-50"
+                className="absolute left-full ml-2 px-2 py-1 bg-[#1a1a1a] text-white text-sm rounded-lg border border-[#DAFF00]/30 whitespace-nowrap z-50"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
@@ -370,16 +370,16 @@ const GymSidebar = () => {
           
           <motion.button
             onClick={logout}
-            className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} w-full p-3 rounded-lg bg-gradient-to-r from-red-600/20 to-orange-600/20 text-red-400 hover:text-white hover:from-red-600/30 hover:to-orange-600/30 transition-all group border border-red-500/20`}
+            className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} w-full p-3 rounded-xl bg-[#DAFF00]/10 text-[#DAFF00] hover:bg-[#DAFF00]/20 hover:text-black transition-all group border border-[#DAFF00]/30`}
             whileHover={{ 
               scale: 1.02,
-              boxShadow: "0 0 20px rgba(239, 68, 68, 0.3)"
+              boxShadow: "0 0 20px rgba(218, 255, 0, 0.2)"
             }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center space-x-3">
               <motion.div 
-                className="p-1.5 rounded-md bg-gradient-to-r from-red-600 to-orange-600 text-white"
+                className="p-1.5 rounded-lg bg-[#DAFF00] text-black"
                 whileHover={{ rotate: 180 }}
                 transition={{ duration: 0.3 }}
               >
@@ -403,7 +403,7 @@ const GymSidebar = () => {
             {/* Tooltip for collapsed state */}
             {collapsed && isHovered && (
               <motion.div 
-                className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md whitespace-nowrap z-50"
+                className="absolute left-full ml-2 px-2 py-1 bg-[#1a1a1a] text-white text-sm rounded-lg border border-[#DAFF00]/30 whitespace-nowrap z-50"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
@@ -417,7 +417,7 @@ const GymSidebar = () => {
           <AnimatePresence>
             {!collapsed && (
               <motion.div 
-                className="mt-4 pt-4 border-t border-gray-700"
+                className="mt-4 pt-4 border-t border-white/10"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -426,17 +426,17 @@ const GymSidebar = () => {
                   <span className="text-xs text-gray-500">v2.1.4</span>
                   <div className="flex space-x-1">
                     <motion.div 
-                      className="w-2 h-2 rounded-full bg-green-500"
+                      className="w-2 h-2 rounded-full bg-[#DAFF00]"
                       animate={{ scale: [1, 1.5, 1] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     ></motion.div>
                     <motion.div 
-                      className="w-2 h-2 rounded-full bg-yellow-500"
+                      className="w-2 h-2 rounded-full bg-[#DAFF00]/70"
                       animate={{ scale: [1, 1.5, 1] }}
                       transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }}
                     ></motion.div>
                     <motion.div 
-                      className="w-2 h-2 rounded-full bg-red-500"
+                      className="w-2 h-2 rounded-full bg-[#DAFF00]/40"
                       animate={{ scale: [1, 1.5, 1] }}
                       transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }}
                     ></motion.div>
@@ -454,12 +454,12 @@ const GymSidebar = () => {
           }
           
           .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(31, 41, 55, 0.3);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
           }
           
           .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #ef4444, #f97316);
+            background: #DAFF00;
             border-radius: 10px;
           }
         `}</style>
@@ -477,7 +477,7 @@ const GymSidebar = () => {
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
-              className="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-gray-900 to-gray-800 border-r border-gray-700 lg:hidden overflow-y-auto"
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-black border-r border-white/10 lg:hidden overflow-y-auto"
               variants={mobileSidebarVariants}
               initial="closed"
               animate="open"
@@ -485,34 +485,34 @@ const GymSidebar = () => {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {/* Mobile Header */}
-              <div className="p-4 border-b border-gray-700 flex items-center justify-between">
+              <div className="p-4 border-b border-white/10 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg">
-                    <Dumbbell className="w-6 h-6 text-white" />
+                  <div className="p-2 bg-[#DAFF00]/20 rounded-xl border border-[#DAFF00]/30">
+                    <Dumbbell className="w-6 h-6 text-[#DAFF00]" />
                   </div>
                   <div>
                     <h1 className="text-xl font-bold text-white">
-                      Fitness<span className="text-red-500">Hub</span>
+                      Fitness<span className="text-[#DAFF00]">Hub</span>
                     </h1>
                     <p className="text-xs text-gray-400">Dashboard</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                  className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 text-[#DAFF00] transition-colors"
                 >
-                  <X className="w-5 h-5 text-gray-300" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Mobile User Profile */}
-              <div className="p-4 border-b border-gray-700">
+              <div className="p-4 border-b border-white/10">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center">
-                      <User className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 rounded-full bg-[#DAFF00]/20 flex items-center justify-center border border-[#DAFF00]/30">
+                      <User className="w-6 h-6 text-[#DAFF00]" />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#DAFF00] rounded-full border-2 border-black animate-pulse"></div>
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{user?.profile?.firstName || 'User'}</h3>
@@ -528,18 +528,18 @@ const GymSidebar = () => {
                     <Link key={item.id} href={item.href}>
                       <div
                         onClick={() => setMobileOpen(false)}
-                        className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
+                        className={`flex items-center justify-between p-3 rounded-xl transition-all duration-200 border ${
                           activeItem === item.id
-                            ? 'bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/30 text-white'
-                            : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                            ? 'bg-[#DAFF00]/10 border-[#DAFF00]/30 text-white'
+                            : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5 hover:border-[#DAFF00]/20'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
                           <div
-                            className={`p-1.5 rounded-md ${
+                            className={`p-1.5 rounded-lg ${
                               activeItem === item.id
-                                ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white'
-                                : 'bg-gray-800 text-gray-400'
+                                ? 'bg-[#DAFF00]/20 text-[#DAFF00] border border-[#DAFF00]/30'
+                                : 'bg-white/5 text-gray-400 border border-white/5'
                             }`}
                           >
                             {item.icon}
@@ -547,7 +547,7 @@ const GymSidebar = () => {
                           <span className="font-medium">{item.label}</span>
                         </div>
                         {item.badge && (
-                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-red-600 to-orange-600 text-white">
+                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#DAFF00]/20 text-[#DAFF00] border border-[#DAFF00]/30">
                             {item.badge}
                           </span>
                         )}
@@ -558,10 +558,10 @@ const GymSidebar = () => {
               </div>
 
               {/* Mobile Footer */}
-              <div className="p-4 border-t border-gray-700 mt-auto">
-                <button className="flex items-center justify-between w-full p-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50">
+              <div className="p-4 border-t border-white/10 mt-auto">
+                <button className="flex items-center justify-between w-full p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-[#DAFF00]/20">
                   <div className="flex items-center space-x-3">
-                    <div className="p-1.5 rounded-md bg-gray-800 text-gray-400">
+                    <div className="p-1.5 rounded-lg bg-white/5 text-gray-400">
                       <Settings className="w-5 h-5" />
                     </div>
                     <span className="font-medium">Settings</span>
@@ -569,10 +569,10 @@ const GymSidebar = () => {
                 </button>
                 <button
                   onClick={logout}
-                  className="flex items-center justify-between w-full p-3 rounded-lg bg-gradient-to-r from-red-600/20 to-orange-600/20 text-red-400 hover:text-white hover:from-red-600/30 hover:to-orange-600/30 mt-2"
+                  className="flex items-center justify-between w-full p-3 rounded-xl bg-[#DAFF00]/10 text-[#DAFF00] hover:bg-[#DAFF00]/20 hover:text-black border border-[#DAFF00]/30 mt-2"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="p-1.5 rounded-md bg-gradient-to-r from-red-600 to-orange-600 text-white">
+                    <div className="p-1.5 rounded-lg bg-[#DAFF00] text-black">
                       <LogOut className="w-5 h-5" />
                     </div>
                     <span className="font-medium">Logout</span>

@@ -6,47 +6,47 @@ import { BarChart3, TrendingUp, Calendar, Target, CheckCircle, Activity, Users, 
 
 export default function Hero() {
   return (
-    <section className="min-h-screen pt-32 px-6 bg-black max-w-8xl mx-auto">
-      <div className="flex flex-col px-13 lg:flex-row items-center justify-between gap-12 lg:gap-16">
+    <section className="min-h-0 lg:min-h-screen pt-14 sm:pt-24 md:pt-28 lg:pt-32 px-4 sm:px-6 pb-8 sm:pb-16 bg-black max-w-8xl mx-auto">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-10 lg:gap-16">
         
-        {/* Left Column - Text Content */}
-        <div className="lg:w-1/2 text-left">
-          {/* Badge */}
-          <div className="inline-flex items-center border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#DAFF00] focus:ring-offset-2 shadow hover:bg-[#DAFF00]/90 mb-6 bg-[#DAFF00]/10 text-[#DAFF00] border-[#DAFF00]/30 rounded-full px-4 py-1.5">
+        {/* Left Column - Text Content (full width on mobile when right is hidden) */}
+        <div className="lg:w-1/2 text-left w-full mt-7 order-2 lg:order-1">
+          {/* Badge - wrap on mobile */}
+          <div className="inline-flex items-center border text-xs sm:text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#DAFF00] focus:ring-offset-2 shadow hover:bg-[#DAFF00]/90 mb-2 sm:mb-6 bg-[#DAFF00]/10 text-[#DAFF00] border-[#DAFF00]/30 rounded-full px-3 py-1.5 sm:px-4">
             Complete Gym Management Ecosystem
           </div>
 
-          {/* Main Heading */}
-          <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            <span className="text-white"> One Platform. </span>
+          {/* Main Heading - responsive size */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-2 sm:mb-6">
+            <span className="text-white">One Platform. </span>
             <span className="text-[#DAFF00]">Every Role.</span>
             <span className="text-white"> Complete Gym Management.</span>
           </h1>
 
           {/* Description */}
-          <p className="text-xl text-gray-400 mb-8 leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 mb-4 sm:mb-8 leading-relaxed max-w-xl">
             Zelvoo powers gym owners, trainers, and members with dedicated dashboards — all connected in one intelligent fitness platform.
           </p>
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-4 mb-8">
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] rounded-xl font-semibold px-8 py-6 text-lg">
+          {/* Buttons - small + flex row on mobile; larger on desktop */}
+          <div className="flex flex-row flex-wrap gap-2 sm:gap-4 mb-0 sm:mb-8">
+            <button className="inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow min-h-[40px] sm:min-h-[48px] lg:h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] active:opacity-90 rounded-lg sm:rounded-xl font-semibold px-3 py-2 sm:px-8 sm:py-4 text-sm sm:text-lg w-auto">
               Get Started
             </button>
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 border shadow-sm h-14 border-gray-700 text-white hover:border-[#DAFF00] hover:text-[#DAFF00] hover:bg-[#DAFF00]/10 rounded-xl px-8 py-6 text-lg">
+            <button className="inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 border shadow-sm min-h-[40px] sm:min-h-[48px] lg:h-14 border-gray-700 text-white hover:border-[#DAFF00] hover:text-[#DAFF00] hover:bg-[#DAFF00]/10 active:bg-[#DAFF00]/20 rounded-lg sm:rounded-xl px-3 py-2 sm:px-8 sm:py-4 text-sm sm:text-lg w-auto">
               View Dashboards
             </button>
           </div>
         </div>
 
-        {/* Right Column - Premium Glassmorphic Illustration */}
-        <div className="lg:w-1/2 relative h-[700px]">
+        {/* Right Column - Premium Glassmorphic Illustration - hidden on mobile/tablet, only visible on lg+ */}
+        <div className="hidden lg:flex lg:w-1/2 relative w-full order-1 lg:order-2 h-[700px] items-center justify-center">
           {/* Grain texture overlay */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           }} />
 
-          {/* Ambient glow effects */}
+          {/* Ambient glow effects - smaller on mobile */}
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
@@ -57,46 +57,46 @@ export default function Hero() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#DAFF00] rounded-full blur-[100px] pointer-events-none"
+            className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-[#DAFF00] rounded-full blur-[60px] sm:blur-[80px] lg:blur-[100px] pointer-events-none"
           />
 
-          <div className="relative h-full flex items-center justify-center">
+          <div className="relative h-full flex items-center justify-center w-full">
             
-            {/* Central Main Dashboard */}
+            {/* Central Main Dashboard - scaled down on mobile */}
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="relative z-20 w-full max-w-[480px]"
+              className="relative z-20 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-[480px]"
             >
-              <div className="relative rounded-3xl p-[1px] bg-gradient-to-br from-white/20 via-white/10 to-transparent shadow-2xl backdrop-blur-xl">
-                <div className="rounded-3xl bg-gradient-to-br from-[#1a1a1a]/90 to-[#0f0f0f]/90 backdrop-blur-2xl p-6 border border-white/10">
+              <div className="relative rounded-2xl lg:rounded-3xl p-[1px] bg-gradient-to-br from-white/20 via-white/10 to-transparent shadow-2xl backdrop-blur-xl">
+                <div className="rounded-2xl lg:rounded-3xl bg-gradient-to-br from-[#1a1a1a]/90 to-[#0f0f0f]/90 backdrop-blur-2xl p-4 sm:p-5 lg:p-6 border border-white/10">
                   
                   {/* Dashboard Header */}
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-3 sm:mb-6">
                     <div>
-                      <div className="text-xs font-medium text-gray-500 tracking-wider mb-1">ANALYTICS OVERVIEW</div>
-                      <div className="text-xl font-bold text-white">Gym Performance</div>
+                      <div className="text-[10px] sm:text-xs font-medium text-gray-500 tracking-wider mb-0.5 sm:mb-1">ANALYTICS OVERVIEW</div>
+                      <div className="text-base sm:text-lg lg:text-xl font-bold text-white">Gym Performance</div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#DAFF00] animate-pulse" />
-                      <span className="text-xs text-gray-400">Live</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#DAFF00] animate-pulse" />
+                      <span className="text-[10px] sm:text-xs text-gray-400">Live</span>
                     </div>
                   </div>
 
                   {/* Revenue Chart */}
-                  <div className="mb-6">
-                    <div className="flex items-baseline gap-3 mb-3">
-                      <span className="text-3xl font-bold text-white">₹8.4L</span>
-                      <span className="text-sm text-[#DAFF00] flex items-center gap-1">
-                        <TrendingUp className="w-4 h-4" />
+                  <div className="mb-3 sm:mb-6">
+                    <div className="flex items-baseline gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">₹8.4L</span>
+                      <span className="text-xs sm:text-sm text-[#DAFF00] flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
                         +24.5%
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500 mb-3">Monthly Revenue</div>
+                    <div className="text-[10px] sm:text-xs text-gray-500 mb-2 sm:mb-3">Monthly Revenue</div>
                     
                     {/* Mini bar chart */}
-                    <div className="flex items-end gap-1.5 h-24">
+                    <div className="flex items-end gap-1 sm:gap-1.5 h-14 sm:h-20 lg:h-24">
                       {[40, 65, 45, 80, 60, 90, 75, 95, 70, 85, 100, 88].map((height, i) => (
                         <motion.div
                           key={i}
@@ -112,33 +112,33 @@ export default function Hero() {
                   </div>
 
                   {/* Stats Grid */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                      <div className="text-xl font-bold text-white mb-1">342</div>
-                      <div className="text-xs text-gray-500">Active Members</div>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div className="bg-white/5 rounded-lg sm:rounded-xl p-2 sm:p-3 border border-white/10">
+                      <div className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-0.5 sm:mb-1">342</div>
+                      <div className="text-[10px] sm:text-xs text-gray-500">Active Members</div>
                     </div>
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                      <div className="text-xl font-bold text-white mb-1">28</div>
-                      <div className="text-xs text-gray-500">Live Sessions</div>
+                    <div className="bg-white/5 rounded-lg sm:rounded-xl p-2 sm:p-3 border border-white/10">
+                      <div className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-0.5 sm:mb-1">28</div>
+                      <div className="text-[10px] sm:text-xs text-gray-500">Live Sessions</div>
                     </div>
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                      <div className="text-xl font-bold text-white mb-1">94%</div>
-                      <div className="text-xs text-gray-500">Attendance</div>
+                    <div className="bg-white/5 rounded-lg sm:rounded-xl p-2 sm:p-3 border border-white/10">
+                      <div className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-0.5 sm:mb-1">94%</div>
+                      <div className="text-[10px] sm:text-xs text-gray-500">Attendance</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Glass reflection effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl lg:rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
             </motion.div>
 
-            {/* Trainer Schedule Card - Top Left */}
+            {/* Trainer Schedule Card - Top Left - hidden on mobile/tablet to avoid overlap */}
             <motion.div
               initial={{ opacity: 0, x: -30, y: 30 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="absolute top-8 left-0 w-[260px] z-10"
+              className="absolute top-8 left-0 w-[260px] z-10 hidden lg:block"
             >
               <div className="rounded-2xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent shadow-xl backdrop-blur-xl">
                 <div className="rounded-2xl bg-[#141414]/80 backdrop-blur-2xl p-5 border border-white/5">
@@ -148,7 +148,7 @@ export default function Hero() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-white">Trainer Schedule</div>
-                      <div className="text-xs text-gray-500">Todayapos;s Sessions</div>
+                      <div className="text-xs text-gray-500">Today&apos;s Sessions</div>
                     </div>
                   </div>
 
@@ -180,12 +180,12 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Member Fitness Tracking - Bottom Left */}
+            {/* Member Fitness Tracking - Bottom Left - hidden on mobile/tablet */}
             <motion.div
               initial={{ opacity: 0, x: -30, y: -30 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="absolute bottom-8 left-4 w-[240px] z-10"
+              className="absolute bottom-8 left-4 w-[240px] z-10 hidden lg:block"
             >
               <div className="rounded-2xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent shadow-xl backdrop-blur-xl">
                 <div className="rounded-2xl bg-[#141414]/80 backdrop-blur-2xl p-5 border border-white/5">
@@ -230,12 +230,12 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Admin Controls - Top Right */}
+            {/* Admin Controls - Top Right - hidden on mobile/tablet */}
             <motion.div
               initial={{ opacity: 0, x: 30, y: 30 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className="absolute top-12 right-0 w-[250px] z-10"
+              className="absolute top-12 right-0 w-[250px] z-10 hidden lg:block"
             >
               <div className="rounded-2xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent shadow-xl backdrop-blur-xl">
                 <div className="rounded-2xl bg-[#141414]/80 backdrop-blur-2xl p-5 border border-white/5">
@@ -278,12 +278,12 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Activity Stats - Bottom Right */}
+            {/* Activity Stats - Bottom Right - hidden on mobile/tablet */}
             <motion.div
               initial={{ opacity: 0, x: 30, y: -30 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="absolute bottom-12 right-8 w-[220px] z-10"
+              className="absolute bottom-12 right-8 w-[220px] z-10 hidden lg:block"
             >
               <div className="rounded-2xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent shadow-xl backdrop-blur-xl">
                 <div className="rounded-2xl bg-[#141414]/80 backdrop-blur-2xl p-5 border border-white/5">
@@ -321,7 +321,8 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Floating particles */}
+            {/* Floating particles - hidden on mobile */}
+            <div className="hidden lg:block">
             {[...Array(6)].map((_, i) => (
               <motion.div
                 key={i}
@@ -341,6 +342,7 @@ export default function Hero() {
                 }}
               />
             ))}
+            </div>
           </div>
         </div>
       </div>

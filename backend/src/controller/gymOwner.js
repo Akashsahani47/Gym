@@ -37,6 +37,92 @@ export const getOwnerGyms = async (req, res) => {
 };
 
 /**
+ * @desc   Get single gym by ID (owner only)
+ * @route  GET /api/gym-owner/gyms/:id
+ * @access Private
+ */
+export const getGymById = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const gymId = req.params.id;
+
+    const gym = await Gym.findOne({
+      _id: gymId,
+      owner: ownerId,
+      isDeleted: false
+    }).lean();
+
+    if (!gym) {
+      return res.status(404).json({
+        success: false,
+        error: "Gym not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      gym
+    });
+  } catch (error) {
+    console.error("Get Gym By ID Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch gym"
+    });
+  }
+};
+
+/**
+ * @desc   Update gym by ID (owner only)
+ * @route  PUT /api/gym-owner/gyms/:id
+ * @access Private
+ */
+export const updateGym = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const gymId = req.params.id;
+    const data = req.body;
+
+    const gym = await Gym.findOne({
+      _id: gymId,
+      owner: ownerId,
+      isDeleted: false
+    });
+
+    if (!gym) {
+      return res.status(404).json({
+        success: false,
+        error: "Gym not found"
+      });
+    }
+
+    const allowed = [
+      "name", "description", "contact", "address", "logo", "coverImage", "images",
+      "facilities", "operatingHours", "membershipPlans", "settings", "status"
+    ];
+    for (const key of allowed) {
+      if (data[key] !== undefined) {
+        gym[key] = data[key];
+      }
+    }
+
+    await gym.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Gym updated successfully",
+      gym
+    });
+  } catch (error) {
+    console.error("Update Gym Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to update gym"
+    });
+  }
+};
+
+/**
  * @desc   Soft delete gym
  * @route  DELETE /api/gym-owner/gyms/:id
  * @access Private

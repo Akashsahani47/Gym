@@ -32,6 +32,7 @@ import {
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import * as XLSX from 'xlsx';
 
 const CustomersPage = () => {
   const router = useRouter();
@@ -231,39 +232,42 @@ const CustomersPage = () => {
     }
   };
 
-  const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Gym', 'Status', 'Membership Status', 'Start Date', 'End Date', 'Height', 'Weight'];
-    const csvContent = [
-      headers.join(','),
-      ...filteredMembers.map(member => [
-        `${member.profile?.firstName || ''} ${member.profile?.lastName || ''}`,
-        member.email,
-        member.profile?.phone || '',
-        member.gymId?.name || '',
-        member.status,
-        member.membership?.status || 'N/A',
-        member.membership?.startDate ? new Date(member.membership.startDate).toLocaleDateString() : 'N/A',
-        member.membership?.endDate ? new Date(member.membership.endDate).toLocaleDateString() : 'N/A',
-        member.healthMetrics?.height || 'N/A',
-        member.healthMetrics?.weight || 'N/A'
-      ].join(','))
-    ].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `members-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
+  const exportToExcel = () => {
+    if (members.length === 0) {
+      toast.error('No members to export');
+      return;
+    }
+    const headers = ['Name', 'Email', 'Phone', 'Gym', 'Status', 'Membership Status', 'Plan Name', 'Start Date', 'End Date', 'Height', 'Weight', 'Joined Date'];
+    const rows = members.map(member => [
+      `${member.profile?.firstName || ''} ${member.profile?.lastName || ''}`.trim() || 'N/A',
+      member.email || 'N/A',
+      member.profile?.phone || 'N/A',
+      member.gymId?.name || 'N/A',
+      member.status || 'N/A',
+      member.membership?.status || 'N/A',
+      member.membership?.planName || 'N/A',
+      member.membership?.startDate ? new Date(member.membership.startDate).toLocaleDateString() : 'N/A',
+      member.membership?.endDate ? new Date(member.membership.endDate).toLocaleDateString() : 'N/A',
+      member.healthMetrics?.height ?? 'N/A',
+      member.healthMetrics?.weight ?? 'N/A',
+      member.createdAt ? new Date(member.createdAt).toLocaleDateString() : 'N/A'
+    ]);
+    const sheetData = [headers, ...rows];
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Members');
+    const fileName = `members-${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+    toast.success(`Exported ${members.length} member(s) to ${fileName}`);
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'inactive': return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'active': return 'bg-[#DAFF00]/20 text-[#DAFF00] border-[#DAFF00]/30';
+      case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'inactive': return 'bg-white/10 text-gray-400 border-white/10';
       case 'suspended': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      default: return 'bg-white/10 text-gray-400 border-white/10';
     }
   };
 
@@ -279,42 +283,44 @@ const CustomersPage = () => {
 
   const getMembershipStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      case 'active': return 'bg-[#DAFF00]/20 text-[#DAFF00] border-[#DAFF00]/30';
+      case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
       case 'expired': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'cancelled': return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'cancelled': return 'bg-white/10 text-gray-400 border-white/10';
+      default: return 'bg-white/10 text-gray-400 border-white/10';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-white/10 border-t-[#DAFF00]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-3 md:p-6">
+    <div className="min-h-screen bg-black text-white p-3 md:p-6">
       {/* Header - Mobile Optimized */}
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl md:text-3xl font-bold">Member Management</h1>
+            <h1 className="text-xl md:text-3xl font-bold">
+              <span className="text-white">Member </span><span className="text-[#DAFF00]">Management</span>
+            </h1>
             <p className="text-gray-400 text-sm md:text-base">Manage and view all your gym members</p>
           </div>
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             <button
-              onClick={exportToCSV}
-              className="px-3 py-2 md:px-4 md:py-2 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors flex items-center text-sm"
+              onClick={exportToExcel}
+              className="px-3 py-2 md:px-4 md:py-2 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center text-sm text-gray-300 hover:text-[#DAFF00]"
             >
               <Download className="w-4 h-4 mr-2" />
               <span className="hidden md:inline">Export</span>
             </button>
             <button
               onClick={fetchData}
-              className="px-3 py-2 md:px-4 md:py-2 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors flex items-center text-sm"
+              className="px-3 py-2 md:px-4 md:py-2 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center text-sm text-gray-300 hover:text-[#DAFF00]"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               <span className="hidden md:inline">Refresh</span>
@@ -325,61 +331,61 @@ const CustomersPage = () => {
 
       {/* Stats Cards - Mobile Optimized */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-3">
+        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs md:text-sm">Total</p>
-              <p className="text-lg md:text-2xl font-bold">{stats.total}</p>
+              <p className="text-gray-500 text-xs md:text-sm">Total</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{stats.total}</p>
             </div>
-            <div className="p-2 bg-red-600/20 rounded-lg">
-              <Users className="w-5 h-5 md:w-6 md:h-6 text-red-400" />
+            <div className="p-2 bg-[#DAFF00]/20 rounded-xl border border-[#DAFF00]/30">
+              <Users className="w-5 h-5 md:w-6 md:h-6 text-[#DAFF00]" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-3">
+        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs md:text-sm">Active</p>
-              <p className="text-lg md:text-2xl font-bold text-green-400">{stats.active}</p>
+              <p className="text-gray-500 text-xs md:text-sm">Active</p>
+              <p className="text-lg md:text-2xl font-bold text-[#DAFF00]">{stats.active}</p>
             </div>
-            <div className="p-2 bg-green-600/20 rounded-lg">
-              <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-green-400" />
+            <div className="p-2 bg-[#DAFF00]/20 rounded-xl border border-[#DAFF00]/30">
+              <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-[#DAFF00]" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-3">
+        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs md:text-sm">Pending</p>
-              <p className="text-lg md:text-2xl font-bold text-yellow-400">{stats.pending}</p>
+              <p className="text-gray-500 text-xs md:text-sm">Pending</p>
+              <p className="text-lg md:text-2xl font-bold text-amber-400">{stats.pending}</p>
             </div>
-            <div className="p-2 bg-yellow-600/20 rounded-lg">
-              <Clock className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
+            <div className="p-2 bg-amber-500/20 rounded-xl border border-amber-500/30">
+              <Clock className="w-5 h-5 md:w-6 md:h-6 text-amber-400" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-3">
+        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs md:text-sm">Inactive</p>
+              <p className="text-gray-500 text-xs md:text-sm">Inactive</p>
               <p className="text-lg md:text-2xl font-bold text-gray-400">{stats.inactive}</p>
             </div>
-            <div className="p-2 bg-gray-600/20 rounded-lg">
+            <div className="p-2 bg-white/10 rounded-xl border border-white/10">
               <UserX className="w-5 h-5 md:w-6 md:h-6 text-gray-400" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-3 col-span-2 sm:col-span-1">
+        <div className="bg-white/5 rounded-xl border border-white/10 p-3 col-span-2 sm:col-span-1 hover:border-[#DAFF00]/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs md:text-sm">Suspended</p>
+              <p className="text-gray-500 text-xs md:text-sm">Suspended</p>
               <p className="text-lg md:text-2xl font-bold text-red-400">{stats.suspended}</p>
             </div>
-            <div className="p-2 bg-red-600/20 rounded-lg">
+            <div className="p-2 bg-red-500/20 rounded-xl border border-red-500/30">
               <XCircle className="w-5 h-5 md:w-6 md:h-6 text-red-400" />
             </div>
           </div>
@@ -387,23 +393,23 @@ const CustomersPage = () => {
       </div>
 
       {/* Search and Filters - Mobile Optimized */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-3 mb-6">
+      <div className="bg-white/5 rounded-xl border border-white/10 p-3 mb-6">
         <div className="flex flex-col gap-3">
           {/* Search Bar */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+              <Search className="absolute left-3 top-3 w-4 h-4 md:w-5 md:h-5 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-10 md:pl-10 md:pr-10 py-2 md:py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-red-500 text-sm md:text-base"
+                className="w-full pl-9 pr-10 md:pl-10 md:pr-10 py-2 md:py-3 bg-black border border-white/10 rounded-xl focus:outline-none focus:border-[#DAFF00] focus:ring-1 focus:ring-[#DAFF00]/50 text-sm md:text-base placeholder-gray-500"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-2.5 md:top-3 text-gray-400 hover:text-white"
+                  className="absolute right-3 top-2.5 md:top-3 text-gray-400 hover:text-[#DAFF00]"
                 >
                   <X className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
@@ -414,7 +420,7 @@ const CustomersPage = () => {
           {/* Filter Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-3 py-2 md:px-4 md:py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
+            className="px-3 py-2 md:px-4 md:py-3 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center justify-center text-sm text-gray-300 hover:text-[#DAFF00]"
           >
             <Filter className="w-4 h-4 mr-2" />
             Filters
@@ -428,16 +434,16 @@ const CustomersPage = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-3 pt-3 border-t border-gray-700"
+            className="mt-3 pt-3 border-t border-white/10"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {/* Gym Filter */}
               <div>
-                <label className="block text-xs md:text-sm text-gray-400 mb-1 md:mb-2">Filter by Gym</label>
+                <label className="block text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Filter by Gym</label>
                 <select
                   value={selectedGym}
                   onChange={(e) => setSelectedGym(e.target.value)}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-red-500 text-sm md:text-base"
+                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
                 >
                   <option value="all">All Gyms</option>
                   {gyms.map(gym => (
@@ -450,11 +456,11 @@ const CustomersPage = () => {
               
               {/* Status Filter */}
               <div>
-                <label className="block text-xs md:text-sm text-gray-400 mb-1 md:mb-2">Filter by Status</label>
+                <label className="block text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Filter by Status</label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-red-500 text-sm md:text-base"
+                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -466,11 +472,11 @@ const CustomersPage = () => {
               
               {/* Sort By */}
               <div>
-                <label className="block text-xs md:text-sm text-gray-400 mb-1 md:mb-2">Sort By</label>
+                <label className="block text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Sort By</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-red-500 text-sm md:text-base"
+                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -482,9 +488,9 @@ const CustomersPage = () => {
             </div>
             
             {/* Filter Results Count */}
-            <div className="mt-3 pt-3 border-t border-gray-700">
-              <p className="text-xs md:text-sm text-gray-400">
-                Showing <span className="text-white font-semibold">{filteredMembers.length}</span> of <span className="text-white font-semibold">{members.length}</span> members
+            <div className="mt-3 pt-3 border-t border-white/10">
+              <p className="text-xs md:text-sm text-gray-500">
+                Showing <span className="text-[#DAFF00] font-semibold">{filteredMembers.length}</span> of <span className="text-white font-semibold">{members.length}</span> members
               </p>
             </div>
           </motion.div>
@@ -492,11 +498,11 @@ const CustomersPage = () => {
       </div>
 
       {/* Members List - Mobile Optimized */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+      <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
         {filteredMembers.length === 0 ? (
           <div className="p-6 text-center">
-            <Users className="w-10 h-10 md:w-12 md:h-12 text-gray-600 mx-auto mb-3" />
-            <h3 className="text-lg md:text-xl font-semibold mb-2">No members found</h3>
+            <Users className="w-10 h-10 md:w-12 md:h-12 text-gray-500 mx-auto mb-3" />
+            <h3 className="text-lg md:text-xl font-semibold mb-2 text-white">No members found</h3>
             <p className="text-gray-400 text-sm md:text-base">
               {searchTerm || selectedGym !== 'all' || selectedStatus !== 'all' 
                 ? 'Try adjusting your filters or search terms'
@@ -504,18 +510,18 @@ const CustomersPage = () => {
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-700">
+          <div className="divide-y divide-white/10">
             {/* Mobile Card View */}
             <div className="md:hidden">
               {filteredMembers.map((member) => (
                 <div 
                   key={member._id} 
-                  className="p-4 hover:bg-gray-700/30 transition-colors"
+                  className="p-4 hover:bg-white/5 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center mr-3">
-                        <User className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-full bg-[#DAFF00]/20 border border-[#DAFF00]/30 flex items-center justify-center mr-3">
+                        <User className="w-5 h-5 text-[#DAFF00]" />
                       </div>
                       <div>
                         <p className="font-semibold">
@@ -547,56 +553,56 @@ const CustomersPage = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-700">
-                    <div className="text-xs text-gray-400">
+                  <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                    <div className="text-xs text-gray-500">
                       Joined: {new Date(member.createdAt).toLocaleDateString()}
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleViewDetails(member)}
-                        className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
+                        className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors"
                         title="View Details"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
                       </button>
                       <button
                         onClick={() => handleEditMember(member._id)}
-                        className="p-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
+                        className="p-1.5 rounded-xl bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 transition-colors"
                         title="Edit"
                       >
-                        <Edit className="w-4 h-4 text-blue-400" />
+                        <Edit className="w-4 h-4 text-[#DAFF00]" />
                       </button>
                       <div className="relative group">
-                        <button className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
-                          <MoreVertical className="w-4 h-4" />
+                        <button className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors">
+                          <MoreVertical className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
                         </button>
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                           <div className="py-1">
                             <button
                               onClick={() => handleStatusChange(member._id, 'active')}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-700 text-xs flex items-center"
+                              className="w-full text-left px-3 py-2 hover:bg-[#DAFF00]/10 text-xs flex items-center text-gray-300 hover:text-[#DAFF00]"
                             >
-                              <UserCheck className="w-3 h-3 mr-2 text-green-400" />
+                              <UserCheck className="w-3 h-3 mr-2 text-[#DAFF00]" />
                               Set Active
                             </button>
                             <button
                               onClick={() => handleStatusChange(member._id, 'inactive')}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-700 text-xs flex items-center"
+                              className="w-full text-left px-3 py-2 hover:bg-white/5 text-xs flex items-center text-gray-300"
                             >
                               <UserX className="w-3 h-3 mr-2 text-gray-400" />
                               Set Inactive
                             </button>
                             <button
                               onClick={() => handleStatusChange(member._id, 'suspended')}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-700 text-xs flex items-center"
+                              className="w-full text-left px-3 py-2 hover:bg-white/5 text-xs flex items-center text-gray-300"
                             >
                               <XCircle className="w-3 h-3 mr-2 text-red-400" />
                               Suspend
                             </button>
-                            <div className="border-t border-gray-700 my-1"></div>
+                            <div className="border-t border-white/10 my-1"></div>
                             <button
                               onClick={() => handleDeleteMember(member._id)}
-                              className="w-full text-left px-3 py-2 hover:bg-red-600/20 text-xs flex items-center text-red-400"
+                              className="w-full text-left px-3 py-2 hover:bg-red-500/20 text-xs flex items-center text-red-400"
                             >
                               <Trash2 className="w-3 h-3 mr-2" />
                               Delete
@@ -614,26 +620,26 @@ const CustomersPage = () => {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-700">
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Member</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Contact</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Gym</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Status</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Membership</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Joined</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Actions</th>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Member</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Contact</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Gym</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Status</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Membership</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Joined</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredMembers.map((member) => (
                     <tr 
                       key={member._id} 
-                      className="border-b border-gray-700 hover:bg-gray-700/30 transition-colors"
+                      className="border-b border-white/10 hover:bg-white/5 transition-colors"
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center mr-3">
-                            <User className="w-5 h-5 text-white" />
+                          <div className="w-10 h-10 rounded-full bg-[#DAFF00]/20 border border-[#DAFF00]/30 flex items-center justify-center mr-3">
+                            <User className="w-5 h-5 text-[#DAFF00]" />
                           </div>
                           <div>
                             <p className="font-semibold text-sm">
@@ -698,49 +704,49 @@ const CustomersPage = () => {
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => handleViewDetails(member)}
-                            className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
+                            className="p-2 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors"
                             title="View Details"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
                           </button>
                           <button
                             onClick={() => handleEditMember(member._id)}
-                            className="p-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 transition-colors"
+                            className="p-2 rounded-xl bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 transition-colors"
                             title="Edit"
                           >
-                            <Edit className="w-4 h-4 text-blue-400" />
+                            <Edit className="w-4 h-4 text-[#DAFF00]" />
                           </button>
                           <div className="relative group">
-                            <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
-                              <MoreVertical className="w-4 h-4" />
+                            <button className="p-2 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors">
+                              <MoreVertical className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
                             </button>
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                               <div className="py-1">
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'active')}
-                                  className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm flex items-center"
+                                  className="w-full text-left px-4 py-2 hover:bg-[#DAFF00]/10 text-sm flex items-center text-gray-300 hover:text-[#DAFF00]"
                                 >
-                                  <UserCheck className="w-3 h-3 mr-2 text-green-400" />
+                                  <UserCheck className="w-3 h-3 mr-2 text-[#DAFF00]" />
                                   Set Active
                                 </button>
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'inactive')}
-                                  className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm flex items-center"
+                                  className="w-full text-left px-4 py-2 hover:bg-white/5 text-sm flex items-center text-gray-300"
                                 >
                                   <UserX className="w-3 h-3 mr-2 text-gray-400" />
                                   Set Inactive
                                 </button>
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'suspended')}
-                                  className="w-full text-left px-4 py-2 hover:bg-gray-700 text-sm flex items-center"
+                                  className="w-full text-left px-4 py-2 hover:bg-white/5 text-sm flex items-center text-gray-300"
                                 >
                                   <XCircle className="w-3 h-3 mr-2 text-red-400" />
                                   Suspend
                                 </button>
-                                <div className="border-t border-gray-700 my-1"></div>
+                                <div className="border-t border-white/10 my-1"></div>
                                 <button
                                   onClick={() => handleDeleteMember(member._id)}
-                                  className="w-full text-left px-4 py-2 hover:bg-red-600/20 text-sm flex items-center text-red-400"
+                                  className="w-full text-left px-4 py-2 hover:bg-red-500/20 text-sm flex items-center text-red-400"
                                 >
                                   <Trash2 className="w-3 h-3 mr-2" />
                                   Delete Member
@@ -761,23 +767,23 @@ const CustomersPage = () => {
 
       {/* Member Details Modal */}
       {showDetailsModal && selectedMember && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 md:p-4">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-3 md:p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-gray-800 rounded-lg md:rounded-xl border border-gray-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-[#0f0f0f] rounded-xl border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
           >
             <div className="p-4 md:p-6">
               {/* Modal Header */}
               <div className="flex items-center justify-between mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-lg md:text-xl font-bold">Member Details</h2>
-                  <p className="text-gray-400 text-sm">Complete information about the member</p>
+                  <h2 className="text-lg md:text-xl font-bold text-white">Member <span className="text-[#DAFF00]">Details</span></h2>
+                  <p className="text-gray-500 text-sm">Complete information about the member</p>
                 </div>
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                  className="p-2 rounded-xl hover:bg-white/10 hover:border-[#DAFF00]/30 border border-transparent transition-colors text-gray-400 hover:text-[#DAFF00]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -787,9 +793,9 @@ const CustomersPage = () => {
                 {/* Left Column - Basic Info */}
                 <div className="space-y-4 md:space-y-6">
                   {/* Personal Information */}
-                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 md:p-4">
-                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base">
-                      <User className="w-4 h-4 md:w-5 md:h-5 mr-2 text-red-400" />
+                  <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
+                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
+                      <User className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
                       Personal Information
                     </h3>
                     <div className="space-y-2 md:space-y-3">
@@ -830,9 +836,9 @@ const CustomersPage = () => {
                   
                   {/* Health Metrics */}
                   {selectedMember.healthMetrics && (
-                    <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base">
-                        <Target className="w-4 h-4 md:w-5 md:h-5 mr-2 text-red-400" />
+                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
+                        <Target className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
                         Health Metrics
                       </h3>
                       <div className="space-y-2 md:space-y-3">
@@ -863,7 +869,7 @@ const CustomersPage = () => {
                               {selectedMember.healthMetrics.fitnessGoals.map((goal, index) => (
                                 <span
                                   key={index}
-                                  className="px-2 py-1 bg-gray-800 rounded-full text-xs"
+                                  className="px-2 py-1 bg-[#DAFF00]/10 border border-[#DAFF00]/30 rounded-full text-xs text-[#DAFF00]"
                                 >
                                   {goal}
                                 </span>
@@ -879,9 +885,9 @@ const CustomersPage = () => {
                 {/* Right Column - Membership Info */}
                 <div className="space-y-4 md:space-y-6">
                   {/* Gym & Membership */}
-                  <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 md:p-4">
-                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base">
-                      <Building className="w-4 h-4 md:w-5 md:h-5 mr-2 text-red-400" />
+                  <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
+                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
+                      <Building className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
                       Gym & Membership
                     </h3>
                     <div className="space-y-2 md:space-y-3">
@@ -931,9 +937,9 @@ const CustomersPage = () => {
                   
                   {/* Address */}
                   {selectedMember.profile?.address && (
-                    <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base">
-                        <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 text-red-400" />
+                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
+                        <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
                         Address
                       </h3>
                       <div className="space-y-1 md:space-y-2">
@@ -960,8 +966,8 @@ const CustomersPage = () => {
                   
                   {/* Emergency Contact */}
                   {selectedMember.profile?.emergencyContact && (
-                    <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 text-sm md:text-base">Emergency Contact</h3>
+                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 text-sm md:text-base text-white">Emergency Contact</h3>
                       <p className="text-sm md:text-base">{selectedMember.profile.emergencyContact}</p>
                     </div>
                   )}
@@ -969,10 +975,10 @@ const CustomersPage = () => {
               </div>
               
               {/* Modal Footer */}
-              <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-700 flex justify-end space-x-3 md:space-x-4">
+              <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-white/10 flex justify-end space-x-3 md:space-x-4">
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="px-4 md:px-6 py-2 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors text-sm md:text-base"
+                  className="px-4 md:px-6 py-2 border border-white/10 rounded-xl hover:bg-white/5 hover:border-[#DAFF00]/30 text-gray-300 hover:text-[#DAFF00] transition-colors text-sm md:text-base"
                 >
                   Close
                 </button>
@@ -981,7 +987,7 @@ const CustomersPage = () => {
                     handleEditMember(selectedMember._id);
                     setShowDetailsModal(false);
                   }}
-                  className="px-4 md:px-6 py-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity text-sm md:text-base"
+                  className="px-4 md:px-6 py-2 bg-[#DAFF00] text-black rounded-xl font-semibold hover:bg-[#c5e600] transition-colors text-sm md:text-base"
                 >
                   <Edit className="w-4 h-4 inline mr-2" />
                   Edit Member

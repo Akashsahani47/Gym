@@ -129,50 +129,49 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="py-24 px-6 bg-black">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 bg-black">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-20">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2">
             <span className="text-white">Everything You Need to </span>
             <span className="text-[#DAFF00]">Scale</span>
           </h2>
           
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-2">
             SaaS-grade features built for real fitness businesses, not demos.
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        {/* Features Grid - 1 col mobile, 2 col tablet, 4 col desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-20">
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className={`bg-gradient-to-b ${feature.gradient} border ${feature.borderColor} rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl group h-full`}
+              className={`bg-gradient-to-b ${feature.gradient} border ${feature.borderColor} rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 transition-all duration-300 hover:scale-[1.01] lg:hover:scale-[1.02] hover:shadow-2xl group h-full`}
             >
               {/* Number Badge */}
-              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg ${feature.bgColor} border ${feature.borderColor} mb-4 group-hover:scale-110 transition-transform`}>
-                <span className={`text-lg font-bold ${feature.color}`}>{feature.number}</span>
+              <div className={`inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${feature.bgColor} border ${feature.borderColor} mb-3 sm:mb-4 group-hover:scale-110 transition-transform`}>
+                <span className={`text-sm sm:text-lg font-bold ${feature.color}`}>{feature.number}</span>
               </div>
 
               {/* Icon and Title */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-12 h-12 rounded-xl ${feature.bgColor} border ${feature.borderColor} flex items-center justify-center`}>
-                  <feature.icon className={`w-6 h-6 ${feature.color}`} />
+              <div className="flex items-start gap-3 mb-3 sm:mb-4">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.bgColor} border ${feature.borderColor} flex items-center justify-center shrink-0`}>
+                  <feature.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${feature.color}`} />
                 </div>
-                <h3 className={`text-lg font-bold ${feature.color} leading-tight`}>
+                <h3 className={`text-base sm:text-lg font-bold ${feature.color} leading-tight`}>
                   {feature.title}
                 </h3>
               </div>
 
               {/* Description */}
-              <p className="text-gray-400 text-sm mb-6">
+              <p className="text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6">
                 {feature.description}
               </p>
 
               {/* Feature Indicators */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-800/50">
+              <div className="flex items-center justify-between mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-800/50">
                 <div className="flex items-center gap-1">
                   <CheckCircle className="w-4 h-4 text-gray-500" />
                   <span className="text-xs text-gray-500">SaaS-grade</span>
@@ -183,24 +182,24 @@ export default function FeaturesSection() {
           ))}
         </div>
 
-        {/* Platform Architecture */}
-        <div className="bg-gradient-to-r from-gray-900 to-gray-950 border border-gray-800 rounded-2xl p-8 mb-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        {/* Platform Architecture - stack on mobile */}
+        <div className="bg-gradient-to-r from-gray-900 to-gray-950 border border-gray-800 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 mb-10 sm:mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start">
             {/* Left Column - Highlights */}
             <div>
-              <h3 className="text-2xl font-bold text-white mb-8">
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8">
                 <span className="text-[#DAFF00]">Enterprise-Ready</span> Platform Architecture
               </h3>
               
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {highlightedFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl ${feature.color.replace('text', 'bg')}/10 border ${feature.color.replace('text', 'border')}/30 flex items-center justify-center flex-shrink-0`}>
-                      <feature.icon className={`w-6 h-6 ${feature.color}`} />
+                  <div key={index} className="flex items-start gap-3 sm:gap-4">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.color.replace('text', 'bg')}/10 border ${feature.color.replace('text', 'border')}/30 flex items-center justify-center shrink-0`}>
+                      <feature.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${feature.color}`} />
                     </div>
-                    <div>
-                      <h4 className="text-white font-semibold mb-1">{feature.title}</h4>
-                      <p className="text-gray-400 text-sm">{feature.description}</p>
+                    <div className="min-w-0">
+                      <h4 className="text-white font-semibold mb-1 text-sm sm:text-base">{feature.title}</h4>
+                      <p className="text-gray-400 text-xs sm:text-sm">{feature.description}</p>
                     </div>
                   </div>
                 ))}
@@ -208,10 +207,10 @@ export default function FeaturesSection() {
             </div>
 
             {/* Right Column - Platform Stats */}
-            <div className="bg-black/50 rounded-xl p-6 border border-gray-800">
-              <h4 className="text-white font-bold text-lg mb-6 text-center">Platform Capabilities</h4>
+            <div className="bg-black/50 rounded-xl p-4 sm:p-5 md:p-6 border border-gray-800">
+              <h4 className="text-white font-bold text-base sm:text-lg mb-4 sm:mb-6 text-center">Platform Capabilities</h4>
               
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-[#DAFF00] mb-2">∞</div>
                   <p className="text-gray-400 text-sm">Scalable Users</p>
@@ -231,7 +230,7 @@ export default function FeaturesSection() {
               </div>
 
               {/* Progress Bars */}
-              <div className="space-y-4 mt-8">
+              <div className="space-y-3 sm:space-y-4 mt-6 sm:mt-8">
                 <div>
                   <div className="flex justify-between text-xs text-gray-400 mb-1">
                     <span>System Reliability</span>
@@ -264,27 +263,27 @@ export default function FeaturesSection() {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="max-w-2xl mx-auto mb-10">
-            <h3 className="text-2xl font-bold text-white mb-4">
+        {/* CTA Section - mobile friendly */}
+        <div className="text-center px-2">
+          <div className="max-w-2xl mx-auto mb-8 sm:mb-10">
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
               Ready to Scale Your Fitness Business?
             </h3>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm sm:text-base">
               Join hundreds of fitness businesses that trust Zelvoo to power their growth.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] rounded-xl font-semibold px-8 py-6 text-lg">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 shadow min-h-[48px] sm:h-14 bg-[#DAFF00] text-black hover:bg-[#c5e600] active:opacity-90 rounded-xl font-semibold px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg w-full sm:w-auto">
               Start Scaling Now
             </button>
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 border shadow-sm h-14 border-gray-700 text-white hover:border-[#DAFF00] hover:text-[#DAFF00] hover:bg-[#DAFF00]/10 rounded-xl px-8 py-6 text-lg">
+            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#DAFF00] disabled:pointer-events-none disabled:opacity-50 border shadow-sm min-h-[48px] sm:h-14 border-gray-700 text-white hover:border-[#DAFF00] hover:text-[#DAFF00] hover:bg-[#DAFF00]/10 active:bg-[#DAFF00]/20 rounded-xl px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg w-full sm:w-auto">
               Schedule Platform Demo
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-6 mt-8 text-sm text-gray-500">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-[#DAFF00] animate-pulse"></div>
               <span>No credit card required</span>

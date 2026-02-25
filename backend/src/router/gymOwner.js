@@ -5,10 +5,11 @@ import {
   createGym,
   deleteGym,
   getAllMembers,
+  getGymById,
   getGymOwnerinfo,
   getOwnerGyms,
+  updateGym,
   updateGymOwnerinfo,
-  
 } from "../controller/gymOwner.js";
 
 const router = express.Router();
@@ -17,6 +18,8 @@ router.get("/info", verifyToken, getGymOwnerinfo);
 router.put("/updateinfo", verifyToken, updateGymOwnerinfo);
 router.post("/addgyms", verifyToken, createGym);
 router.get("/gyms", verifyToken, getOwnerGyms);
+router.get("/gyms/:id", verifyToken, getGymById);
+router.put("/gyms/:id", verifyToken, updateGym);
 router.delete("/gyms/:id", verifyToken, deleteGym);
 router.post("/addmembers", verifyToken, addMember);
 router.get("/members",verifyToken,getAllMembers);

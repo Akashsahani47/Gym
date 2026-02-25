@@ -356,14 +356,14 @@ const GymsPage = () => {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-2">
-                  <Link href={`/dashboard/gymOwner/gyms/${gym._id}`} className="flex-1">
-                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                  <Link href={`/dashboard/gymOwner/gymInfo/${gym._id}`} className="flex-1">
+                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 rounded-xl transition-colors text-gray-300 hover:text-[#DAFF00]">
                       <Eye className="w-4 h-4" />
                       <span>View</span>
                     </button>
                   </Link>
-                  <Link href={`/dashboard/gymOwner/gyms/${gym._id}/edit`} className="flex-1">
-                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 hover:text-blue-300 rounded-lg transition-colors">
+                  <Link href={`/dashboard/gymOwner/gymInfo/${gym._id}/edit`} className="flex-1">
+                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 text-[#DAFF00] rounded-xl transition-colors">
                       <Edit2 className="w-4 h-4" />
                       <span>Edit</span>
                     </button>
