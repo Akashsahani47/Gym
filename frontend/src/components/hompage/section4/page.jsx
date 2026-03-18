@@ -1,7 +1,7 @@
 // components/DashboardsSection.jsx
 'use client';
 
-import { Building, Users, User, CheckCircle, DollarSign, Target, Heart, Calendar, Clock, MessageSquare, Zap } from 'lucide-react';
+import { Building, Users, User, CheckCircle, IndianRupee, Target, Heart, Calendar, Clock, MessageSquare, Zap } from 'lucide-react';
 
 export default function DashboardsSection() {
   const dashboards = [
@@ -20,7 +20,7 @@ export default function DashboardsSection() {
         "Gym analytics & reports",
         "Billing & subscriptions"
       ],
-      accentIcon: DollarSign,
+      accentIcon: IndianRupee,
       tagline: "Business Control Center"
     },
     {

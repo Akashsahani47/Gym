@@ -8,7 +8,7 @@ import {
   Plus,
   MapPin,
   Users,
-  DollarSign,
+  IndianRupee,
   Activity,
   Edit2,
   Trash2,
@@ -157,7 +157,7 @@ const GymsPage = () => {
     {
       label: 'Monthly Revenue',
       value: `$${stats.monthlyRevenue.toLocaleString()}`,
-      icon: <DollarSign className="w-5 h-5" />,
+      icon: <IndianRupee className="w-5 h-5" />,
       color: 'from-orange-500 to-orange-600',
       bgColor: 'bg-accent/10',
       borderColor: 'border-accent/30',

@@ -7,7 +7,7 @@ import {
   Eye, EyeOff, Mail, Lock, User, Phone, Calendar, 
   Dumbbell, UserCheck, LogIn, Shield, ChevronRight, Sparkles,
   Building, MapPin, Search, X, Loader2, Briefcase,
-  DollarSign, Star, Clock, Award, Target, Heart, Cpu, BarChart3
+  IndianRupee, Star, Clock, Award, Target, Heart, Cpu, BarChart3
 } from 'lucide-react'
 import useUserStore from '@/store/useUserStore'
 import { toast, ToastContainer } from 'react-toastify'
@@ -1003,7 +1003,7 @@ const AuthPage = () => {
                           />
                         </div>
                         <div className="relative">
-                          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                          <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                           <input
                             type="number"
                             name="hourlyRate"

@@ -12,7 +12,7 @@ import {
   ArrowLeft,
   Edit2,
   Users,
-  DollarSign,
+  IndianRupee,
   CheckCircle,
   XCircle,
   Calendar,
@@ -266,7 +266,7 @@ const ViewGymPage = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-accent" />
+                  <IndianRupee className="w-4 h-4 text-accent" />
                   Monthly revenue
                 </span>
                 <span className="font-semibold text-gray-900 dark:text-white">${gym.stats?.monthlyRevenue ?? 0}</span>

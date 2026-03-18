@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   Clock,
   CheckCircle,
@@ -561,7 +561,7 @@ export default function PaymentsPage() {
       {/* ── Table ── */}
       {filtered.length === 0 ? (
         <div className="text-center py-20">
-          <DollarSign className="w-12 h-12 text-gray-700 mx-auto mb-3" />
+          <IndianRupee className="w-12 h-12 text-gray-700 mx-auto mb-3" />
           <p className="text-gray-500">No payment records found</p>
           <p className="text-xs text-gray-600 mt-1">Try changing your filters or add members</p>
         </div>

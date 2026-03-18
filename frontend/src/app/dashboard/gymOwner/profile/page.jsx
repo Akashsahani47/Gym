@@ -26,7 +26,7 @@ import {
   Star,
   TrendingUp,
   Users,
-  DollarSign,
+  IndianRupee,
   Activity,
   Menu,
   ChevronLeft,
@@ -391,7 +391,7 @@ const token = useUserStore((s) => s.token);
     {
       label: 'Monthly Revenue',
       value: `$${stats.monthlyRevenue.toLocaleString()}`,
-      icon: <DollarSign className="w-5 h-5" />,
+      icon: <IndianRupee className="w-5 h-5" />,
       change: '+15%',
       color: 'from-purple-500 to-purple-600',
       bgColor: 'bg-purple-500/10',
