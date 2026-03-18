@@ -125,7 +125,7 @@ const WaitingApprovalPage = () => {
   
   // 1️⃣ Declare handleActiveStatus FIRST
   const handleActiveStatus = useCallback((userData) => {
-    toast.success(`🎉 Account activated! Welcome to FitnessHub!`)
+    toast.success(`🎉 Account activated! Welcome to Zelvoo!`)
 
     setTimeout(() => {
       switch (userData.userType) {
@@ -668,7 +668,7 @@ const WaitingApprovalPage = () => {
             Email: {statusData.adminContact}
           </p>
           <p className="mt-2">
-            © {new Date().getFullYear()} FitnessHub. All rights reserved.
+            © {new Date().getFullYear()} Zelvoo. All rights reserved.
           </p>
         </div>
       </div>

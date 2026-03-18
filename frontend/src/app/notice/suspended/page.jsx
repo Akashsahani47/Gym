@@ -136,7 +136,7 @@ const SuspendedAccountPage = () => {
       `Reason: ${suspensionData.reason}\n\n` +
       `My Appeal:\n` +
       `[Please explain your situation and why you believe the suspension should be lifted. Provide any relevant information or context.]\n\n` +
-      `I understand the importance of following FitnessHub's terms of service and community guidelines. ` +
+      `I understand the importance of following Zelvoo's terms of service and community guidelines. ` +
       `I assure you that I will comply with all policies moving forward.\n\n` +
       `Thank you for reviewing my appeal.\n\nSincerely,\n${user?.email?.split('@')[0] || 'User'}`
     )
@@ -243,7 +243,7 @@ const SuspendedAccountPage = () => {
                       Account Suspended
                     </h2>
                     <p className="text-gray-300 mt-1">
-                      Your FitnessHub account has been suspended due to violations of our terms of service.
+                      Your Zelvoo account has been suspended due to violations of our terms of service.
                     </p>
                   </div>
                 </div>
@@ -540,7 +540,7 @@ const SuspendedAccountPage = () => {
             For immediate assistance, contact our support team at {suspensionData.supportPhone} or email {suspensionData.adminContact}
           </p>
           <p className="mt-2">
-            © {new Date().getFullYear()} FitnessHub. All rights reserved. We take community safety seriously.
+            © {new Date().getFullYear()} Zelvoo. All rights reserved. We take community safety seriously.
           </p>
         </div>
       </div>
