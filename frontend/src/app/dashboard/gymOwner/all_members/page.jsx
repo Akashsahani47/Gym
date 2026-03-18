@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   Users,
   Search,
   Filter,
@@ -25,7 +25,6 @@ import {
   Download,
   RefreshCw,
   X,
-  CheckCircle,
   XCircle,
   User
 } from 'lucide-react';
@@ -67,7 +66,7 @@ const CustomersPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch gyms
       const gymsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/gyms`,
@@ -77,12 +76,12 @@ const CustomersPage = () => {
           }
         }
       );
-      
+
       const gymsData = await gymsResponse.json();
       if (gymsResponse.ok) {
         setGyms(gymsData.gyms || []);
       }
-      
+
       // Fetch members
       const membersResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/members`,
@@ -92,7 +91,7 @@ const CustomersPage = () => {
           }
         }
       );
-      
+
       const membersData = await membersResponse.json();
       if (membersResponse.ok) {
         setMembers(membersData.members || []);
@@ -122,28 +121,28 @@ const CustomersPage = () => {
 
   useEffect(() => {
     let filtered = [...members];
-    
+
     // Filter by gym
     if (selectedGym !== 'all') {
       filtered = filtered.filter(member => member.gymId?._id === selectedGym);
     }
-    
+
     // Filter by status
     if (selectedStatus !== 'all') {
       filtered = filtered.filter(member => member.status === selectedStatus);
     }
-    
+
     // Filter by search term
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(member => 
+      filtered = filtered.filter(member =>
         member.email.toLowerCase().includes(term) ||
         member.profile?.firstName?.toLowerCase().includes(term) ||
         member.profile?.lastName?.toLowerCase().includes(term) ||
         member.profile?.phone?.includes(term)
       );
     }
-    
+
     // Sort members
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -161,7 +160,7 @@ const CustomersPage = () => {
           return 0;
       }
     });
-    
+
     setFilteredMembers(filtered);
   }, [members, selectedGym, selectedStatus, searchTerm, sortBy]);
 
@@ -178,7 +177,7 @@ const CustomersPage = () => {
     if (!confirm('Are you sure you want to delete this member? This action cannot be undone.')) {
       return;
     }
-    
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/members/${memberId}`,
@@ -189,9 +188,9 @@ const CustomersPage = () => {
           }
         }
       );
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Member deleted successfully');
         fetchData();
@@ -217,9 +216,9 @@ const CustomersPage = () => {
           body: JSON.stringify({ status: newStatus })
         }
       );
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success(`Member status updated to ${newStatus}`);
         fetchData();
@@ -263,11 +262,11 @@ const CustomersPage = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-[#DAFF00]/20 text-[#DAFF00] border-[#DAFF00]/30';
+      case 'active': return 'bg-accent/20 text-accent border-accent/30';
       case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'inactive': return 'bg-white/10 text-gray-400 border-white/10';
+      case 'inactive': return 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10';
       case 'suspended': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-white/10 text-gray-400 border-white/10';
+      default: return 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10';
     }
   };
 
@@ -283,44 +282,44 @@ const CustomersPage = () => {
 
   const getMembershipStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-[#DAFF00]/20 text-[#DAFF00] border-[#DAFF00]/30';
+      case 'active': return 'bg-accent/20 text-accent border-accent/30';
       case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
       case 'expired': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'cancelled': return 'bg-white/10 text-gray-400 border-white/10';
-      default: return 'bg-white/10 text-gray-400 border-white/10';
+      case 'cancelled': return 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10';
+      default: return 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-white/10 border-t-[#DAFF00]"></div>
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-200 dark:border-white/10 border-t-accent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-3 md:p-6">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white p-3 md:p-6">
       {/* Header - Mobile Optimized */}
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl md:text-3xl font-bold">
-              <span className="text-white">Member </span><span className="text-[#DAFF00]">Management</span>
+              <span className="text-gray-900 dark:text-white">Member </span><span className="text-accent">Management</span>
             </h1>
-            <p className="text-gray-400 text-sm md:text-base">Manage and view all your gym members</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">Manage and view all your gym members</p>
           </div>
           <div className="flex items-center gap-2 mt-3 md:mt-0">
             <button
               onClick={exportToExcel}
-              className="px-3 py-2 md:px-4 md:py-2 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center text-sm text-gray-300 hover:text-[#DAFF00]"
+              className="px-3 py-2 md:px-4 md:py-2 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-accent/10 hover:border-accent/30 transition-colors flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-accent"
             >
               <Download className="w-4 h-4 mr-2" />
               <span className="hidden md:inline">Export</span>
             </button>
             <button
               onClick={fetchData}
-              className="px-3 py-2 md:px-4 md:py-2 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center text-sm text-gray-300 hover:text-[#DAFF00]"
+              className="px-3 py-2 md:px-4 md:py-2 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-accent/10 hover:border-accent/30 transition-colors flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-accent"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               <span className="hidden md:inline">Refresh</span>
@@ -331,31 +330,31 @@ const CustomersPage = () => {
 
       {/* Stats Cards - Mobile Optimized */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
+        <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 hover:border-accent/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Total</p>
-              <p className="text-lg md:text-2xl font-bold text-white">{stats.total}</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
             </div>
-            <div className="p-2 bg-[#DAFF00]/20 rounded-xl border border-[#DAFF00]/30">
-              <Users className="w-5 h-5 md:w-6 md:h-6 text-[#DAFF00]" />
+            <div className="p-2 bg-accent/20 rounded-xl border border-accent/30">
+              <Users className="w-5 h-5 md:w-6 md:h-6 text-accent" />
             </div>
           </div>
         </div>
-        
-        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
+
+        <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 hover:border-accent/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Active</p>
-              <p className="text-lg md:text-2xl font-bold text-[#DAFF00]">{stats.active}</p>
+              <p className="text-lg md:text-2xl font-bold text-accent">{stats.active}</p>
             </div>
-            <div className="p-2 bg-[#DAFF00]/20 rounded-xl border border-[#DAFF00]/30">
-              <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-[#DAFF00]" />
+            <div className="p-2 bg-accent/20 rounded-xl border border-accent/30">
+              <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-accent" />
             </div>
           </div>
         </div>
-        
-        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
+
+        <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 hover:border-accent/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Pending</p>
@@ -366,20 +365,20 @@ const CustomersPage = () => {
             </div>
           </div>
         </div>
-        
-        <div className="bg-white/5 rounded-xl border border-white/10 p-3 hover:border-[#DAFF00]/20 transition-colors">
+
+        <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 hover:border-accent/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Inactive</p>
-              <p className="text-lg md:text-2xl font-bold text-gray-400">{stats.inactive}</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.inactive}</p>
             </div>
-            <div className="p-2 bg-white/10 rounded-xl border border-white/10">
-              <UserX className="w-5 h-5 md:w-6 md:h-6 text-gray-400" />
+            <div className="p-2 bg-gray-200 dark:bg-white/10 rounded-xl border border-gray-200 dark:border-white/10">
+              <UserX className="w-5 h-5 md:w-6 md:h-6 text-gray-600 dark:text-gray-400" />
             </div>
           </div>
         </div>
-        
-        <div className="bg-white/5 rounded-xl border border-white/10 p-3 col-span-2 sm:col-span-1 hover:border-[#DAFF00]/20 transition-colors">
+
+        <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 col-span-2 sm:col-span-1 hover:border-accent/20 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Suspended</p>
@@ -393,7 +392,7 @@ const CustomersPage = () => {
       </div>
 
       {/* Search and Filters - Mobile Optimized */}
-      <div className="bg-white/5 rounded-xl border border-white/10 p-3 mb-6">
+      <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 mb-6">
         <div className="flex flex-col gap-3">
           {/* Search Bar */}
           <div className="flex-1">
@@ -404,23 +403,23 @@ const CustomersPage = () => {
                 placeholder="Search members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-10 md:pl-10 md:pr-10 py-2 md:py-3 bg-black border border-white/10 rounded-xl focus:outline-none focus:border-[#DAFF00] focus:ring-1 focus:ring-[#DAFF00]/50 text-sm md:text-base placeholder-gray-500"
+                className="w-full pl-9 pr-10 md:pl-10 md:pr-10 py-2 md:py-3 bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50 text-sm md:text-base placeholder-gray-500 text-gray-900 dark:text-white"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-2.5 md:top-3 text-gray-400 hover:text-[#DAFF00]"
+                  className="absolute right-3 top-2.5 md:top-3 text-gray-600 dark:text-gray-400 hover:text-accent"
                 >
                   <X className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
               )}
             </div>
           </div>
-          
+
           {/* Filter Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-3 py-2 md:px-4 md:py-3 border border-white/10 rounded-xl hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 transition-colors flex items-center justify-center text-sm text-gray-300 hover:text-[#DAFF00]"
+            className="px-3 py-2 md:px-4 md:py-3 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-accent/10 hover:border-accent/30 transition-colors flex items-center justify-center text-sm text-gray-700 dark:text-gray-300 hover:text-accent"
           >
             <Filter className="w-4 h-4 mr-2" />
             Filters
@@ -434,7 +433,7 @@ const CustomersPage = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-3 pt-3 border-t border-white/10"
+            className="mt-3 pt-3 border-t border-gray-300 dark:border-white/10"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {/* Gym Filter */}
@@ -443,7 +442,7 @@ const CustomersPage = () => {
                 <select
                   value={selectedGym}
                   onChange={(e) => setSelectedGym(e.target.value)}
-                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-accent text-sm md:text-base"
                 >
                   <option value="all">All Gyms</option>
                   {gyms.map(gym => (
@@ -453,14 +452,14 @@ const CustomersPage = () => {
                   ))}
                 </select>
               </div>
-              
+
               {/* Status Filter */}
               <div>
                 <label className="block text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Filter by Status</label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-accent text-sm md:text-base"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -469,14 +468,14 @@ const CustomersPage = () => {
                   <option value="suspended">Suspended</option>
                 </select>
               </div>
-              
+
               {/* Sort By */}
               <div>
                 <label className="block text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Sort By</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-[#DAFF00] text-sm md:text-base"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 md:px-4 md:py-3 focus:outline-none focus:border-accent text-sm md:text-base"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -486,11 +485,11 @@ const CustomersPage = () => {
                 </select>
               </div>
             </div>
-            
+
             {/* Filter Results Count */}
-            <div className="mt-3 pt-3 border-t border-white/10">
+            <div className="mt-3 pt-3 border-t border-gray-300 dark:border-white/10">
               <p className="text-xs md:text-sm text-gray-500">
-                Showing <span className="text-[#DAFF00] font-semibold">{filteredMembers.length}</span> of <span className="text-white font-semibold">{members.length}</span> members
+                Showing <span className="text-accent font-semibold">{filteredMembers.length}</span> of <span className="text-gray-900 dark:text-white font-semibold">{members.length}</span> members
               </p>
             </div>
           </motion.div>
@@ -498,36 +497,36 @@ const CustomersPage = () => {
       </div>
 
       {/* Members List - Mobile Optimized */}
-      <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+      <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
         {filteredMembers.length === 0 ? (
           <div className="p-6 text-center">
             <Users className="w-10 h-10 md:w-12 md:h-12 text-gray-500 mx-auto mb-3" />
-            <h3 className="text-lg md:text-xl font-semibold mb-2 text-white">No members found</h3>
-            <p className="text-gray-400 text-sm md:text-base">
-              {searchTerm || selectedGym !== 'all' || selectedStatus !== 'all' 
+            <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-900 dark:text-white">No members found</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
+              {searchTerm || selectedGym !== 'all' || selectedStatus !== 'all'
                 ? 'Try adjusting your filters or search terms'
                 : 'No members available'}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-white/10">
+          <div className="divide-y divide-gray-300 dark:divide-white/10">
             {/* Mobile Card View */}
             <div className="md:hidden">
               {filteredMembers.map((member) => (
-                <div 
-                  key={member._id} 
-                  className="p-4 hover:bg-white/5 transition-colors"
+                <div
+                  key={member._id}
+                  className="p-4 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-[#DAFF00]/20 border border-[#DAFF00]/30 flex items-center justify-center mr-3">
-                        <User className="w-5 h-5 text-[#DAFF00]" />
+                      <div className="w-10 h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center mr-3">
+                        <User className="w-5 h-5 text-accent" />
                       </div>
                       <div>
                         <p className="font-semibold">
                           {member.profile?.firstName} {member.profile?.lastName}
                         </p>
-                        <p className="text-xs text-gray-400">ID: {member._id.slice(-6)}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">ID: {member._id.slice(-6)}</p>
                       </div>
                     </div>
                     <div className={`inline-flex items-center px-2 py-1 rounded-full border ${getStatusColor(member.status)}`}>
@@ -537,69 +536,69 @@ const CustomersPage = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2 mb-3">
                     <div className="flex items-center text-sm">
-                      <Mail className="w-3 h-3 mr-2 text-gray-400 flex-shrink-0" />
+                      <Mail className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                       <span className="truncate">{member.email}</span>
                     </div>
                     <div className="flex items-center text-sm">
-                      <Phone className="w-3 h-3 mr-2 text-gray-400 flex-shrink-0" />
+                      <Phone className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                       <span>{member.profile?.phone || 'N/A'}</span>
                     </div>
                     <div className="flex items-center text-sm">
-                      <Building className="w-3 h-3 mr-2 text-gray-400 flex-shrink-0" />
+                      <Building className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                       <span className="truncate">{member.gymId?.name || 'Unknown Gym'}</span>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center justify-between pt-3 border-t border-white/10">
+
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-300 dark:border-white/10">
                     <div className="text-xs text-gray-500">
                       Joined: {new Date(member.createdAt).toLocaleDateString()}
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleViewDetails(member)}
-                        className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors"
+                        className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors"
                         title="View Details"
                       >
-                        <Eye className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
+                        <Eye className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
                       </button>
                       <button
                         onClick={() => handleEditMember(member._id)}
-                        className="p-1.5 rounded-xl bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 transition-colors"
+                        className="p-1.5 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/30 transition-colors"
                         title="Edit"
                       >
-                        <Edit className="w-4 h-4 text-[#DAFF00]" />
+                        <Edit className="w-4 h-4 text-accent" />
                       </button>
                       <div className="relative group">
-                        <button className="p-1.5 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors">
-                          <MoreVertical className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
+                        <button className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors">
+                          <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
                         </button>
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                           <div className="py-1">
                             <button
                               onClick={() => handleStatusChange(member._id, 'active')}
-                              className="w-full text-left px-3 py-2 hover:bg-[#DAFF00]/10 text-xs flex items-center text-gray-300 hover:text-[#DAFF00]"
+                              className="w-full text-left px-3 py-2 hover:bg-accent/10 text-xs flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
                             >
-                              <UserCheck className="w-3 h-3 mr-2 text-[#DAFF00]" />
+                              <UserCheck className="w-3 h-3 mr-2 text-accent" />
                               Set Active
                             </button>
                             <button
                               onClick={() => handleStatusChange(member._id, 'inactive')}
-                              className="w-full text-left px-3 py-2 hover:bg-white/5 text-xs flex items-center text-gray-300"
+                              className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
                             >
-                              <UserX className="w-3 h-3 mr-2 text-gray-400" />
+                              <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
                               Set Inactive
                             </button>
                             <button
                               onClick={() => handleStatusChange(member._id, 'suspended')}
-                              className="w-full text-left px-3 py-2 hover:bg-white/5 text-xs flex items-center text-gray-300"
+                              className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
                             >
                               <XCircle className="w-3 h-3 mr-2 text-red-400" />
                               Suspend
                             </button>
-                            <div className="border-t border-white/10 my-1"></div>
+                            <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
                             <button
                               onClick={() => handleDeleteMember(member._id)}
                               className="w-full text-left px-3 py-2 hover:bg-red-500/20 text-xs flex items-center text-red-400"
@@ -615,12 +614,12 @@ const CustomersPage = () => {
                 </div>
               ))}
             </div>
-            
+
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-gray-300 dark:border-white/10">
                     <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Member</th>
                     <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Contact</th>
                     <th className="text-left py-3 px-4 text-gray-500 font-semibold text-sm">Gym</th>
@@ -632,44 +631,44 @@ const CustomersPage = () => {
                 </thead>
                 <tbody>
                   {filteredMembers.map((member) => (
-                    <tr 
-                      key={member._id} 
-                      className="border-b border-white/10 hover:bg-white/5 transition-colors"
+                    <tr
+                      key={member._id}
+                      className="border-b border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-[#DAFF00]/20 border border-[#DAFF00]/30 flex items-center justify-center mr-3">
-                            <User className="w-5 h-5 text-[#DAFF00]" />
+                          <div className="w-10 h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center mr-3">
+                            <User className="w-5 h-5 text-accent" />
                           </div>
                           <div>
                             <p className="font-semibold text-sm">
                               {member.profile?.firstName} {member.profile?.lastName}
                             </p>
-                            <p className="text-xs text-gray-400">ID: {member._id.slice(-6)}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">ID: {member._id.slice(-6)}</p>
                           </div>
                         </div>
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         <div className="space-y-1">
                           <div className="flex items-center text-sm">
-                            <Mail className="w-3 h-3 mr-2 text-gray-400" />
+                            <Mail className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
                             {member.email}
                           </div>
                           <div className="flex items-center text-sm">
-                            <Phone className="w-3 h-3 mr-2 text-gray-400" />
+                            <Phone className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
                             {member.profile?.phone || 'N/A'}
                           </div>
                         </div>
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         <div className="flex items-center">
-                          <Building className="w-4 h-4 mr-2 text-gray-400" />
+                          <Building className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" />
                           <span className="text-sm">{member.gymId?.name || 'Unknown Gym'}</span>
                         </div>
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         <div className={`inline-flex items-center px-2 py-1 rounded-full border ${getStatusColor(member.status)}`}>
                           {getStatusIcon(member.status)}
@@ -678,7 +677,7 @@ const CustomersPage = () => {
                           </span>
                         </div>
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         {member.membership?.planName ? (
                           <div>
@@ -687,63 +686,63 @@ const CustomersPage = () => {
                                 {member.membership?.status || 'N/A'}
                               </span>
                             </div>
-                            <p className="text-xs text-gray-400">{member.membership.planName}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">{member.membership.planName}</p>
                           </div>
                         ) : (
-                          <span className="text-gray-400 text-sm">No Membership</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-sm">No Membership</span>
                         )}
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         <div className="text-sm">
                           {new Date(member.createdAt).toLocaleDateString()}
                         </div>
                       </td>
-                      
+
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => handleViewDetails(member)}
-                            className="p-2 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors"
+                            className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors"
                             title="View Details"
                           >
-                            <Eye className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
+                            <Eye className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
                           </button>
                           <button
                             onClick={() => handleEditMember(member._id)}
-                            className="p-2 rounded-xl bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 transition-colors"
+                            className="p-2 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/30 transition-colors"
                             title="Edit"
                           >
-                            <Edit className="w-4 h-4 text-[#DAFF00]" />
+                            <Edit className="w-4 h-4 text-accent" />
                           </button>
                           <div className="relative group">
-                            <button className="p-2 rounded-xl bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 transition-colors">
-                              <MoreVertical className="w-4 h-4 text-gray-300 hover:text-[#DAFF00]" />
+                            <button className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors">
+                              <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
                             </button>
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                               <div className="py-1">
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'active')}
-                                  className="w-full text-left px-4 py-2 hover:bg-[#DAFF00]/10 text-sm flex items-center text-gray-300 hover:text-[#DAFF00]"
+                                  className="w-full text-left px-4 py-2 hover:bg-accent/10 text-sm flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
                                 >
-                                  <UserCheck className="w-3 h-3 mr-2 text-[#DAFF00]" />
+                                  <UserCheck className="w-3 h-3 mr-2 text-accent" />
                                   Set Active
                                 </button>
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'inactive')}
-                                  className="w-full text-left px-4 py-2 hover:bg-white/5 text-sm flex items-center text-gray-300"
+                                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
                                 >
-                                  <UserX className="w-3 h-3 mr-2 text-gray-400" />
+                                  <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
                                   Set Inactive
                                 </button>
                                 <button
                                   onClick={() => handleStatusChange(member._id, 'suspended')}
-                                  className="w-full text-left px-4 py-2 hover:bg-white/5 text-sm flex items-center text-gray-300"
+                                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
                                 >
                                   <XCircle className="w-3 h-3 mr-2 text-red-400" />
                                   Suspend
                                 </button>
-                                <div className="border-t border-white/10 my-1"></div>
+                                <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
                                 <button
                                   onClick={() => handleDeleteMember(member._id)}
                                   className="w-full text-left px-4 py-2 hover:bg-red-500/20 text-sm flex items-center text-red-400"
@@ -772,59 +771,59 @@ const CustomersPage = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-[#0f0f0f] rounded-xl border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-gray-50 dark:bg-[#0f0f0f] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
           >
             <div className="p-4 md:p-6">
               {/* Modal Header */}
               <div className="flex items-center justify-between mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-lg md:text-xl font-bold text-white">Member <span className="text-[#DAFF00]">Details</span></h2>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Member <span className="text-accent">Details</span></h2>
                   <p className="text-gray-500 text-sm">Complete information about the member</p>
                 </div>
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="p-2 rounded-xl hover:bg-white/10 hover:border-[#DAFF00]/30 border border-transparent transition-colors text-gray-400 hover:text-[#DAFF00]"
+                  className="p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 hover:border-accent/30 border border-transparent transition-colors text-gray-600 dark:text-gray-400 hover:text-accent"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 {/* Left Column - Basic Info */}
                 <div className="space-y-4 md:space-y-6">
                   {/* Personal Information */}
-                  <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
-                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
-                      <User className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
+                  <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 md:p-4">
+                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-gray-900 dark:text-white">
+                      <User className="w-4 h-4 md:w-5 md:h-5 mr-2 text-accent" />
                       Personal Information
                     </h3>
                     <div className="space-y-2 md:space-y-3">
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Full Name</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Full Name</label>
                         <p className="font-semibold text-sm md:text-base">
                           {selectedMember.profile?.firstName} {selectedMember.profile?.lastName}
                         </p>
                       </div>
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Email</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Email</label>
                         <div className="flex items-center">
-                          <Mail className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-400" />
+                          <Mail className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-600 dark:text-gray-400" />
                           <p className="text-sm md:text-base">{selectedMember.email}</p>
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Phone</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Phone</label>
                         <div className="flex items-center">
-                          <Phone className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-400" />
+                          <Phone className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-600 dark:text-gray-400" />
                           <p className="text-sm md:text-base">{selectedMember.profile?.phone || 'N/A'}</p>
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Date of Birth</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Date of Birth</label>
                         <div className="flex items-center">
-                          <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-400" />
+                          <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2 text-gray-600 dark:text-gray-400" />
                           <p className="text-sm md:text-base">
-                            {selectedMember.profile?.dateOfBirth 
+                            {selectedMember.profile?.dateOfBirth
                               ? new Date(selectedMember.profile.dateOfBirth).toLocaleDateString()
                               : 'N/A'
                             }
@@ -833,29 +832,29 @@ const CustomersPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Health Metrics */}
                   {selectedMember.healthMetrics && (
-                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
-                        <Target className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
+                    <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-gray-900 dark:text-white">
+                        <Target className="w-4 h-4 md:w-5 md:h-5 mr-2 text-accent" />
                         Health Metrics
                       </h3>
                       <div className="space-y-2 md:space-y-3">
                         <div className="grid grid-cols-2 gap-3 md:gap-4">
                           <div>
-                            <label className="text-xs md:text-sm text-gray-400">Height</label>
+                            <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Height</label>
                             <p className="font-semibold text-sm md:text-base">
-                              {selectedMember.healthMetrics.height 
+                              {selectedMember.healthMetrics.height
                                 ? `${selectedMember.healthMetrics.height} cm`
                                 : 'N/A'
                               }
                             </p>
                           </div>
                           <div>
-                            <label className="text-xs md:text-sm text-gray-400">Weight</label>
+                            <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Weight</label>
                             <p className="font-semibold text-sm md:text-base">
-                              {selectedMember.healthMetrics.weight 
+                              {selectedMember.healthMetrics.weight
                                 ? `${selectedMember.healthMetrics.weight} kg`
                                 : 'N/A'
                               }
@@ -864,12 +863,12 @@ const CustomersPage = () => {
                         </div>
                         {selectedMember.healthMetrics.fitnessGoals?.length > 0 && (
                           <div>
-                            <label className="text-xs md:text-sm text-gray-400">Fitness Goals</label>
+                            <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Fitness Goals</label>
                             <div className="flex flex-wrap gap-1 md:gap-2 mt-2">
                               {selectedMember.healthMetrics.fitnessGoals.map((goal, index) => (
                                 <span
                                   key={index}
-                                  className="px-2 py-1 bg-[#DAFF00]/10 border border-[#DAFF00]/30 rounded-full text-xs text-[#DAFF00]"
+                                  className="px-2 py-1 bg-accent/10 border border-accent/30 rounded-full text-xs text-accent"
                                 >
                                   {goal}
                                 </span>
@@ -881,40 +880,40 @@ const CustomersPage = () => {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Right Column - Membership Info */}
                 <div className="space-y-4 md:space-y-6">
                   {/* Gym & Membership */}
-                  <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
-                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
-                      <Building className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
+                  <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 md:p-4">
+                    <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-gray-900 dark:text-white">
+                      <Building className="w-4 h-4 md:w-5 md:h-5 mr-2 text-accent" />
                       Gym & Membership
                     </h3>
                     <div className="space-y-2 md:space-y-3">
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Gym</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Gym</label>
                         <p className="font-semibold text-sm md:text-base">{selectedMember.gymId?.name || 'N/A'}</p>
                       </div>
                       {selectedMember.membership?.planName && (
                         <>
                           <div>
-                            <label className="text-xs md:text-sm text-gray-400">Membership Plan</label>
+                            <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Membership Plan</label>
                             <p className="font-semibold text-sm md:text-base">{selectedMember.membership.planName}</p>
                           </div>
                           <div className="grid grid-cols-2 gap-3 md:gap-4">
                             <div>
-                              <label className="text-xs md:text-sm text-gray-400">Start Date</label>
+                              <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Start Date</label>
                               <p className="text-sm md:text-base">
-                                {selectedMember.membership.startDate 
+                                {selectedMember.membership.startDate
                                   ? new Date(selectedMember.membership.startDate).toLocaleDateString()
                                   : 'N/A'
                                 }
                               </p>
                             </div>
                             <div>
-                              <label className="text-xs md:text-sm text-gray-400">End Date</label>
+                              <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">End Date</label>
                               <p className="text-sm md:text-base">
-                                {selectedMember.membership.endDate 
+                                {selectedMember.membership.endDate
                                   ? new Date(selectedMember.membership.endDate).toLocaleDateString()
                                   : 'N/A'
                                 }
@@ -924,7 +923,7 @@ const CustomersPage = () => {
                         </>
                       )}
                       <div>
-                        <label className="text-xs md:text-sm text-gray-400">Account Status</label>
+                        <label className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Account Status</label>
                         <div className={`inline-flex items-center px-2 py-1 rounded-full border ${getStatusColor(selectedMember.status)} mt-1`}>
                           {getStatusIcon(selectedMember.status)}
                           <span className="ml-2 text-xs font-medium capitalize">
@@ -934,12 +933,12 @@ const CustomersPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Address */}
                   {selectedMember.profile?.address && (
-                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-white">
-                        <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#DAFF00]" />
+                    <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 flex items-center text-sm md:text-base text-gray-900 dark:text-white">
+                        <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 text-accent" />
                         Address
                       </h3>
                       <div className="space-y-1 md:space-y-2">
@@ -963,22 +962,22 @@ const CustomersPage = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Emergency Contact */}
                   {selectedMember.profile?.emergencyContact && (
-                    <div className="bg-white/5 rounded-xl border border-white/10 p-3 md:p-4">
-                      <h3 className="font-semibold mb-3 md:mb-4 text-sm md:text-base text-white">Emergency Contact</h3>
+                    <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 md:p-4">
+                      <h3 className="font-semibold mb-3 md:mb-4 text-sm md:text-base text-gray-900 dark:text-white">Emergency Contact</h3>
                       <p className="text-sm md:text-base">{selectedMember.profile.emergencyContact}</p>
                     </div>
                   )}
                 </div>
               </div>
-              
+
               {/* Modal Footer */}
-              <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-white/10 flex justify-end space-x-3 md:space-x-4">
+              <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-300 dark:border-white/10 flex justify-end space-x-3 md:space-x-4">
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="px-4 md:px-6 py-2 border border-white/10 rounded-xl hover:bg-white/5 hover:border-[#DAFF00]/30 text-gray-300 hover:text-[#DAFF00] transition-colors text-sm md:text-base"
+                  className="px-4 md:px-6 py-2 border border-gray-300 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 hover:border-accent/30 text-gray-700 dark:text-gray-300 hover:text-accent transition-colors text-sm md:text-base"
                 >
                   Close
                 </button>
@@ -987,7 +986,7 @@ const CustomersPage = () => {
                     handleEditMember(selectedMember._id);
                     setShowDetailsModal(false);
                   }}
-                  className="px-4 md:px-6 py-2 bg-[#DAFF00] text-black rounded-xl font-semibold hover:bg-[#c5e600] transition-colors text-sm md:text-base"
+                  className="px-4 md:px-6 py-2 bg-accent text-black rounded-xl font-semibold hover:bg-accent-hover transition-colors text-sm md:text-base"
                 >
                   <Edit className="w-4 h-4 inline mr-2" />
                   Edit Member

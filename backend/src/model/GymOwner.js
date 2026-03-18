@@ -73,13 +73,36 @@ const GymOwnerSchema = new mongoose.Schema({
   },
   
   subscription: {
-    plan: String,
-    status: { 
-      type: String, 
-      enum: ['active', 'expired', 'cancelled'], 
-      default: 'active' 
+    plan: {
+      type: String,
+      enum: ['basic', 'pro', 'enterprise'],
+      default: 'basic'
     },
-    renewalDate: Date
+    amount: { type: Number, default: 500 }, // monthly fee in INR
+    status: {
+      type: String,
+      enum: ['trial', 'active', 'expired', 'cancelled'],
+      default: 'trial'
+    },
+    billingCycle: {
+      type: String,
+      enum: ['monthly', 'annual'],
+      default: 'monthly'
+    },
+    startDate: Date,
+    renewalDate: Date,      // next due date
+    lastPaidAt: Date,       // timestamp of last successful payment
+    lastPaidMonth: String,  // "YYYY-MM" e.g. "2025-03"
+    paymentHistory: [
+      {
+        razorpayOrderId:   { type: String },
+        razorpayPaymentId: { type: String },
+        amount:  { type: Number },
+        month:   { type: String }, // "YYYY-MM"
+        paidAt:  { type: Date },
+        status:  { type: String, enum: ['success', 'failed'], default: 'success' }
+      }
+    ]
   },
   
   settings: {

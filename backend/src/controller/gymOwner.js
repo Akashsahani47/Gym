@@ -2,7 +2,23 @@
 import { GymOwner } from "../model/GymOwner.js";
 import { Member } from "../model/Member.js";
 import { Gym } from "../model/gym.js";
+import { Payment } from "../model/Payment.js";
 import bcrypt from "bcryptjs";
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+const getRazorpay = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error("Razorpay keys not configured in environment");
+  }
+  return new Razorpay({
+    key_id:     process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+};
+
+const toMonthKey = (date = new Date()) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
 
 
@@ -424,5 +440,284 @@ export const getAllMembers = async (req, res) => {
       success: false,
       error: "Failed to fetch members",
     });
+  }
+};
+
+// ─────────────────────────────────────────────
+// PAYMENTS
+// ─────────────────────────────────────────────
+
+/**
+ * Helper: get "YYYY-MM" string for a given Date
+ */
+const toMonthStr = (date) => {
+  const d = date instanceof Date ? date : new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
+
+/**
+ * @desc   Get all payments + summary stats for the gym owner
+ * @route  GET /api/gym-owner/payments
+ * @access Private
+ */
+export const getPayments = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    const now = new Date();
+    const currentMonth = toMonthStr(now);
+    const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const nextMonth = toMonthStr(nextMonthDate);
+
+    // ── 1. Ensure every active member has a payment record for current month ──
+    const members = await Member.find({
+      createdBy: ownerId,
+      isDeleted: false,
+    })
+      .populate("gymId", "name membershipPlans")
+      .lean();
+
+    for (const member of members) {
+      const existing = await Payment.findOne({
+        memberId: member._id,
+        month: currentMonth,
+      });
+
+      if (!existing) {
+        // Resolve plan price
+        const plan = member.gymId?.membershipPlans?.find(
+          (p) => p._id?.toString() === member.membership?.planId?.toString()
+        );
+        const amount = plan?.price ?? 0;
+
+        // Determine status
+        const membershipEnd = member.membership?.endDate
+          ? new Date(member.membership.endDate)
+          : null;
+        const isOverdue =
+          membershipEnd && membershipEnd < now && toMonthStr(membershipEnd) !== currentMonth;
+
+        await Payment.create({
+          memberId: member._id,
+          gymId: member.gymId._id,
+          gymOwnerId: ownerId,
+          month: currentMonth,
+          year: now.getFullYear(),
+          amount,
+          status: isOverdue ? "overdue" : "pending",
+          memberName: `${member.profile.firstName} ${member.profile.lastName}`,
+          memberEmail: member.email,
+          gymName: member.gymId?.name || "",
+          planName: member.membership?.planName || plan?.name || "",
+        });
+      }
+    }
+
+    // ── 2. Fetch all payments for this owner ──
+    const allPayments = await Payment.find({ gymOwnerId: ownerId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // ── 3. Calculate summary stats ──
+    const thisMonthPayments = allPayments.filter((p) => p.month === currentMonth);
+    const thisMonthIncome = thisMonthPayments
+      .filter((p) => p.status === "paid")
+      .reduce((s, p) => s + p.amount, 0);
+
+    const thisMonthPending = thisMonthPayments
+      .filter((p) => p.status === "pending" || p.status === "overdue")
+      .reduce((s, p) => s + p.amount, 0);
+
+    const totalIncome = allPayments
+      .filter((p) => p.status === "paid")
+      .reduce((s, p) => s + p.amount, 0);
+
+    // Next-month expected = sum of plan prices for currently active members
+    const nextMonthExpected = members
+      .filter((m) => m.membership?.status === "active")
+      .reduce((s, m) => {
+        const plan = m.gymId?.membershipPlans?.find(
+          (p) => p._id?.toString() === m.membership?.planId?.toString()
+        );
+        return s + (plan?.price ?? 0);
+      }, 0);
+
+    const paidThisMonth = thisMonthPayments.filter((p) => p.status === "paid").length;
+    const pendingThisMonth = thisMonthPayments.filter(
+      (p) => p.status === "pending" || p.status === "overdue"
+    ).length;
+
+    return res.status(200).json({
+      success: true,
+      payments: allPayments,
+      stats: {
+        thisMonthIncome,
+        thisMonthPending,
+        nextMonthExpected,
+        totalIncome,
+        paidThisMonth,
+        pendingThisMonth,
+        currentMonth,
+        nextMonth,
+      },
+    });
+  } catch (error) {
+    console.error("getPayments error:", error);
+    return res.status(500).json({ success: false, error: "Failed to fetch payments" });
+  }
+};
+
+/**
+ * @desc   Mark a member's current-month payment as paid (cash)
+ * @route  POST /api/gym-owner/payments/mark-paid/:paymentId
+ * @access Private
+ */
+export const markPaymentPaid = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { paymentId } = req.params;
+    const { method = "cash", notes = "" } = req.body;
+
+    const payment = await Payment.findOne({ _id: paymentId, gymOwnerId: ownerId });
+    if (!payment) {
+      return res.status(404).json({ success: false, error: "Payment record not found" });
+    }
+
+    if (payment.status === "paid") {
+      return res.status(400).json({ success: false, error: "Already marked as paid" });
+    }
+
+    payment.status = "paid";
+    payment.method = method;
+    payment.paidAt = new Date();
+    payment.markedBy = ownerId;
+    payment.notes = notes;
+    await payment.save();
+
+    // Update gym monthly revenue cache
+    await Gym.findByIdAndUpdate(payment.gymId, {
+      $inc: { "stats.monthlyRevenue": payment.amount },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment marked as paid",
+      payment,
+    });
+  } catch (error) {
+    console.error("markPaymentPaid error:", error);
+    return res.status(500).json({ success: false, error: "Failed to mark payment" });
+  }
+};
+
+// ─────────────────────────────────────────────
+// SUBSCRIPTION (PLATFORM FEE via Razorpay)
+// ─────────────────────────────────────────────
+
+/**
+ * @desc   Create Razorpay order for monthly platform subscription
+ * @route  POST /api/gym-owner/subscription/create-order
+ * @access Private
+ */
+export const createSubscriptionOrder = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    const owner = await GymOwner.findById(ownerId);
+    if (!owner) return res.status(404).json({ success: false, error: "Owner not found" });
+
+    const currentMonth = toMonthKey();
+    const alreadyPaid = owner.subscription?.lastPaidMonth === currentMonth;
+    if (alreadyPaid) {
+      return res.status(400).json({ success: false, error: "Already paid for this month" });
+    }
+
+    const amount = owner.subscription?.amount ?? 500; // INR
+
+    const order = await getRazorpay().orders.create({
+      amount: amount * 100, // paise
+      currency: "INR",
+      receipt: `sub_${ownerId}_${currentMonth}`,
+      notes: {
+        gymOwnerId: ownerId.toString(),
+        month: currentMonth,
+        type: "platform_subscription",
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      order,
+      amount,
+      month: currentMonth,
+      keyId: process.env.RAZORPAY_KEY_ID,
+      ownerName: `${owner.profile.firstName} ${owner.profile.lastName}`,
+      ownerEmail: owner.email,
+      ownerPhone: owner.profile.phone || "",
+    });
+  } catch (error) {
+    console.error("createSubscriptionOrder error:", error);
+    return res.status(500).json({ success: false, error: "Failed to create order" });
+  }
+};
+
+/**
+ * @desc   Verify Razorpay payment & activate subscription for this month
+ * @route  POST /api/gym-owner/subscription/verify-payment
+ * @access Private
+ */
+export const verifySubscriptionPayment = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ success: false, error: "Missing payment fields" });
+    }
+
+    // Verify signature
+    const expectedSig = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (expectedSig !== razorpay_signature) {
+      return res.status(400).json({ success: false, error: "Invalid payment signature" });
+    }
+
+    const owner = await GymOwner.findById(ownerId);
+    if (!owner) return res.status(404).json({ success: false, error: "Owner not found" });
+
+    const now = new Date();
+    const currentMonth = toMonthKey(now);
+
+    // Set renewal date to 1st of next month
+    const renewalDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    owner.subscription.status      = "active";
+    owner.subscription.lastPaidAt  = now;
+    owner.subscription.lastPaidMonth = currentMonth;
+    owner.subscription.renewalDate = renewalDate;
+    if (!owner.subscription.startDate) owner.subscription.startDate = now;
+
+    owner.subscription.paymentHistory.push({
+      razorpayOrderId:   razorpay_order_id,
+      razorpayPaymentId: razorpay_payment_id,
+      amount:  owner.subscription.amount ?? 500,
+      month:   currentMonth,
+      paidAt:  now,
+      status:  "success",
+    });
+
+    await owner.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Subscription activated for " + currentMonth,
+      subscription: owner.subscription,
+    });
+  } catch (error) {
+    console.error("verifySubscriptionPayment error:", error);
+    return res.status(500).json({ success: false, error: "Failed to verify payment" });
   }
 };

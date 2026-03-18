@@ -10,6 +10,10 @@ import {
   getOwnerGyms,
   updateGym,
   updateGymOwnerinfo,
+  getPayments,
+  markPaymentPaid,
+  createSubscriptionOrder,
+  verifySubscriptionPayment,
 } from "../controller/gymOwner.js";
 
 const router = express.Router();
@@ -22,5 +26,9 @@ router.get("/gyms/:id", verifyToken, getGymById);
 router.put("/gyms/:id", verifyToken, updateGym);
 router.delete("/gyms/:id", verifyToken, deleteGym);
 router.post("/addmembers", verifyToken, addMember);
-router.get("/members",verifyToken,getAllMembers);
+router.get("/members", verifyToken, getAllMembers);
+router.get("/payments", verifyToken, getPayments);
+router.post("/payments/mark-paid/:paymentId", verifyToken, markPaymentPaid);
+router.post("/subscription/create-order", verifyToken, createSubscriptionOrder);
+router.post("/subscription/verify-payment", verifyToken, verifySubscriptionPayment);
 export default router;

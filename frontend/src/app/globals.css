@@ -1,2 +1,30 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Accent color: switches automatically with dark/light mode */
+:root {
+  --accent: #9EDC00;
+  --accent-hover: #88c200;
+}
+
+.dark {
+  --accent: #DAFF00;
+  --accent-hover: #c5e600;
+}
+
+/* Register as Tailwind theme tokens so bg-accent, text-accent, border-accent, etc. work */
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+}
+
+html,
+body {
+  background-color: #ffffff;
+}
+
+html.dark,
+html.dark body {
+  background-color: #000000;
+}

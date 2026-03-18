@@ -280,30 +280,30 @@ const EditGymPage = () => {
   };
 
   const inputClass =
-    'w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#DAFF00] text-white placeholder-gray-500';
+    'w-full bg-gray-100 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent text-gray-900 dark:text-white placeholder-gray-500';
   const labelClass = 'block text-sm text-gray-500 mb-2';
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-white/10 border-t-[#DAFF00]" />
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-200 dark:border-white/10 border-t-accent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 md:p-6">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white p-4 md:p-6">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-center gap-3">
           <Link
             href={`/dashboard/gymOwner/gymInfo/${gymId}`}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-[#DAFF00]/10 hover:border-[#DAFF00]/30 text-gray-400 hover:text-[#DAFF00] transition-colors"
+            className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-accent/10 hover:border-accent/30 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-white">
-              Edit <span className="text-[#DAFF00]">{formData.name || 'Gym'}</span>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              Edit <span className="text-accent">{formData.name || 'Gym'}</span>
             </h1>
             <p className="text-sm text-gray-500">Update gym information</p>
           </div>
@@ -314,10 +314,10 @@ const EditGymPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/5 rounded-xl border border-white/10 p-6"
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
           >
-            <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <Building className="w-4 h-4 text-[#DAFF00]" />
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Building className="w-4 h-4 text-accent" />
               Basic Information
             </h2>
             <div className="space-y-4">
@@ -366,10 +366,10 @@ const EditGymPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-white/5 rounded-xl border border-white/10 p-6"
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
           >
-            <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-[#DAFF00]" />
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Phone className="w-4 h-4 text-accent" />
               Contact
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -414,10 +414,10 @@ const EditGymPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/5 rounded-xl border border-white/10 p-6"
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
           >
-            <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#DAFF00]" />
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-accent" />
               Address
             </h2>
             <div className="space-y-4">
@@ -483,19 +483,19 @@ const EditGymPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="bg-white/5 rounded-xl border border-white/10 p-6"
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
           >
-            <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#DAFF00]" />
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-accent" />
               Operating Hours
             </h2>
             <div className="space-y-3">
               {formData.operatingHours.map((h, index) => (
                 <div
                   key={h.day}
-                  className="flex flex-wrap items-center gap-2 py-2 border-b border-white/5 last:border-0"
+                  className="flex flex-wrap items-center gap-2 py-2 border-b border-gray-200/50 dark:border-white/5 last:border-0"
                 >
-                  <span className="w-24 text-sm text-gray-400 capitalize">{h.day}</span>
+                  <span className="w-24 text-sm text-gray-600 dark:text-gray-400 capitalize">{h.day}</span>
                   <label className="flex items-center gap-1 text-sm">
                     <input
                       type="checkbox"
@@ -503,7 +503,7 @@ const EditGymPage = () => {
                       onChange={(e) =>
                         handleOperatingHoursChange(index, 'isClosed', e.target.checked)
                       }
-                      className="rounded border-white/10 bg-black text-[#DAFF00] focus:ring-[#DAFF00]"
+                      className="rounded border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black text-accent focus:ring-accent"
                     />
                     Closed
                   </label>
@@ -538,31 +538,31 @@ const EditGymPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/5 rounded-xl border border-white/10 p-6"
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
           >
-            <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#DAFF00]" />
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-accent" />
               Settings
             </h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-400">Allow walk-ins</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Allow walk-ins</label>
                 <input
                   type="checkbox"
                   name="settings.allowWalkIns"
                   checked={formData.settings.allowWalkIns}
                   onChange={handleChange}
-                  className="rounded border-white/10 bg-black text-[#DAFF00] focus:ring-[#DAFF00]"
+                  className="rounded border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black text-accent focus:ring-accent"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-400">Require booking</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Require booking</label>
                 <input
                   type="checkbox"
                   name="settings.requireBooking"
                   checked={formData.settings.requireBooking}
                   onChange={handleChange}
-                  className="rounded border-white/10 bg-black text-[#DAFF00] focus:ring-[#DAFF00]"
+                  className="rounded border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black text-accent focus:ring-accent"
                 />
               </div>
               <div>
@@ -577,13 +577,13 @@ const EditGymPage = () => {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label className="text-sm text-gray-400">Auto checkout</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Auto checkout</label>
                 <input
                   type="checkbox"
                   name="settings.autoCheckout"
                   checked={formData.settings.autoCheckout}
                   onChange={handleChange}
-                  className="rounded border-white/10 bg-black text-[#DAFF00] focus:ring-[#DAFF00]"
+                  className="rounded border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black text-accent focus:ring-accent"
                 />
               </div>
             </div>
@@ -592,14 +592,14 @@ const EditGymPage = () => {
           <div className="flex gap-3">
             <Link
               href={`/dashboard/gymOwner/gymInfo/${gymId}`}
-              className="flex-1 py-3 border border-white/10 rounded-xl text-center text-gray-300 hover:bg-white/5 hover:border-[#DAFF00]/30 transition-colors"
+              className="flex-1 py-3 border border-gray-200 dark:border-white/10 rounded-xl text-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:border-accent/30 transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-3 bg-[#DAFF00] text-black rounded-xl font-semibold hover:bg-[#c5e600] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-accent text-black rounded-xl font-semibold hover:bg-accent-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

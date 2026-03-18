@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   UserPlus,
   User,
   Mail,
@@ -29,7 +29,7 @@ import { useRouter } from 'next/navigation';
 
 const AddCustomerPage = () => {
   const router = useRouter();
-  const { token, hydrated } = useUserStore();
+  const { token } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [gyms, setGyms] = useState([]);
   const [membershipPlans, setMembershipPlans] = useState([]);
@@ -44,7 +44,7 @@ const AddCustomerPage = () => {
     password: '',
     confirmPassword: '',
     status: 'pending',
-    
+
     // Profile
     profile: {
       firstName: '',
@@ -60,7 +60,7 @@ const AddCustomerPage = () => {
         country: ''
       }
     },
-    
+
     // Gym & Membership
     gymId: '',
     membership: {
@@ -70,14 +70,14 @@ const AddCustomerPage = () => {
       endDate: '',
       status: 'pending'
     },
-    
+
     // Health Metrics
     healthMetrics: {
       height: '',
       weight: '',
       fitnessGoals: []
     },
-    
+
     // Settings
     sendWelcomeEmail: true,
     autoGeneratePassword: false
@@ -92,7 +92,7 @@ const AddCustomerPage = () => {
   useEffect(() => {
     const fetchGyms = async () => {
       if (!token) return;
-      
+
       try {
         setLoadingGyms(true);
         const response = await fetch(
@@ -105,7 +105,7 @@ const AddCustomerPage = () => {
         );
 
         const data = await response.json();
-        
+
         if (response.ok) {
           setGyms(data.gyms || []);
         } else {
@@ -148,7 +148,7 @@ const AddCustomerPage = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormErrors(prev => ({ ...prev, [name]: '' }));
-    
+
     if (name.startsWith('profile.')) {
       const field = name.split('.')[1];
       setFormData(prev => ({
@@ -293,7 +293,7 @@ const AddCustomerPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error('Please fill in all required fields correctly');
       return;
@@ -354,7 +354,7 @@ const AddCustomerPage = () => {
       );
 
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Member added successfully!');
         router.push('/dashboard/gymOwner/customers');
@@ -370,19 +370,19 @@ const AddCustomerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white overflow-x-hidden">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700">
+      <div className="sticky top-0 z-50 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between p-4">
           <button
             onClick={() => router.back()}
-            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 shrink-0"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 min-w-0 px-4">
-            <h1 className="text-lg font-bold truncate">Add New Member</h1>
-            <p className="text-xs text-gray-400 truncate">Fill in all required information</p>
+            <h1 className="text-lg font-bold truncate">Add New <span className="text-accent">Member</span></h1>
+            <p className="text-xs text-gray-600 dark:text-gray-400 truncate">Fill in all required information</p>
           </div>
         </div>
       </div>
@@ -392,14 +392,14 @@ const AddCustomerPage = () => {
           <form onSubmit={handleSubmit}>
             {/* Form Header */}
             <div className="mb-6">
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center shrink-0">
-                    <UserPlus className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <UserPlus className="w-5 h-5 text-accent" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-semibold">Add New Member</h3>
-                    <p className="text-xs text-gray-400">Complete all required fields marked with *</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Complete all required fields marked with *</p>
                   </div>
                 </div>
               </div>
@@ -408,20 +408,20 @@ const AddCustomerPage = () => {
             {/* Main Form */}
             <div className="space-y-6">
               {/* Section 1: Basic Information */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-2 mb-4">
-                  <User className="w-5 h-5 text-red-400 shrink-0" />
+                  <User className="w-5 h-5 text-accent shrink-0" />
                   <h2 className="text-lg font-bold">Basic Information</h2>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Email Address <span className="text-red-500">*</span>
                       </label>
-                      <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
-                        <Mail className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
+                      <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 min-w-0">
+                        <Mail className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                         <input
                           type="email"
                           name="email"
@@ -439,16 +439,16 @@ const AddCustomerPage = () => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Status <span className="text-red-500">*</span>
                       </label>
                       <select
                         name="status"
                         value={formData.status}
                         onChange={handleChange}
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                       >
                         <option value="pending">Pending</option>
                         <option value="active">Active</option>
@@ -461,24 +461,24 @@ const AddCustomerPage = () => {
                   {/* Password Section */}
                   <div>
                     <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                      <h4 className="text-sm font-semibold text-gray-300">Password Settings</h4>
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Settings</h4>
                       <button
                         type="button"
                         onClick={handleAutoGeneratePassword}
-                        className="text-sm text-red-400 hover:text-red-300 flex items-center"
+                        className="text-sm text-accent hover:text-accent-hover flex items-center"
                       >
                         <ChevronRight className="w-3 h-3 mr-1 shrink-0" />
                         Generate Random Password
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                           Password <span className="text-red-500">*</span>
                         </label>
-                        <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
-                          <Lock className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
+                        <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 min-w-0">
+                          <Lock className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                           <input
                             type="password"
                             name="password"
@@ -496,13 +496,13 @@ const AddCustomerPage = () => {
                           </p>
                         )}
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                           Confirm Password <span className="text-red-500">*</span>
                         </label>
-                        <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
-                          <Lock className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
+                        <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 min-w-0">
+                          <Lock className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                           <input
                             type="password"
                             name="confirmPassword"
@@ -526,16 +526,16 @@ const AddCustomerPage = () => {
               </div>
 
               {/* Section 2: Profile Information */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-2 mb-4">
-                  <User className="w-5 h-5 text-red-400 shrink-0" />
+                  <User className="w-5 h-5 text-accent shrink-0" />
                   <h2 className="text-lg font-bold">Profile Information</h2>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         First Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -544,7 +544,7 @@ const AddCustomerPage = () => {
                         value={formData.profile.firstName}
                         onChange={handleChange}
                         required
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         placeholder="John"
                       />
                       {formErrors['profile.firstName'] && (
@@ -554,9 +554,9 @@ const AddCustomerPage = () => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Last Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -565,7 +565,7 @@ const AddCustomerPage = () => {
                         value={formData.profile.lastName}
                         onChange={handleChange}
                         required
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         placeholder="Doe"
                       />
                       {formErrors['profile.lastName'] && (
@@ -575,13 +575,13 @@ const AddCustomerPage = () => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Phone <span className="text-red-500">*</span>
                       </label>
-                      <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
-                        <Phone className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
+                      <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 min-w-0">
+                        <Phone className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                         <input
                           type="tel"
                           name="profile.phone"
@@ -599,11 +599,11 @@ const AddCustomerPage = () => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">Date of Birth</label>
-                      <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 min-w-0">
-                        <Calendar className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Date of Birth</label>
+                      <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 min-w-0">
+                        <Calendar className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400 shrink-0" />
                         <input
                           type="date"
                           name="profile.dateOfBirth"
@@ -613,83 +613,83 @@ const AddCustomerPage = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">Emergency Contact</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Emergency Contact</label>
                       <input
                         type="text"
                         name="profile.emergencyContact"
                         value={formData.profile.emergencyContact}
                         onChange={handleChange}
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         placeholder="Emergency contact name & number"
                       />
                     </div>
                   </div>
-                  
+
                   {/* Address Section */}
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-300 mb-4 flex items-center">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
                       <MapPin className="w-4 h-4 mr-2 shrink-0" />
                       Address (Optional)
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="md:col-span-2 min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">Street Address</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Street Address</label>
                         <input
                           type="text"
                           name="profile.address.street"
                           value={formData.profile.address.street}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                           placeholder="123 Main Street"
                         />
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">City</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">City</label>
                         <input
                           type="text"
                           name="profile.address.city"
                           value={formData.profile.address.city}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                           placeholder="New York"
                         />
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">State/Province</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">State/Province</label>
                         <input
                           type="text"
                           name="profile.address.state"
                           value={formData.profile.address.state}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                           placeholder="NY"
                         />
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">ZIP/Postal Code</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">ZIP/Postal Code</label>
                         <input
                           type="text"
                           name="profile.address.zipCode"
                           value={formData.profile.address.zipCode}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                           placeholder="10001"
                         />
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">Country</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Country</label>
                         <input
                           type="text"
                           name="profile.address.country"
                           value={formData.profile.address.country}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                           placeholder="United States"
                         />
                       </div>
@@ -699,16 +699,16 @@ const AddCustomerPage = () => {
               </div>
 
               {/* Section 3: Gym & Membership */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-2 mb-4">
-                  <Building className="w-5 h-5 text-red-400 shrink-0" />
+                  <Building className="w-5 h-5 text-accent shrink-0" />
                   <h2 className="text-lg font-bold">Gym & Membership</h2>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Select Gym <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
@@ -718,7 +718,7 @@ const AddCustomerPage = () => {
                           onChange={handleChange}
                           required
                           disabled={loadingGyms}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:border-red-500 appearance-none"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:border-accent appearance-none"
                         >
                           <option value="">Select a gym</option>
                           {gyms.map(gym => (
@@ -727,7 +727,7 @@ const AddCustomerPage = () => {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown className="absolute right-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-3.5 w-5 h-5 text-gray-600 dark:text-gray-400 pointer-events-none" />
                       </div>
                       {loadingGyms && (
                         <p className="text-xs text-yellow-400 mt-2">Loading gyms...</p>
@@ -739,14 +739,14 @@ const AddCustomerPage = () => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">Membership Status</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Membership Status</label>
                       <select
                         name="membership.status"
                         value={formData.membership.status}
                         onChange={handleChange}
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                       >
                         <option value="pending">Pending</option>
                         <option value="active">Active</option>
@@ -758,7 +758,7 @@ const AddCustomerPage = () => {
 
                   {formData.gymId && membershipPlans.length > 0 && (
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                         Membership Plan (Optional)
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -768,20 +768,20 @@ const AddCustomerPage = () => {
                             onClick={() => handleMembershipPlanChange(plan._id)}
                             className={`p-4 rounded-lg border cursor-pointer transition-all ${
                               formData.membership.planId === plan._id
-                                ? 'bg-red-600/10 border-red-500'
-                                : 'bg-gray-900 border-gray-700 hover:border-gray-600'
+                                ? 'bg-accent/10 border-accent'
+                                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-800 hover:border-gray-600'
                             }`}
                           >
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-semibold truncate mr-2">{plan.name}</h4>
                               {formData.membership.planId === plan._id && (
-                                <Check className="w-5 h-5 text-red-400 shrink-0" />
+                                <Check className="w-5 h-5 text-accent shrink-0" />
                               )}
                             </div>
-                            <p className="text-sm text-gray-400 mb-2 truncate">{plan.description}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 truncate">{plan.description}</p>
                             <div className="flex justify-between items-center">
                               <span className="font-bold text-lg">${plan.price || 0}</span>
-                              <span className="text-sm text-gray-400">{plan.duration || 30} days</span>
+                              <span className="text-sm text-gray-600 dark:text-gray-400">{plan.duration || 30} days</span>
                             </div>
                           </div>
                         ))}
@@ -790,32 +790,32 @@ const AddCustomerPage = () => {
                   )}
 
                   {formData.gymId && membershipPlans.length === 0 && (
-                    <div className="p-4 bg-gray-900 border border-gray-700 rounded-lg">
-                      <p className="text-gray-400">No membership plans available for this gym</p>
+                    <div className="p-4 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg">
+                      <p className="text-gray-600 dark:text-gray-400">No membership plans available for this gym</p>
                     </div>
                   )}
 
                   {(formData.membership.startDate || formData.membership.endDate) && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">Start Date</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Start Date</label>
                         <input
                           type="date"
                           name="membership.startDate"
                           value={formData.membership.startDate}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         />
                       </div>
-                      
+
                       <div className="min-w-0">
-                        <label className="block text-sm text-gray-400 mb-2">End Date</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">End Date</label>
                         <input
                           type="date"
                           name="membership.endDate"
                           value={formData.membership.endDate}
                           onChange={handleChange}
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                          className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         />
                       </div>
                     </div>
@@ -824,54 +824,54 @@ const AddCustomerPage = () => {
               </div>
 
               {/* Section 4: Health Metrics */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-2 mb-4">
-                  <Target className="w-5 h-5 text-red-400 shrink-0" />
+                  <Target className="w-5 h-5 text-accent shrink-0" />
                   <h2 className="text-lg font-bold">Health Metrics (Optional)</h2>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">Height (cm)</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Height (cm)</label>
                       <input
                         type="number"
                         step="0.1"
                         name="healthMetrics.height"
                         value={formData.healthMetrics.height}
                         onChange={handleChange}
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         placeholder="175"
                       />
                     </div>
-                    
+
                     <div className="min-w-0">
-                      <label className="block text-sm text-gray-400 mb-2">Weight (kg)</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Weight (kg)</label>
                       <input
                         type="number"
                         step="0.1"
                         name="healthMetrics.weight"
                         value={formData.healthMetrics.weight}
                         onChange={handleChange}
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
                         placeholder="70"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Fitness Goals (Optional)</label>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Fitness Goals (Optional)</label>
                     <div className="flex flex-wrap gap-2 mb-3 max-w-full overflow-x-auto">
                       {formData.healthMetrics.fitnessGoals.map((goal, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-gray-800 rounded-full text-sm flex items-center space-x-2 max-w-full shrink-0"
+                          className="px-3 py-1 bg-gray-100 dark:bg-gray-900/50 rounded-full text-sm flex items-center space-x-2 max-w-full shrink-0"
                         >
                           <span className="truncate">{goal}</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveGoal(index)}
-                            className="text-red-400 hover:text-red-300 shrink-0"
+                            className="text-accent hover:text-accent-hover shrink-0"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -883,19 +883,19 @@ const AddCustomerPage = () => {
                         type="text"
                         value={newGoal}
                         onChange={(e) => setNewGoal(e.target.value)}
-                        onKeyPress={(e) => {
+                        onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault();
                             handleAddGoal();
                           }
                         }}
                         placeholder="Add a fitness goal..."
-                        className="flex-1 min-w-0 bg-gray-900 border border-gray-700 rounded-l-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                        className="flex-1 min-w-0 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-l-lg px-4 py-3 focus:outline-none focus:border-accent"
                       />
                       <button
                         type="button"
                         onClick={handleAddGoal}
-                        className="px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-r-lg hover:opacity-90 transition-opacity shrink-0"
+                        className="px-4 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-r-lg transition-colors shrink-0"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -905,17 +905,17 @@ const AddCustomerPage = () => {
               </div>
 
               {/* Section 5: Settings */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+              <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
                 <div className="flex items-center space-x-2 mb-4">
                   <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0" />
                   <h2 className="text-lg font-bold">Settings</h2>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <label className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer">
+                  <label className="flex items-center justify-between p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer">
                     <div className="pr-4 min-w-0">
                       <h4 className="font-semibold">Send Welcome Email</h4>
-                      <p className="text-sm text-gray-400">Send welcome email with login credentials to member</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Send welcome email with login credentials to member</p>
                     </div>
                     <div className="relative shrink-0">
                       <input
@@ -935,12 +935,12 @@ const AddCustomerPage = () => {
                     </div>
                   </label>
 
-                  <div className="p-4 bg-gray-900 rounded-lg border border-gray-700">
+                  <div className="p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800">
                     <div className="flex items-center space-x-3 mb-4">
                       <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0" />
                       <h4 className="font-semibold">Important Notes</h4>
                     </div>
-                    <ul className="space-y-2 text-sm text-gray-400">
+                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                       <li className="flex items-start space-x-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 shrink-0"></div>
                         <span>Member will receive an email with their login credentials</span>
@@ -960,12 +960,12 @@ const AddCustomerPage = () => {
             </div>
 
             {/* Form Actions */}
-            <div className="fixed bottom-0 inset-x-0 p-4 bg-gray-900 border-t border-gray-700 z-50">
-              <div className="flex justify-between space-x-4 max-w-screen-lg mx-auto">
+            <div className="fixed bottom-0 inset-x-0 p-4 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 z-50">
+              <div className="flex justify-between space-x-4 max-w-5xl mx-auto">
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors flex-1"
+                  className="px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors flex-1"
                 >
                   Cancel
                 </button>
@@ -973,11 +973,11 @@ const AddCustomerPage = () => {
                   type="submit"
                   disabled={loading}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-1"
+                  className="px-4 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-1"
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-accent mr-2"></div>
                       Adding Member...
                     </>
                   ) : (

@@ -3,12 +3,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Building, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Globe, 
+import {
+  Building,
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
   Clock,
   IndianRupee,
   Check,
@@ -23,7 +23,7 @@ import {
   Twitter,
   ChevronLeft,
   ChevronRight,
-  
+
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
@@ -108,7 +108,7 @@ const AddGymPage = () => {
     // Basic Info
     name: '',
     description: '',
-    
+
     // Contact Info
     contact: {
       email: '',
@@ -120,7 +120,7 @@ const AddGymPage = () => {
         twitter: ''
       }
     },
-    
+
     // Location
     address: {
       street: '',
@@ -133,15 +133,15 @@ const AddGymPage = () => {
         lng: ''
       }
     },
-    
+
     // Media
     logo: '',
     coverImage: '',
     images: [],
-    
+
     // Facilities
     facilities: defaultFacilities.map(f => ({ ...f })),
-    
+
     // Operating Hours
     operatingHours: daysOfWeek.map(day => ({
       day: day.value,
@@ -149,7 +149,7 @@ const AddGymPage = () => {
       close: '22:00',
       isClosed: false
     })),
-    
+
     // Membership Plans
     membershipPlans: [
       {
@@ -177,7 +177,7 @@ const AddGymPage = () => {
         isActive: true
       }
     ],
-    
+
     // Settings
     settings: {
       allowWalkIns: true,
@@ -185,7 +185,7 @@ const AddGymPage = () => {
       maxCapacity: 100,
       autoCheckout: true
     },
-    
+
     // Status
     status: 'active'
   });
@@ -198,7 +198,7 @@ const AddGymPage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (name.startsWith('contact.')) {
       const field = name.split('.')[1];
       setFormData(prev => ({
@@ -360,7 +360,7 @@ const AddGymPage = () => {
       );
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setFormData(prev => ({
           ...prev,
@@ -395,7 +395,7 @@ const AddGymPage = () => {
       );
 
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Gym created successfully!');
         router.push('/dashboard/gymOwner/gymInfo');
@@ -428,46 +428,46 @@ const AddGymPage = () => {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Gym Name *</label>
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Gym Name *</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 placeholder="Enter gym name"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Description</label>
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Description</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 placeholder="Describe your gym..."
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Gym Logo</label>
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Gym Logo</label>
               <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center overflow-hidden">
+                  <div className="w-24 h-24 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center overflow-hidden">
                     {formData.logo ? (
-                      <img 
-                        src={formData.logo} 
-                        alt="Gym Logo" 
+                      <img
+                        src={formData.logo}
+                        alt="Gym Logo"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Building className="w-12 h-12 text-white" />
+                      <Building className="w-12 h-12 text-purple-400" />
                     )}
                   </div>
-                  <label className="absolute bottom-0 right-0 p-2 bg-gray-900 rounded-full cursor-pointer border border-gray-700 hover:bg-gray-800 transition-colors">
+                  <label className="absolute bottom-0 right-0 p-2 bg-white dark:bg-black rounded-full cursor-pointer border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
                     <Upload className="w-3 h-3" />
                     <input
                       type="file"
@@ -479,7 +479,7 @@ const AddGymPage = () => {
                   </label>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-300">Upload gym logo</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">Upload gym logo</p>
                   <p className="text-xs text-gray-500">Recommended: 500x500px, PNG or JPG</p>
                   {uploadingLogo && (
                     <p className="text-xs text-yellow-400 mt-1">Uploading...</p>
@@ -487,14 +487,14 @@ const AddGymPage = () => {
                 </div>
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Status</label>
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -510,56 +510,56 @@ const AddGymPage = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Email</label>
-                <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3">
-                  <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Email</label>
+                <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3">
+                  <Mail className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" />
                   <input
                     type="email"
                     name="contact.email"
                     value={formData.contact.email}
                     onChange={handleChange}
-                    className="bg-transparent focus:outline-none flex-1"
+                    className="bg-transparent focus:outline-none flex-1 text-gray-900 dark:text-white placeholder-gray-500"
                     placeholder="gym@example.com"
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Phone</label>
-                <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3">
-                  <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Phone</label>
+                <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3">
+                  <Phone className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" />
                   <input
                     type="tel"
                     name="contact.phone"
                     value={formData.contact.phone}
                     onChange={handleChange}
-                    className="bg-transparent focus:outline-none flex-1"
+                    className="bg-transparent focus:outline-none flex-1 text-gray-900 dark:text-white placeholder-gray-500"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
               </div>
-              
+
               <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-2">Website</label>
-                <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg px-4 py-3">
-                  <Globe className="w-4 h-4 mr-2 text-gray-400" />
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Website</label>
+                <div className="flex items-center bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3">
+                  <Globe className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" />
                   <input
                     type="url"
                     name="contact.website"
                     value={formData.contact.website}
                     onChange={handleChange}
-                    className="bg-transparent focus:outline-none flex-1"
+                    className="bg-transparent focus:outline-none flex-1 text-gray-900 dark:text-white placeholder-gray-500"
                     placeholder="https://yourgym.com"
                   />
                 </div>
               </div>
             </div>
-            
+
             <div>
-              <h4 className="text-sm font-semibold text-gray-300 mb-4">Social Media</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Social Media</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2 flex items-center">
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
                     <Facebook className="w-3 h-3 mr-2" />
                     Facebook
                   </label>
@@ -568,13 +568,13 @@ const AddGymPage = () => {
                     name="contact.socialMedia.facebook"
                     value={formData.contact.socialMedia.facebook}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                    className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                     placeholder="https://facebook.com/yourgym"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2 flex items-center">
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
                     <Instagram className="w-3 h-3 mr-2" />
                     Instagram
                   </label>
@@ -583,13 +583,13 @@ const AddGymPage = () => {
                     name="contact.socialMedia.instagram"
                     value={formData.contact.socialMedia.instagram}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                    className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                     placeholder="https://instagram.com/yourgym"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2 flex items-center">
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
                     <Twitter className="w-3 h-3 mr-2" />
                     Twitter
                   </label>
@@ -598,7 +598,7 @@ const AddGymPage = () => {
                     name="contact.socialMedia.twitter"
                     value={formData.contact.socialMedia.twitter}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                    className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                     placeholder="https://twitter.com/yourgym"
                   />
                 </div>
@@ -612,91 +612,91 @@ const AddGymPage = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Street Address</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Street Address</label>
                 <input
                   type="text"
                   name="address.street"
                   value={formData.address.street}
                   onChange={handleChange}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                   placeholder="123 Main Street"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">City</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">City</label>
                 <input
                   type="text"
                   name="address.city"
                   value={formData.address.city}
                   onChange={handleChange}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                   placeholder="New York"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">State/Province</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">State/Province</label>
                 <input
                   type="text"
                   name="address.state"
                   value={formData.address.state}
                   onChange={handleChange}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                   placeholder="NY"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Country</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Country</label>
                 <input
                   type="text"
                   name="address.country"
                   value={formData.address.country}
                   onChange={handleChange}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                   placeholder="United States"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">ZIP/Postal Code</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">ZIP/Postal Code</label>
                 <input
                   type="text"
                   name="address.zipCode"
                   value={formData.address.zipCode}
                   onChange={handleChange}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                  className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                   placeholder="10001"
                 />
               </div>
             </div>
-            
+
             <div>
-              <h4 className="text-sm font-semibold text-gray-300 mb-4">Coordinates (Optional)</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Coordinates (Optional)</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Latitude</label>
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Latitude</label>
                   <input
                     type="number"
                     step="0.000001"
                     name="address.coordinates.lat"
                     value={formData.address.coordinates.lat}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                    className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                     placeholder="40.7128"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Longitude</label>
+                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Longitude</label>
                   <input
                     type="number"
                     step="0.000001"
                     name="address.coordinates.lng"
                     value={formData.address.coordinates.lng}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500"
+                    className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                     placeholder="-74.0060"
                   />
                 </div>
@@ -708,7 +708,7 @@ const AddGymPage = () => {
       case 'facilities':
         return (
           <div className="space-y-6">
-            <p className="text-gray-400 mb-4">Select the facilities available at your gym:</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">Select the facilities available at your gym:</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {formData.facilities.map((facility, index) => (
                 <div
@@ -716,7 +716,7 @@ const AddGymPage = () => {
                   className={`p-4 rounded-lg border cursor-pointer transition-all ${
                     facility.available
                       ? 'bg-green-500/10 border-green-500/30'
-                      : 'bg-gray-900 border-gray-700'
+                      : 'bg-white dark:bg-black border-gray-200 dark:border-gray-800'
                   }`}
                   onClick={() => handleFacilityToggle(index)}
                 >
@@ -734,7 +734,7 @@ const AddGymPage = () => {
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400">{facility.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{facility.description}</p>
                 </div>
               ))}
             </div>
@@ -746,11 +746,11 @@ const AddGymPage = () => {
           <div className="space-y-6">
             <div className="space-y-4">
               {formData.operatingHours.map((hours, index) => (
-                <div key={index} className="bg-gray-900 rounded-lg p-4">
+                <div key={index} className="bg-white dark:bg-black rounded-lg p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-semibold capitalize">{hours.day}</h4>
                     <label className="flex items-center space-x-2 cursor-pointer">
-                      <span className="text-sm text-gray-400">Closed</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Closed</span>
                       <div className="relative">
                         <input
                           type="checkbox"
@@ -768,26 +768,26 @@ const AddGymPage = () => {
                       </div>
                     </label>
                   </div>
-                  
+
                   {!hours.isClosed && (
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">Open Time</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Open Time</label>
                         <input
                           type="time"
                           value={hours.open}
                           onChange={(e) => handleOperatingHoursChange(index, 'open', e.target.value)}
-                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                          className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
                         />
                       </div>
-                      
+
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">Close Time</label>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Close Time</label>
                         <input
                           type="time"
                           value={hours.close}
                           onChange={(e) => handleOperatingHoursChange(index, 'close', e.target.value)}
-                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                          className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
                         />
                       </div>
                     </div>
@@ -806,42 +806,42 @@ const AddGymPage = () => {
               <button
                 type="button"
                 onClick={handleAddMembershipPlan}
-                className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto"
+                className="flex items-center justify-center space-x-2 px-4 py-2 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors w-full sm:w-auto"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Plan</span>
               </button>
             </div>
-            
+
             <div className="space-y-4">
               {formData.membershipPlans.map((plan, index) => (
-                <div key={index} className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-700">
+                <div key={index} className="bg-white dark:bg-black rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
                     <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center flex-shrink-0">
-                        <IndianRupee className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+                        <IndianRupee className="w-5 h-5 text-purple-400" />
                       </div>
                       <div className="flex-1">
                         <input
                           type="text"
                           value={plan.name}
                           onChange={(e) => handleMembershipPlanChange(index, 'name', e.target.value)}
-                          className="bg-transparent text-lg font-semibold focus:outline-none focus:text-red-400 w-full mb-1"
+                          className="bg-transparent text-lg font-semibold focus:outline-none focus:text-accent w-full mb-1"
                           placeholder="Plan Name"
                         />
                         <input
                           type="text"
                           value={plan.description}
                           onChange={(e) => handleMembershipPlanChange(index, 'description', e.target.value)}
-                          className="bg-transparent text-sm text-gray-400 focus:outline-none focus:text-gray-300 w-full"
+                          className="bg-transparent text-sm text-gray-600 dark:text-gray-400 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 w-full"
                           placeholder="Plan description"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between sm:justify-end space-x-2">
                       <label className="flex items-center space-x-2 cursor-pointer">
-                        <span className="text-sm text-gray-400">Active</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Active</span>
                         <div className="relative">
                           <input
                             type="checkbox"
@@ -858,7 +858,7 @@ const AddGymPage = () => {
                           </div>
                         </div>
                       </label>
-                      
+
                       <button
                         type="button"
                         onClick={() => handleRemoveMembershipPlan(index)}
@@ -868,49 +868,49 @@ const AddGymPage = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">Price ($)</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Price ($)</label>
                       <input
                         type="number"
                         step="0.01"
                         min="0"
                         value={plan.price}
                         onChange={(e) => handleMembershipPlanChange(index, 'price', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                        className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">Duration (days)</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Duration (days)</label>
                       <input
                         type="number"
                         min="1"
                         value={plan.duration}
                         onChange={(e) => handleMembershipPlanChange(index, 'duration', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                        className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">Monthly Rate</label>
-                      <div className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2">
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Monthly Rate</label>
+                      <div className="bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2">
                         <span className="font-semibold">
                           ${((plan.price / plan.duration) * 30).toFixed(2)}
                         </span>
-                        <span className="text-sm text-gray-400 ml-2">/month</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">/month</span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Features</label>
+                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Features</label>
                     <div className="flex flex-wrap gap-2 mb-3">
                       {plan.features.map((feature, featureIndex) => (
                         <span
                           key={featureIndex}
-                          className="px-3 py-1 bg-gray-800 rounded-full text-sm flex items-center space-x-2"
+                          className="px-3 py-1 bg-gray-100 dark:bg-gray-900/50 rounded-full text-sm flex items-center space-x-2"
                         >
                           <span>{feature}</span>
                           <button
@@ -927,7 +927,7 @@ const AddGymPage = () => {
                       <input
                         type="text"
                         placeholder="Add a feature..."
-                        className="flex-1 bg-gray-800 border border-gray-700 rounded-l-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                        className="flex-1 bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-l-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             handleAddFeature(index, e.target.value);
@@ -942,7 +942,7 @@ const AddGymPage = () => {
                           handleAddFeature(index, input.value);
                           input.value = '';
                         }}
-                        className="px-4 py-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-r-lg hover:opacity-90 transition-opacity"
+                        className="px-4 py-2 bg-accent text-black font-semibold hover:bg-accent-hover rounded-r-lg transition-colors"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -958,10 +958,10 @@ const AddGymPage = () => {
         return (
           <div className="space-y-6">
             <div className="space-y-4">
-              <label className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer">
+              <label className="flex items-center justify-between p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer">
                 <div className="pr-4">
                   <h4 className="font-semibold">Allow Walk-ins</h4>
-                  <p className="text-sm text-gray-400">Allow members to walk in without prior booking</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Allow members to walk in without prior booking</p>
                 </div>
                 <div className="relative">
                   <input
@@ -980,11 +980,11 @@ const AddGymPage = () => {
                   </div>
                 </div>
               </label>
-              
-              <label className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer">
+
+              <label className="flex items-center justify-between p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer">
                 <div className="pr-4">
                   <h4 className="font-semibold">Require Booking</h4>
-                  <p className="text-sm text-gray-400">Require members to book slots in advance</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Require members to book slots in advance</p>
                 </div>
                 <div className="relative">
                   <input
@@ -1003,11 +1003,11 @@ const AddGymPage = () => {
                   </div>
                 </div>
               </label>
-              
-              <label className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer">
+
+              <label className="flex items-center justify-between p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer">
                 <div className="pr-4">
                   <h4 className="font-semibold">Auto Checkout</h4>
-                  <p className="text-sm text-gray-400">Automatically check out members after session time</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Automatically check out members after session time</p>
                 </div>
                 <div className="relative">
                   <input
@@ -1026,17 +1026,17 @@ const AddGymPage = () => {
                   </div>
                 </div>
               </label>
-              
-              <div className="p-4 bg-gray-900 rounded-lg border border-gray-700">
+
+              <div className="p-4 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800">
                 <h4 className="font-semibold mb-2">Maximum Capacity</h4>
-                <p className="text-sm text-gray-400 mb-3">Maximum number of people allowed in the gym at once</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Maximum number of people allowed in the gym at once</p>
                 <input
                   type="number"
                   name="settings.maxCapacity"
                   value={formData.settings.maxCapacity}
                   onChange={handleChange}
                   min="1"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                  className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
                 />
               </div>
             </div>
@@ -1049,19 +1049,19 @@ const AddGymPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white">
       {/* Mobile Header */}
-      <div className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700 lg:hidden">
+      <div className="sticky top-0 z-50 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 lg:hidden">
         <div className="flex items-center justify-between p-4">
           <button
             onClick={() => router.back()}
-            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 px-4">
-            <h1 className="text-lg font-bold truncate">Add New Gym</h1>
-            <p className="text-xs text-gray-400 truncate">
+            <h1 className="text-lg font-bold truncate">Add New <span className="text-accent">Gym</span></h1>
+            <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
               {sections.find(s => s.id === activeSection)?.fullTitle}
             </p>
           </div>
@@ -1074,13 +1074,13 @@ const AddGymPage = () => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.back()}
-              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700"
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold">Add New Gym</h1>
-              <p className="text-gray-400">Fill in the details for your new gym location</p>
+              <h1 className="text-2xl lg:text-3xl font-bold">Add New <span className="text-accent">Gym</span></h1>
+              <p className="text-gray-600 dark:text-gray-400">Fill in the details for your new gym location</p>
             </div>
           </div>
         </div>
@@ -1088,27 +1088,27 @@ const AddGymPage = () => {
         <form onSubmit={handleSubmit}>
           {/* Horizontal Navigation Bar */}
           <div className="mb-6 lg:mb-8">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+            <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
               <h3 className="font-semibold mb-4 hidden lg:block">Setup Sections</h3>
-              
+
               <div className="relative">
                 {/* Scroll Buttons for Mobile */}
                 <button
                   onClick={scrollLeft}
-                  className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2 z-10 w-8 h-8 bg-gray-900 border border-gray-700 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors lg:hidden"
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2 z-10 w-8 h-8 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors lg:hidden"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                
+
                 <button
                   onClick={scrollRight}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2 z-10 w-8 h-8 bg-gray-900 border border-gray-700 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors lg:hidden"
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2 z-10 w-8 h-8 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors lg:hidden"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
-                
+
                 {/* Horizontal Navigation */}
-                <div 
+                <div
   ref={scrollContainerRef}
   className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
 >
@@ -1120,8 +1120,8 @@ const AddGymPage = () => {
       className={`flex-shrink-0 flex items-center justify-center gap-2 px-3 py-3 rounded-lg transition-colors min-w-[80px]
         ${
           activeSection === section.id
-            ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-            : 'bg-gray-900 hover:bg-gray-700'
+            ? 'bg-accent text-black font-semibold shadow-lg'
+            : 'bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900'
         }
       `}
     >
@@ -1141,13 +1141,13 @@ const AddGymPage = () => {
 
           {/* Main Form Content */}
           <div>
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-4 lg:p-6 mb-6">
+            <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4 lg:p-6 mb-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
                 <div>
                   <h2 className="text-xl font-bold">
                     {sections.find(s => s.id === activeSection)?.fullTitle}
                   </h2>
-                  <p className="text-gray-400">Fill in the required information</p>
+                  <p className="text-gray-600 dark:text-gray-400">Fill in the required information</p>
                 </div>
                 <div className="flex items-center space-x-2 self-end lg:self-auto">
                   {activeSection !== 'basic' && (
@@ -1159,7 +1159,7 @@ const AddGymPage = () => {
                           setActiveSection(sections[currentIndex - 1].id);
                         }
                       }}
-                      className="px-3 lg:px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors text-sm lg:text-base"
+                      className="px-3 lg:px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors text-sm lg:text-base"
                     >
                       Previous
                     </button>
@@ -1173,7 +1173,7 @@ const AddGymPage = () => {
                           setActiveSection(sections[currentIndex + 1].id);
                         }
                       }}
-                      className="px-3 lg:px-4 py-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity text-sm lg:text-base"
+                      className="px-3 lg:px-4 py-2 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors text-sm lg:text-base"
                     >
                       Next
                     </button>
@@ -1185,24 +1185,24 @@ const AddGymPage = () => {
             </div>
 
             {/* Form Actions - Mobile Fixed Bottom */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-gray-900 border-t border-gray-700">
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
               <div className="flex justify-between space-x-4">
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors flex-1"
-                >. 
+                  className="px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors flex-1"
+                >.
                   Cancel
                 </button>
                 <motion.button
                   type="submit"
                   disabled={loading}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-1"
+                  className="px-4 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-1"
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-accent mr-2"></div>
                       Creating...
                     </>
                   ) : (
@@ -1220,7 +1220,7 @@ const AddGymPage = () => {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-6 py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-6 py-3 border border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
               >
                 Cancel
               </button>
@@ -1229,11 +1229,11 @@ const AddGymPage = () => {
                 disabled={loading}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="px-6 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-accent mr-2"></div>
                     Creating...
                   </>
                 ) : (

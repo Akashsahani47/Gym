@@ -3,16 +3,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Building, 
-  Plus, 
-  MapPin, 
-  Users, 
-  DollarSign, 
+import {
+  Building,
+  Plus,
+  MapPin,
+  Users,
+  DollarSign,
   Activity,
-  Edit2, 
-  Trash2, 
-  Eye, 
+  Edit2,
+  Trash2,
+  Eye,
   Search,
   Filter,
   MoreVertical,
@@ -47,7 +47,7 @@ const GymsPage = () => {
 
     const fetchGyms = async () => {
       try {
-       
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/gyms`,
           {
@@ -61,13 +61,13 @@ const GymsPage = () => {
         if (response.ok) {
           const data = await response.json();
           setGyms(data.gyms || []);
-          
+
           // Calculate stats
           const totalGyms = data.gyms?.length || 0;
           const activeGyms = data.gyms?.filter(g => g.status === 'active').length || 0;
           const totalMembers = data.gyms?.reduce((sum, gym) => sum + (gym.stats?.totalMembers || 0), 0) || 0;
           const monthlyRevenue = data.gyms?.reduce((sum, gym) => sum + (gym.stats?.monthlyRevenue || 0), 0) || 0;
-          
+
           setStats({
             totalGyms,
             activeGyms,
@@ -81,7 +81,7 @@ const GymsPage = () => {
         console.error('Error fetching gyms:', error);
         toast.error('Error loading gyms');
       } finally {
-       
+
       }
     };
 
@@ -117,9 +117,9 @@ const GymsPage = () => {
   const filteredGyms = gyms.filter(gym => {
     const matchesSearch = gym.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          gym.address?.city?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || gym.status === filterStatus;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -129,6 +129,9 @@ const GymsPage = () => {
       value: stats.totalGyms,
       icon: <Building className="w-5 h-5" />,
       color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-500/10',
+      borderColor: 'border-blue-500/30',
+      iconColor: 'text-blue-400',
       change: '+2'
     },
     {
@@ -136,6 +139,9 @@ const GymsPage = () => {
       value: stats.activeGyms,
       icon: <Activity className="w-5 h-5" />,
       color: 'from-green-500 to-green-600',
+      bgColor: 'bg-emerald-500/10',
+      borderColor: 'border-emerald-500/30',
+      iconColor: 'text-emerald-400',
       change: '+1'
     },
     {
@@ -143,6 +149,9 @@ const GymsPage = () => {
       value: stats.totalMembers.toLocaleString(),
       icon: <Users className="w-5 h-5" />,
       color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/30',
+      iconColor: 'text-purple-400',
       change: '+12%'
     },
     {
@@ -150,31 +159,37 @@ const GymsPage = () => {
       value: `$${stats.monthlyRevenue.toLocaleString()}`,
       icon: <DollarSign className="w-5 h-5" />,
       color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-accent/10',
+      borderColor: 'border-accent/30',
+      iconColor: 'text-accent',
       change: '+15%'
     }
   ];
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+      <div className="flex items-center justify-center h-screen bg-white dark:bg-black">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 lg:p-6">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white p-4 lg:p-6">
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">My Gyms</h1>
-          <p className="text-gray-400">Manage all your gym locations and members</p>
+          <h1 className="text-2xl lg:text-3xl font-bold">
+            <span className="text-gray-900 dark:text-white">My </span>
+            <span className="text-accent">Gyms</span>
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage all your gym locations and members</p>
         </div>
         <Link href="/dashboard/gymOwner/gymInfo/addgym">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity"
+            className="flex items-center space-x-2 px-4 py-2 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add New Gym</span>
@@ -190,32 +205,32 @@ const GymsPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700"
+            className={`bg-white dark:bg-gray-900 shadow-sm dark:shadow-none rounded-xl p-6 border ${stat.borderColor}`}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-lg bg-gradient-to-r ${stat.color}`}>
-                {stat.icon}
+              <div className={`p-3 rounded-lg ${stat.bgColor} border ${stat.borderColor}`}>
+                <span className={stat.iconColor}>{stat.icon}</span>
               </div>
-              <span className="text-green-400 text-sm font-medium">{stat.change}</span>
+              <span className="text-accent text-sm font-medium">{stat.change}</span>
             </div>
             <h3 className="text-2xl font-bold mb-1">{stat.value}</h3>
-            <p className="text-gray-400">{stat.label}</p>
+            <p className="text-gray-600 dark:text-gray-400">{stat.label}</p>
           </motion.div>
         ))}
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 mb-6">
+      <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-200 dark:border-gray-800 mb-6">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Search gyms by name or city..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-red-500"
+                className="w-full pl-10 pr-4 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
             </div>
           </div>
@@ -223,7 +238,7 @@ const GymsPage = () => {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-red-500"
+              className="px-4 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:border-accent"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -231,7 +246,7 @@ const GymsPage = () => {
               <option value="under_maintenance">Maintenance</option>
               <option value="closed">Closed</option>
             </select>
-            <button className="px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+            <button className="px-4 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               <Filter className="w-5 h-5" />
             </button>
           </div>
@@ -244,9 +259,9 @@ const GymsPage = () => {
           <div className="col-span-full text-center py-12">
             <Building className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No Gyms Found</h3>
-            <p className="text-gray-400 mb-6">Get started by adding your first gym</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">Get started by adding your first gym</p>
             <Link href="/dashboard/gymOwner/gymInfo/addgym">
-              <button className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity">
+              <button className="px-6 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors">
                 Add Your First Gym
               </button>
             </Link>
@@ -258,10 +273,10 @@ const GymsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-red-500/30 transition-all group"
+              className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-accent/30 transition-all group"
             >
               {/* Gym Header */}
-              <div className="p-6 border-b border-gray-700">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-800">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     {gym.logo ? (
@@ -271,17 +286,17 @@ const GymsPage = () => {
                         className="w-12 h-12 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 flex items-center justify-center">
-                        <Building className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
+                        <Building className="w-6 h-6 text-purple-400" />
                       </div>
                     )}
                     <div>
-                      <h3 className="font-bold text-lg group-hover:text-red-400 transition-colors">
+                      <h3 className="font-bold text-lg group-hover:text-accent transition-colors">
                         {gym.name}
                       </h3>
                       <div className="flex items-center space-x-2 mt-1">
-                        <MapPin className="w-3 h-3 text-gray-400" />
-                        <span className="text-sm text-gray-400">
+                        <MapPin className="w-3 h-3 text-gray-600 dark:text-gray-400" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           {gym.address?.city || 'Location not set'}
                         </span>
                       </div>
@@ -289,22 +304,22 @@ const GymsPage = () => {
                   </div>
                   <div className="relative">
                     <button className="p-2 hover:bg-gray-700 rounded-lg">
-                      <MoreVertical className="w-5 h-5 text-gray-400" />
+                      <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                     </button>
                   </div>
                 </div>
 
                 {/* Status Badge */}
                 <div className="flex items-center justify-between">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    gym.status === 'active' ? 'bg-green-500/20 text-green-400' :
-                    gym.status === 'inactive' ? 'bg-yellow-500/20 text-yellow-400' :
-                    gym.status === 'under_maintenance' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-red-500/20 text-red-400'
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                    gym.status === 'active' ? 'bg-green-500/10 text-green-400 border-green-500/30' :
+                    gym.status === 'inactive' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
+                    gym.status === 'under_maintenance' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' :
+                    'bg-red-500/10 text-red-400 border-red-500/30'
                   }`}>
                     {gym.status?.replace('_', ' ').toUpperCase()}
                   </span>
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {gym.stats?.totalMembers || 0} members
                   </span>
                 </div>
@@ -314,19 +329,19 @@ const GymsPage = () => {
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-gray-400">Members</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Members</p>
                     <p className="font-semibold">{gym.stats?.totalMembers || 0}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Trainers</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Trainers</p>
                     <p className="font-semibold">{gym.stats?.totalTrainers || 0}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Revenue</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Revenue</p>
                     <p className="font-semibold">${gym.stats?.monthlyRevenue || 0}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Approval</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Approval</p>
                     <p className={`font-semibold ${
                       gym.approval?.isApproved ? 'text-green-400' : 'text-yellow-400'
                     }`}>
@@ -338,14 +353,14 @@ const GymsPage = () => {
                 {/* Operating Hours */}
                 {gym.operatingHours && gym.operatingHours.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-400 mb-2">Todayas Hours</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Todayas Hours</p>
                     <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
+                      <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       <span className="text-sm">
                         {(() => {
                           const today = new Date().toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
                           const hours = gym.operatingHours.find(h => h.day === today);
-                          return hours && !hours.isClosed 
+                          return hours && !hours.isClosed
                             ? `${hours.open} - ${hours.close}`
                             : 'Closed Today';
                         })()}
@@ -357,13 +372,13 @@ const GymsPage = () => {
                 {/* Action Buttons */}
                 <div className="flex space-x-2">
                   <Link href={`/dashboard/gymOwner/gymInfo/${gym._id}`} className="flex-1">
-                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-white/5 hover:bg-[#DAFF00]/10 border border-white/10 hover:border-[#DAFF00]/30 rounded-xl transition-colors text-gray-300 hover:text-[#DAFF00]">
+                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 rounded-xl transition-colors text-gray-700 dark:text-gray-300 hover:text-accent">
                       <Eye className="w-4 h-4" />
                       <span>View</span>
                     </button>
                   </Link>
                   <Link href={`/dashboard/gymOwner/gymInfo/${gym._id}/edit`} className="flex-1">
-                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-[#DAFF00]/10 hover:bg-[#DAFF00]/20 border border-[#DAFF00]/30 text-[#DAFF00] rounded-xl transition-colors">
+                    <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 border border-accent/30 text-accent rounded-xl transition-colors">
                       <Edit2 className="w-4 h-4" />
                       <span>Edit</span>
                     </button>
@@ -388,27 +403,27 @@ const GymsPage = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-md w-full"
+            className="bg-gray-50 dark:bg-gray-900/90 rounded-xl p-6 border border-gray-200 dark:border-gray-800 max-w-md w-full"
           >
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-8 h-8 text-red-400" />
               </div>
               <h3 className="text-xl font-bold mb-2">Delete Gym</h3>
-              <p className="text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400">
                 Are you sure you want to delete this gym? This action cannot be undone and all associated data will be lost.
               </p>
             </div>
             <div className="flex space-x-3">
               <button
                 onClick={() => setDeleteModal(null)}
-                className="flex-1 px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="flex-1 px-4 py-3 border border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteGym(deleteModal)}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:opacity-90 transition-opacity"
+                className="flex-1 px-4 py-3 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors"
               >
                 Delete Gym
               </button>
