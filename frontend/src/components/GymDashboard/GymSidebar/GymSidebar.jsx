@@ -515,7 +515,7 @@ const GymSidebar = () => {
                   </div>
                   <div>
                     <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                      Fitness<span className="text-accent">Hub</span>
+                      <span className="text-accent">Zelvoo</span>
                     </h1>
                     <p className="text-xs text-gray-600 dark:text-gray-400">Dashboard</p>
                   </div>
