@@ -19,6 +19,42 @@ const AuthPage = () => {
   
   // State for toggling between login/signup
   const [isLoginMode, setIsLoginMode] = useState(false)
+
+  // Forgot password modal state
+  const [showForgotModal, setShowForgotModal] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotStatus, setForgotStatus] = useState('idle') // 'idle' | 'loading' | 'sent' | 'error'
+  const [forgotError, setForgotError] = useState('')
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault()
+    setForgotStatus('loading')
+    setForgotError('')
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setForgotStatus('sent')
+      } else {
+        setForgotStatus('error')
+        setForgotError(data.message || 'Something went wrong')
+      }
+    } catch {
+      setForgotStatus('error')
+      setForgotError('Network error. Please try again.')
+    }
+  }
+
+  const closeForgotModal = () => {
+    setShowForgotModal(false)
+    setForgotEmail('')
+    setForgotStatus('idle')
+    setForgotError('')
+  }
   
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -752,12 +788,13 @@ const AuthPage = () => {
                     </div>
                     <span className="ml-2 text-sm text-gray-300">Remember me</span>
                   </label>
-                  <Link 
-                    href="/forgot-password" 
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(true)}
                     className="text-sm text-[#DAFF00] hover:text-[#c5e600] transition flex items-center"
                   >
                     Forgot password?
-                  </Link>
+                  </button>
                 </div>
 
                 <button
@@ -1124,6 +1161,72 @@ const AuthPage = () => {
           </div>
         </div>
       </div>
+      {/* ── Forgot Password Modal ── */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-8">
+            {forgotStatus === 'sent' ? (
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-[#DAFF00]/10 flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-7 h-7 text-[#DAFF00]" />
+                </div>
+                <h2 className="text-xl font-bold text-white mb-2">Check your inbox</h2>
+                <p className="text-gray-400 text-sm mb-6">
+                  If <span className="text-white">{forgotEmail}</span> is registered, you&apos;ll receive a password reset link shortly.
+                </p>
+                <button
+                  onClick={closeForgotModal}
+                  className="w-full py-3 bg-[#DAFF00] text-black font-semibold rounded-lg hover:bg-[#c5e600] transition"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white">Reset your password</h2>
+                  <button onClick={closeForgotModal} className="text-gray-400 hover:text-white transition">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-gray-400 text-sm mb-6">
+                  Enter the email address linked to your account and we&apos;ll send you a reset link.
+                </p>
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      required
+                      className="w-full bg-gray-800/50 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#DAFF00] transition"
+                    />
+                  </div>
+                  {forgotStatus === 'error' && (
+                    <p className="text-red-400 text-sm">{forgotError}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={forgotStatus === 'loading'}
+                    className="w-full py-3 bg-[#DAFF00] text-black font-semibold rounded-lg hover:bg-[#c5e600] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    {forgotStatus === 'loading' ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        Sending...
+                      </>
+                    ) : (
+                      'Send Reset Link'
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -14,6 +14,8 @@ import {
   markPaymentPaid,
   createSubscriptionOrder,
   verifySubscriptionPayment,
+  sendVerificationEmail,
+  verifyEmail,
 } from "../controller/gymOwner.js";
 
 const router = express.Router();
@@ -31,4 +33,6 @@ router.get("/payments", verifyToken, getPayments);
 router.post("/payments/mark-paid/:paymentId", verifyToken, markPaymentPaid);
 router.post("/subscription/create-order", verifyToken, createSubscriptionOrder);
 router.post("/subscription/verify-payment", verifyToken, verifySubscriptionPayment);
+router.post("/send-verification", verifyToken, sendVerificationEmail);
+router.get("/verify-email", verifyEmail); // no auth — accessed via email link
 export default router;

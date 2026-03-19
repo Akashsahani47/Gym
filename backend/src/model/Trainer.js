@@ -104,11 +104,14 @@ const TrainerSchema = new mongoose.Schema({
   },
   
   lastLogin: Date,
-  emailVerified: { 
-    type: Boolean, 
-    default: false 
-  }
-  
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+
+  passwordResetToken: String,
+  passwordResetExpiry: Date,
+
 }, {
   timestamps: true
 });

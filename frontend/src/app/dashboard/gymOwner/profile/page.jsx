@@ -79,6 +79,8 @@ const ProfilePage = () => {
   });
   const [subPaying, setSubPaying] = useState(false);
   const [showPayHistory, setShowPayHistory] = useState(false);
+  const [verifyingEmail, setVerifyingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -292,6 +294,28 @@ const token = useUserStore((s) => s.token);
       }
     } catch (error) {
       toast.error('Failed to upload avatar');
+    }
+  };
+
+  // ── Email verification ────────────────────────────────────────────────────
+  const handleSendVerification = async () => {
+    setVerifyingEmail(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/send-verification`,
+        { method: 'POST', headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setEmailSent(true);
+        toast.success('Verification email sent! Check your inbox.');
+      } else {
+        toast.error(data.error || 'Failed to send verification email');
+      }
+    } catch {
+      toast.error('Network error. Please try again.');
+    } finally {
+      setVerifyingEmail(false);
     }
   };
 
@@ -623,8 +647,13 @@ const token = useUserStore((s) => s.token);
                         Verified
                       </span>
                     ) : (
-                      <button type="button" className="ml-auto text-accent text-xs lg:text-sm hover:underline">
-                        Verify
+                      <button
+                        type="button"
+                        onClick={handleSendVerification}
+                        disabled={verifyingEmail || emailSent}
+                        className="ml-auto text-accent text-xs lg:text-sm hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {verifyingEmail ? 'Sending…' : emailSent ? 'Email Sent ✓' : 'Verify'}
                       </button>
                     )}
                   </div>

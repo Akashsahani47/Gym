@@ -6,6 +6,7 @@ import { Payment } from "../model/Payment.js";
 import bcrypt from "bcryptjs";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { BrevoClient } from "@getbrevo/brevo";
 
 const getRazorpay = () => {
   if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
@@ -719,5 +720,83 @@ export const verifySubscriptionPayment = async (req, res) => {
   } catch (error) {
     console.error("verifySubscriptionPayment error:", error);
     return res.status(500).json({ success: false, error: "Failed to verify payment" });
+  }
+};
+
+// ─── Email Verification ───────────────────────────────────────────────────────
+
+const getBrevoClient = () =>
+  new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
+
+export const sendVerificationEmail = async (req, res) => {
+  try {
+    const ownerId = req.user?.id;
+    const owner = await GymOwner.findById(ownerId);
+    if (!owner) return res.status(404).json({ success: false, error: "Owner not found" });
+
+    if (owner.emailVerified) {
+      return res.status(400).json({ success: false, error: "Email is already verified" });
+    }
+
+    // Generate token
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    owner.emailVerificationToken = token;
+    owner.emailVerificationExpiry = expiry;
+    await owner.save();
+
+    const verifyUrl = `${process.env.NEXT_FRONTEND_URL}/verify-email?token=${token}`;
+    const name = owner.profile?.firstName || "there";
+
+    await getBrevoClient().transactionalEmails.sendTransacEmail({
+      subject: "Verify your GymPro email",
+      sender: {
+        name: process.env.BREVO_SENDER_NAME || "GymPro",
+        email: process.env.BREVO_SENDER_EMAIL,
+      },
+      to: [{ email: owner.email, name }],
+      htmlContent: `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;">
+          <h2 style="color:#1a1a1a;">Hey ${name}, verify your email</h2>
+          <p style="color:#555;">Click the button below to confirm your email address. This link expires in <strong>1 hour</strong>.</p>
+          <a href="${verifyUrl}" style="display:inline-block;margin:24px 0;padding:12px 28px;background:#9EDC00;color:#000;font-weight:700;border-radius:8px;text-decoration:none;">
+            Verify Email
+          </a>
+          <p style="color:#aaa;font-size:12px;">If you didn't request this, you can safely ignore it.</p>
+        </div>
+      `,
+    });
+
+    return res.json({ success: true, message: "Verification email sent" });
+  } catch (error) {
+    console.error("sendVerificationEmail error:", error);
+    return res.status(500).json({ success: false, error: "Failed to send verification email" });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(400).json({ success: false, error: "Token required" });
+
+    const owner = await GymOwner.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpiry: { $gt: new Date() },
+    });
+
+    if (!owner) {
+      return res.status(400).json({ success: false, error: "Invalid or expired token" });
+    }
+
+    owner.emailVerified = true;
+    owner.emailVerificationToken = undefined;
+    owner.emailVerificationExpiry = undefined;
+    await owner.save();
+
+    return res.json({ success: true, message: "Email verified successfully" });
+  } catch (error) {
+    console.error("verifyEmail error:", error);
+    return res.status(500).json({ success: false, error: "Verification failed" });
   }
 };

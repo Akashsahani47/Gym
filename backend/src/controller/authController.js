@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import { BrevoClient } from '@getbrevo/brevo';
 import { GymOwner } from '../model/GymOwner.js';
 import { Member } from '../model/Member.js';
 import { Trainer } from '../model/Trainer.js';
@@ -403,6 +405,100 @@ const getRegistrationMessage = (userType) => {
       return "Trainer registration successful! Your account is pending gym owner approval.";
     default:
       return "Registration successful!";
+  }
+};
+
+// ─── Forgot Password ──────────────────────────────────────────────────────────
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const emailCheck = await checkEmailExists(email);
+    // Always return success so we don't leak which emails exist
+    if (!emailCheck.exists) {
+      return res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    const user = emailCheck.user;
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    user.passwordResetToken = token;
+    user.passwordResetExpiry = expiry;
+    await user.save();
+
+    const resetUrl = `${process.env.NEXT_FRONTEND_URL}/reset-password?token=${token}`;
+    const name = user.profile?.firstName || 'there';
+
+    const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
+    await brevo.transactionalEmails.sendTransacEmail({
+      subject: 'Reset your GymPro password',
+      sender: {
+        name: process.env.BREVO_SENDER_NAME || 'GymPro',
+        email: process.env.BREVO_SENDER_EMAIL,
+      },
+      to: [{ email: user.email, name }],
+      htmlContent: `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;">
+          <h2 style="color:#1a1a1a;">Hey ${name}, reset your password</h2>
+          <p style="color:#555;">Click the button below to reset your password. This link expires in <strong>1 hour</strong>.</p>
+          <a href="${resetUrl}" style="display:inline-block;margin:24px 0;padding:12px 28px;background:#9EDC00;color:#000;font-weight:700;border-radius:8px;text-decoration:none;">
+            Reset Password
+          </a>
+          <p style="color:#aaa;font-size:12px;">If you didn't request this, you can safely ignore it.</p>
+        </div>
+      `,
+    });
+
+    return res.json({ success: true, message: 'If that email exists, a reset link has been sent.' });
+  } catch (error) {
+    console.error('forgotPassword error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// ─── Reset Password ───────────────────────────────────────────────────────────
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Token and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    // Search all user types for this token
+    const query = {
+      passwordResetToken: token,
+      passwordResetExpiry: { $gt: new Date() },
+    };
+
+    let user =
+      (await GymOwner.findOne(query)) ||
+      (await Member.findOne(query)) ||
+      (await Trainer.findOne(query));
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired reset link' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.passwordResetToken = undefined;
+    user.passwordResetExpiry = undefined;
+    await user.save();
+
+    return res.json({ success: true, message: 'Password reset successfully. You can now log in.' });
+  } catch (error) {
+    console.error('resetPassword error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 

@@ -87,7 +87,11 @@ const MemberSchema = new mongoose.Schema({
   emailVerified: {
     type: Boolean,
     default: false
-  }
+  },
+
+  passwordResetToken: String,
+  passwordResetExpiry: Date,
+
 }, { timestamps: true });
 
 MemberSchema.index({ email: 1, gymId: 1 }, { unique: true });

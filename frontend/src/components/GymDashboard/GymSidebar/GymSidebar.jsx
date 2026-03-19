@@ -51,18 +51,7 @@ const GymSidebar = () => {
     // { id: 'achievements', label: 'Achievements', href: "/dashboard/gymOwner/achievements", icon: <Trophy className="w-5 h-5" />, badge: '2' },
   ];
 
-  const quickStats = [
-    { label: 'Active Now', value: '24', icon: <Flame className="w-4 h-4 text-accent" />, color: 'from-accent/20 to-accent/5' },
-    { label: 'Calories Burned', value: '1.2k', icon: <Heart className="w-4 h-4 text-accent" />, color: 'from-accent/20 to-accent/5' },
-    { label: 'Workouts', value: '8', icon: <Award className="w-4 h-4 text-accent" />, color: 'from-accent/20 to-accent/5' },
-  ];
-
-  const recentActivities = [
-    { user: 'Alex Johnson', action: 'completed HIIT workout', time: '10m ago' },
-    { user: 'Sarah Miller', action: 'joined spinning class', time: '25m ago' },
-    { user: 'Mike Chen', action: 'achieved new PR', time: '1h ago' },
-  ];
-
+  
   const sidebarVariants = {
     expanded: { width: 256 },
     collapsed: { width: 80 }
@@ -224,38 +213,7 @@ const GymSidebar = () => {
         </AnimatePresence>
 
         {/* Quick Stats - Only show when expanded */}
-        <AnimatePresence>
-          {!collapsed && (
-            <motion.div
-              className="px-4 py-3 border-b border-gray-200 dark:border-white/10"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <h4 className="text-xs uppercase text-gray-500 font-semibold mb-2 tracking-wider">Today&apos;s Stats</h4>
-              <div className="grid grid-cols-3 gap-2">
-                {quickStats.map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    className={`bg-gradient-to-br ${stat.color} backdrop-blur-sm rounded-xl p-2 text-center border border-gray-200 dark:border-white/10`}
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 0 15px rgba(218, 255, 0, 0.2)"
-                    }}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="flex justify-center mb-1">{stat.icon}</div>
-                    <div className="text-gray-900 dark:text-white font-bold text-sm">{stat.value}</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+       
 
         {/* Main Navigation */}
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
@@ -307,49 +265,8 @@ const GymSidebar = () => {
             ))}
           </motion.nav>
 
-          {/* Recent Activities - Only show when expanded */}
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.div
-                className="mt-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ delay: 0.2 }}
-              >
-                <h4 className="text-xs uppercase text-gray-600 dark:text-gray-400 font-semibold mb-3 flex items-center">
-                  <Bell className="w-3 h-3 mr-2" />
-                  Recent Activities
-                </h4>
-                <div className="space-y-3">
-                  {recentActivities.map((activity, index) => (
-                    <motion.div
-                      key={index}
-                      className="p-3 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ x: 5 }}
-                    >
-                      <div className="flex items-start space-x-2">
-                        <motion.div
-                          className="w-2 h-2 mt-1.5 rounded-full bg-accent"
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ repeat: Infinity, duration: 2, delay: index * 0.3 }}
-                        ></motion.div>
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-900 dark:text-white">
-                            <span className="font-semibold">{activity.user}</span> {activity.action}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          
+          
         </div>
 
         {/* Footer Section */}

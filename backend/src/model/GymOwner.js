@@ -120,11 +120,16 @@ const GymOwnerSchema = new mongoose.Schema({
   },
   
   lastLogin: Date,
-  emailVerified: { 
-    type: Boolean, 
-    default: false 
-  }
-  
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: String,
+  emailVerificationExpiry: Date,
+
+  passwordResetToken: String,
+  passwordResetExpiry: Date,
+
 }, {
   timestamps: true
 });
