@@ -551,7 +551,7 @@ const AddCustomerPage = () => {
                         onChange={handleChange}
                         required
                         className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                        placeholder="John"
+                        placeholder=""
                       />
                       {formErrors['profile.firstName'] && (
                         <p className="text-red-400 text-xs mt-1 flex items-center">
@@ -572,7 +572,7 @@ const AddCustomerPage = () => {
                         onChange={handleChange}
                         required
                         className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                        placeholder="Doe"
+                        placeholder=""
                       />
                       {formErrors['profile.lastName'] && (
                         <p className="text-red-400 text-xs mt-1 flex items-center">
@@ -595,7 +595,7 @@ const AddCustomerPage = () => {
                           onChange={handleChange}
                           required
                           className="bg-transparent focus:outline-none flex-1 min-w-0"
-                          placeholder="+91 99999999"
+                          placeholder="+91 "
                         />
                       </div>
                       {formErrors['profile.phone'] && (

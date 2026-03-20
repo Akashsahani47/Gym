@@ -343,7 +343,14 @@ export default function PaymentsPage() {
       );
       const data = await res.json();
       if (res.ok) {
-        toast.success('Payment marked as paid!');
+        if (data.receiptEmailSent) {
+          toast.success('Payment marked as paid! Receipt sent to member\'s email.');
+        } else {
+          toast.success('Payment marked as paid!');
+          if (data.payment?.memberEmail) {
+            toast('Receipt email could not be sent. You may inform the member manually.', { icon: '⚠️' });
+          }
+        }
         setMarkPaidTarget(null);
         setPayments((prev) =>
           prev.map((p) => (p._id === data.payment._id ? data.payment : p))

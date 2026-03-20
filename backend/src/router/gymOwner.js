@@ -17,6 +17,8 @@ import {
   verifySubscriptionPayment,
   sendVerificationEmail,
   verifyEmail,
+  updateMemberStatus,
+  deleteMember,
 } from "../controller/gymOwner.js";
 import {
   getRevenueAnalytics,
@@ -37,6 +39,8 @@ router.put("/gyms/:id", verifyToken, updateGym);
 router.delete("/gyms/:id", verifyToken, deleteGym);
 router.post("/addmembers", verifyToken, addMember);
 router.get("/members", verifyToken, getAllMembers);
+router.patch("/members/:memberId/status", verifyToken, updateMemberStatus);
+router.delete("/members/:memberId", verifyToken, deleteMember);
 router.get("/payments", verifyToken, getPayments);
 router.post("/payments/mark-paid/:paymentId", verifyToken, markPaymentPaid);
 router.post("/payments/send-reminders", verifyToken, sendPaymentReminders);

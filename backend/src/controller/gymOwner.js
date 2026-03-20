@@ -495,6 +495,56 @@ export const getAllMembers = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────
+// MEMBER STATUS & DELETE
+// ─────────────────────────────────────────────
+
+export const updateMemberStatus = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { memberId } = req.params;
+    const { status } = req.body;
+
+    if (!['active', 'inactive', 'suspended', 'pending'].includes(status)) {
+      return res.status(400).json({ success: false, error: "Invalid status" });
+    }
+
+    const member = await Member.findOne({ _id: memberId, createdBy: ownerId, isDeleted: false });
+    if (!member) {
+      return res.status(404).json({ success: false, error: "Member not found" });
+    }
+
+    member.status = status;
+    await member.save();
+
+    return res.status(200).json({ success: true, message: `Member status updated to ${status}` });
+  } catch (error) {
+    console.error("Update Member Status Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to update status" });
+  }
+};
+
+export const deleteMember = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { memberId } = req.params;
+
+    const member = await Member.findOne({ _id: memberId, createdBy: ownerId, isDeleted: false });
+    if (!member) {
+      return res.status(404).json({ success: false, error: "Member not found" });
+    }
+
+    member.isDeleted = true;
+    member.status = 'inactive';
+    await member.save();
+
+    return res.status(200).json({ success: true, message: "Member deleted successfully" });
+  } catch (error) {
+    console.error("Delete Member Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to delete member" });
+  }
+};
+
+// ─────────────────────────────────────────────
 // PAYMENTS
 // ─────────────────────────────────────────────
 
@@ -662,10 +712,76 @@ export const markPaymentPaid = async (req, res) => {
       metadata: { paymentId: payment._id },
     });
 
+    // Send receipt/invoice email to member (Brevo)
+    let receiptEmailSent = false;
+    const memberEmail = payment.memberEmail;
+    if (memberEmail) {
+      try {
+        const [y, m] = (payment.month || "").split("-");
+        const monthLabel =
+          y && m
+            ? new Date(parseInt(y, 10), parseInt(m, 10) - 1, 1).toLocaleString(
+                "en-IN",
+                { month: "long", year: "numeric" }
+              )
+            : payment.month;
+        const methodLabel = {
+          cash: "Cash",
+          online: "Online",
+          card: "Card",
+          bank_transfer: "Bank Transfer",
+        }[payment.method] || payment.method;
+        const paidAtStr = payment.paidAt
+          ? new Date(payment.paidAt).toLocaleString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "";
+
+        await getBrevoClient().transactionalEmails.sendTransacEmail({
+          subject: `Payment receipt – ${payment.gymName || "Gym"} (${monthLabel})`,
+          sender: {
+            name: process.env.BREVO_SENDER_NAME || "Zelvoo",
+            email: process.env.BREVO_SENDER_EMAIL,
+          },
+          to: [
+            {
+              email: memberEmail,
+              name: payment.memberName || "Member",
+            },
+          ],
+          htmlContent: `
+            <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px;">
+              <h2 style="color:#1a1a1a;">Payment Receipt</h2>
+              <p style="color:#555;">Hi ${payment.memberName || "Member"},</p>
+              <p style="color:#555;">Thank you for your payment. Here are the details of your receipt.</p>
+              <div style="background:#f5f5f5;border-radius:8px;padding:16px;margin:20px 0;">
+                <p style="margin:0 0 8px 0;"><strong>Gym:</strong> ${payment.gymName || "—"}</p>
+                <p style="margin:0 0 8px 0;"><strong>Plan:</strong> ${payment.planName || "—"}</p>
+                <p style="margin:0 0 8px 0;"><strong>Period:</strong> ${monthLabel}</p>
+                <p style="margin:0 0 8px 0;"><strong>Amount paid:</strong> ₹${(payment.amount ?? 0).toLocaleString("en-IN")}</p>
+                <p style="margin:0 0 8px 0;"><strong>Payment method:</strong> ${methodLabel}</p>
+                <p style="margin:0;"><strong>Date paid:</strong> ${paidAtStr}</p>
+              </div>
+              <p style="color:#555;">Thank you for your payment. Keep up the great work!</p>
+              <p style="color:#aaa;font-size:12px;">This is an automated receipt from your gym.</p>
+            </div>
+          `,
+        });
+        receiptEmailSent = true;
+      } catch (err) {
+        console.error("Receipt email failed for", memberEmail, err);
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: "Payment marked as paid",
       payment,
+      receiptEmailSent,
     });
   } catch (error) {
     console.error("markPaymentPaid error:", error);
