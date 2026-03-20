@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "html5-qrcode": "^2.3.8",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.555.0",
     "motion": "^12.23.25",
     "next": "16.0.7",

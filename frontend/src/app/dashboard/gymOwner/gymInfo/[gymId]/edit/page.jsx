@@ -12,6 +12,15 @@ import {
   ArrowLeft,
   Save,
   Loader2,
+  Upload,
+  Check,
+  X,
+  Plus,
+  Trash2,
+  IndianRupee,
+  Facebook,
+  Instagram,
+  Twitter,
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
@@ -26,6 +35,17 @@ const daysOfWeek = [
   { value: 'friday', label: 'Friday' },
   { value: 'saturday', label: 'Saturday' },
   { value: 'sunday', label: 'Sunday' },
+];
+
+const defaultFacilities = [
+  { name: 'Cardio Equipment', description: 'Treadmills, ellipticals, stationary bikes', available: true },
+  { name: 'Weight Training', description: 'Free weights, weight machines', available: true },
+  { name: 'Group Classes', description: 'Yoga, Zumba, Spin classes', available: true },
+  { name: 'Swimming Pool', description: 'Indoor/outdoor swimming pool', available: false },
+  { name: 'Locker Rooms', description: 'Secure lockers and showers', available: true },
+  { name: 'Personal Training', description: 'Certified personal trainers', available: true },
+  { name: 'Sauna/Steam Room', description: 'Relaxation facilities', available: false },
+  { name: 'Parking', description: 'Free parking available', available: true },
 ];
 
 const emptyFormData = () => ({
@@ -100,7 +120,7 @@ function gymToFormData(gym) {
         description: f.description ?? '',
         available: f.available !== false,
       }))
-    : [];
+    : defaultFacilities.map((f) => ({ ...f }));
   fd.operatingHours =
     Array.isArray(gym.operatingHours) && gym.operatingHours.length
       ? gym.operatingHours.map((h) => ({
@@ -144,6 +164,7 @@ const EditGymPage = () => {
   const [formData, setFormData] = useState(emptyFormData());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -233,6 +254,85 @@ const EditGymPage = () => {
     const updated = [...formData.operatingHours];
     updated[index] = { ...updated[index], [field]: value };
     setFormData((prev) => ({ ...prev, operatingHours: updated }));
+  };
+
+  const handleFacilityToggle = (index) => {
+    const updated = [...formData.facilities];
+    updated[index] = { ...updated[index], available: !updated[index].available };
+    setFormData((prev) => ({ ...prev, facilities: updated }));
+  };
+
+  const handleMembershipPlanChange = (index, field, value) => {
+    const updated = [...formData.membershipPlans];
+    updated[index] = { ...updated[index], [field]: field === 'price' ? parseFloat(value) || 0 : value };
+    setFormData((prev) => ({ ...prev, membershipPlans: updated }));
+  };
+
+  const handleMembershipPlanToggle = (index) => {
+    const updated = [...formData.membershipPlans];
+    updated[index] = { ...updated[index], isActive: !updated[index].isActive };
+    setFormData((prev) => ({ ...prev, membershipPlans: updated }));
+  };
+
+  const handleAddMembershipPlan = () => {
+    setFormData((prev) => ({
+      ...prev,
+      membershipPlans: [
+        ...prev.membershipPlans,
+        { name: '', description: '', price: 0, duration: 30, features: [], isActive: true },
+      ],
+    }));
+  };
+
+  const handleRemoveMembershipPlan = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      membershipPlans: prev.membershipPlans.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAddFeature = (planIndex, feature) => {
+    const trimmed = feature.trim();
+    if (!trimmed) return;
+    const updated = [...formData.membershipPlans];
+    if (updated[planIndex].features.includes(trimmed)) return;
+    updated[planIndex] = { ...updated[planIndex], features: [...updated[planIndex].features, trimmed] };
+    setFormData((prev) => ({ ...prev, membershipPlans: updated }));
+  };
+
+  const handleRemoveFeature = (planIndex, featureIndex) => {
+    const updated = [...formData.membershipPlans];
+    updated[planIndex] = {
+      ...updated[planIndex],
+      features: updated[planIndex].features.filter((_, i) => i !== featureIndex),
+    };
+    setFormData((prev) => ({ ...prev, membershipPlans: updated }));
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingLogo(true);
+    const fd = new FormData();
+    fd.append('logo', file);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/upload/logo`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFormData((prev) => ({ ...prev, logo: data.url }));
+        toast.success('Logo uploaded');
+      } else {
+        toast.error(data.error || 'Upload failed');
+      }
+    } catch {
+      toast.error('Upload failed');
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -345,6 +445,26 @@ const EditGymPage = () => {
                 />
               </div>
               <div>
+                <label className={labelClass}>Gym Logo</label>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-24 h-24 rounded-lg bg-white/10 dark:bg-black border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                    {formData.logo ? (
+                      <img src={formData.logo} alt="Logo" className="w-full h-full object-cover" />
+                    ) : (
+                      <Building className="w-10 h-10 text-gray-400" />
+                    )}
+                    <label className="absolute bottom-0 right-0 p-1.5 bg-accent/20 rounded-full cursor-pointer border border-accent/30 hover:bg-accent/30">
+                      <Upload className="w-3 h-3 text-accent" />
+                      <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={uploadingLogo} />
+                    </label>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Upload gym logo. Recommended: 500x500px</p>
+                    {uploadingLogo && <p className="text-xs text-accent mt-1">Uploading...</p>}
+                  </div>
+                </div>
+              </div>
+              <div>
                 <label className={labelClass}>Status</label>
                 <select
                   name="status"
@@ -405,6 +525,50 @@ const EditGymPage = () => {
                   className={inputClass}
                   placeholder="https://yourgym.com"
                 />
+              </div>
+            </div>
+            <div className="mt-4">
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Social Media</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className={`${labelClass} flex items-center gap-2`}>
+                    <Facebook className="w-3 h-3" /> Facebook
+                  </label>
+                  <input
+                    type="url"
+                    name="contact.socialMedia.facebook"
+                    value={formData.contact.socialMedia.facebook}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="https://facebook.com/yourgym"
+                  />
+                </div>
+                <div>
+                  <label className={`${labelClass} flex items-center gap-2`}>
+                    <Instagram className="w-3 h-3" /> Instagram
+                  </label>
+                  <input
+                    type="url"
+                    name="contact.socialMedia.instagram"
+                    value={formData.contact.socialMedia.instagram}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="https://instagram.com/yourgym"
+                  />
+                </div>
+                <div>
+                  <label className={`${labelClass} flex items-center gap-2`}>
+                    <Twitter className="w-3 h-3" /> Twitter
+                  </label>
+                  <input
+                    type="url"
+                    name="contact.socialMedia.twitter"
+                    value={formData.contact.socialMedia.twitter}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="https://twitter.com/yourgym"
+                  />
+                </div>
               </div>
             </div>
           </motion.div>
@@ -475,6 +639,77 @@ const EditGymPage = () => {
                   />
                 </div>
               </div>
+              <div className="mt-4">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Coordinates (optional)</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Latitude</label>
+                    <input
+                      type="number"
+                      step="0.000001"
+                      name="address.coordinates.lat"
+                      value={formData.address.coordinates.lat}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. 40.7128"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Longitude</label>
+                    <input
+                      type="number"
+                      step="0.000001"
+                      name="address.coordinates.lng"
+                      value={formData.address.coordinates.lng}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. -74.0060"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Facilities */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12 }}
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
+          >
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Check className="w-4 h-4 text-accent" />
+              Facilities
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">Toggle the facilities available at your gym.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {formData.facilities.map((facility, index) => (
+                <div
+                  key={index}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleFacilityToggle(index)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleFacilityToggle(index)}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                    facility.available
+                      ? 'bg-green-500/10 border-green-500/30 dark:bg-green-500/10 dark:border-green-500/30'
+                      : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{facility.name}</h4>
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                        facility.available ? 'bg-green-500 text-white' : 'bg-gray-400 dark:bg-gray-600'
+                      }`}
+                    >
+                      {facility.available ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{facility.description}</p>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -530,6 +765,164 @@ const EditGymPage = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Membership Plans */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+            className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-6"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <h2 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <IndianRupee className="w-4 h-4 text-accent" />
+                Membership Plans
+              </h2>
+              <button
+                type="button"
+                onClick={handleAddMembershipPlan}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-accent text-black font-semibold rounded-xl hover:bg-accent-hover transition-colors w-full sm:w-auto"
+              >
+                <Plus className="w-4 h-4" />
+                Add Plan
+              </button>
+            </div>
+            <div className="space-y-4">
+              {formData.membershipPlans.map((plan, index) => (
+                <div
+                  key={index}
+                  className="bg-white dark:bg-black rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-white/10"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center shrink-0">
+                        <IndianRupee className="w-5 h-5 text-accent" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <input
+                          type="text"
+                          value={plan.name}
+                          onChange={(e) => handleMembershipPlanChange(index, 'name', e.target.value)}
+                          className="bg-transparent text-lg font-semibold focus:outline-none focus:text-accent w-full mb-1 placeholder-gray-500"
+                          placeholder="Plan name"
+                        />
+                        <input
+                          type="text"
+                          value={plan.description}
+                          onChange={(e) => handleMembershipPlanChange(index, 'description', e.target.value)}
+                          className="bg-transparent text-sm text-gray-500 focus:outline-none w-full placeholder-gray-500"
+                          placeholder="Plan description"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <span className="text-sm text-gray-500">Active</span>
+                        <input
+                          type="checkbox"
+                          checked={plan.isActive}
+                          onChange={() => handleMembershipPlanToggle(index)}
+                          className="rounded border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black text-accent focus:ring-accent"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMembershipPlan(index)}
+                        className="p-2 hover:bg-red-500/10 text-red-400 rounded-lg transition-colors"
+                        aria-label="Remove plan"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label className={labelClass}>Price (₹)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min={0}
+                        value={plan.price}
+                        onChange={(e) => handleMembershipPlanChange(index, 'price', e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Duration (days)</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={plan.duration}
+                        onChange={(e) => handleMembershipPlanChange(index, 'duration', e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Monthly rate</label>
+                      <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3">
+                        <span className="font-semibold text-gray-900 dark:text-white">
+                          ₹{plan.duration ? ((plan.price / plan.duration) * 30).toFixed(2) : '0.00'}
+                        </span>
+                        <span className="text-sm text-gray-500 ml-1">/month</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Features</label>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {plan.features.map((feat, fi) => (
+                        <span
+                          key={fi}
+                          className="px-3 py-1 bg-gray-100 dark:bg-white/5 rounded-full text-sm flex items-center gap-2"
+                        >
+                          {feat}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFeature(index, fi)}
+                            className="text-red-400 hover:text-red-300"
+                            aria-label="Remove feature"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Add a feature..."
+                        className={`flex-1 ${inputClass}`}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = e.target.value;
+                            handleAddFeature(index, val);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          const input = e.currentTarget.previousElementSibling;
+                          if (input && input.value !== undefined) {
+                            handleAddFeature(index, input.value);
+                            input.value = '';
+                          }
+                        }}
+                        className="px-4 py-3 bg-accent text-black font-semibold rounded-xl hover:bg-accent-hover transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {formData.membershipPlans.length === 0 && (
+                <p className="text-gray-500 text-sm py-4">No plans yet. Click &quot;Add Plan&quot; to add one.</p>
+              )}
             </div>
           </motion.div>
 

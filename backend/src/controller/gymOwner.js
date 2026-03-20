@@ -382,21 +382,58 @@ export const addMember = async (req, res) => {
       password: hashedPassword,
       status: status || "pending",
       profile,
-      gymId,                     // ✅ FIXED
+      gymId,
       membership: membership || {},
       healthMetrics: healthMetrics || {},
       createdBy: gymOwnerId,
-      assignedBy: gymOwnerId,     // ✅ IMPROVED
-      assignedAt: new Date()      // ✅ IMPROVED
+      assignedBy: gymOwnerId,
+      assignedAt: new Date()
     });
 
-    if (sendWelcomeEmail) {
-      console.log("📧 Send welcome email to:", email);
+    let welcomeEmailSent = false;
+    if (sendWelcomeEmail && email && password) {
+      try {
+        const loginUrl = process.env.NEXT_FRONTEND_URL
+          ? `${process.env.NEXT_FRONTEND_URL}/loginpage`
+          : "#";
+        const memberName = profile?.firstName && profile?.lastName
+          ? `${profile.firstName} ${profile.lastName}`
+          : "Member";
+        const gymName = gym.name || "your gym";
+
+        await getBrevoClient().transactionalEmails.sendTransacEmail({
+          subject: "Welcome to " + gymName + " – Your login credentials",
+          sender: {
+            name: process.env.BREVO_SENDER_NAME || "Zelvoo",
+            email: process.env.BREVO_SENDER_EMAIL,
+          },
+          to: [{ email: member.email, name: memberName }],
+          htmlContent: `
+            <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px;">
+              <h2 style="color:#1a1a1a;">Welcome to ${gymName}, ${memberName}!</h2>
+              <p style="color:#555;">Your gym has added you as a member. Here are your login credentials to access the member dashboard:</p>
+              <div style="background:#f5f5f5;border-radius:8px;padding:16px;margin:20px 0;">
+                <p style="margin:0 0 8px 0;"><strong>Email:</strong> ${member.email}</p>
+                <p style="margin:0;"><strong>Password:</strong> ${password}</p>
+              </div>
+              <p style="color:#555;">We recommend changing your password after your first login.</p>
+              <a href="${loginUrl}" style="display:inline-block;margin:24px 0;padding:12px 28px;background:#DAFF00;color:#000;font-weight:700;border-radius:8px;text-decoration:none;">
+                Log in to dashboard
+              </a>
+              <p style="color:#aaa;font-size:12px;">If you did not expect this email, please contact your gym.</p>
+            </div>
+          `,
+        });
+        welcomeEmailSent = true;
+      } catch (err) {
+        console.error("Welcome email send error:", err);
+      }
     }
 
     return res.status(201).json({
       success: true,
       message: "Member added successfully",
+      welcomeEmailSent,
       member: {
         id: member._id,
         email: member.email,
@@ -608,6 +645,95 @@ export const markPaymentPaid = async (req, res) => {
   } catch (error) {
     console.error("markPaymentPaid error:", error);
     return res.status(500).json({ success: false, error: "Failed to mark payment" });
+  }
+};
+
+/**
+ * @desc   Send payment reminder email to all members who have NOT paid for the current month
+ * @route  POST /api/gym-owner/payments/send-reminders
+ * @access Private
+ */
+export const sendPaymentReminders = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const now = new Date();
+    const currentMonth = toMonthStr(now);
+    const monthLabelStr =
+      now.toLocaleString("en-IN", { month: "long", year: "numeric" });
+
+    const unpaidPayments = await Payment.find({
+      gymOwnerId: ownerId,
+      month: currentMonth,
+      status: { $in: ["pending", "overdue"] },
+    })
+      .lean();
+
+    if (unpaidPayments.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No unpaid members for this month",
+        sentCount: 0,
+      });
+    }
+
+    const brevo = getBrevoClient();
+    const loginUrl = process.env.NEXT_FRONTEND_URL
+      ? `${process.env.NEXT_FRONTEND_URL}/dashboard/member/payments`
+      : "#";
+    let sentCount = 0;
+
+    for (const p of unpaidPayments) {
+      const email = p.memberEmail;
+      if (!email) continue;
+
+      const memberName = p.memberName || "Member";
+      const gymName = p.gymName || "your gym";
+      const planName = p.planName || "—";
+      const amount = p.amount ?? 0;
+
+      try {
+        await brevo.transactionalEmails.sendTransacEmail({
+          subject: `Payment reminder: ${monthLabelStr} membership at ${gymName}`,
+          sender: {
+            name: process.env.BREVO_SENDER_NAME || "Zelvoo",
+            email: process.env.BREVO_SENDER_EMAIL,
+          },
+          to: [{ email, name: memberName }],
+          htmlContent: `
+            <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px;">
+              <h2 style="color:#1a1a1a;">Hi ${memberName},</h2>
+              <p style="color:#555;">This is a friendly reminder to pay your <strong>${monthLabelStr}</strong> membership fee at <strong>${gymName}</strong> to continue using the gym.</p>
+              <div style="background:#f5f5f5;border-radius:8px;padding:16px;margin:20px 0;">
+                <p style="margin:0 0 8px 0;"><strong>Gym:</strong> ${gymName}</p>
+                <p style="margin:0 0 8px 0;"><strong>Plan:</strong> ${planName}</p>
+                <p style="margin:0 0 8px 0;"><strong>Period:</strong> ${monthLabelStr}</p>
+                <p style="margin:0;"><strong>Amount due:</strong> ₹${amount.toLocaleString("en-IN")}</p>
+              </div>
+              <p style="color:#555;">Please pay at the gym or contact your gym for payment options. Members who have already paid for this month do not receive this email.</p>
+              <a href="${loginUrl}" style="display:inline-block;margin:24px 0;padding:12px 28px;background:#DAFF00;color:#000;font-weight:700;border-radius:8px;text-decoration:none;">
+                View my payments
+              </a>
+              <p style="color:#aaa;font-size:12px;">If you have already paid, please ignore this email.</p>
+            </div>
+          `,
+        });
+        sentCount += 1;
+      } catch (err) {
+        console.error("Reminder email failed for", email, err);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Reminder sent to ${sentCount} member(s)`,
+      sentCount,
+    });
+  } catch (error) {
+    console.error("sendPaymentReminders error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to send reminders",
+    });
   }
 };
 

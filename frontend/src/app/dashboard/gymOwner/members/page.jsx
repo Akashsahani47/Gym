@@ -356,7 +356,13 @@ const AddCustomerPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Member added successfully!');
+        if (formData.sendWelcomeEmail && data.welcomeEmailSent === true) {
+          toast.success('Member added! Welcome email with login credentials sent.');
+        } else if (formData.sendWelcomeEmail && data.welcomeEmailSent === false) {
+          toast.success('Member added. Welcome email could not be sent.');
+        } else {
+          toast.success('Member added successfully!');
+        }
         router.push('/dashboard/gymOwner/customers');
       } else {
         toast.error(data.error || 'Failed to add member');

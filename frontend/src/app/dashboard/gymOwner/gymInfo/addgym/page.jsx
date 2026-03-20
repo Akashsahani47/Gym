@@ -897,7 +897,7 @@ const AddGymPage = () => {
                       <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Monthly Rate</label>
                       <div className="bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2">
                         <span className="font-semibold">
-                          ${((plan.price / plan.duration) * 30).toFixed(2)}
+                        ₹ {((plan.price / plan.duration) * 30).toFixed(2)}
                         </span>
                         <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">/month</span>
                       </div>

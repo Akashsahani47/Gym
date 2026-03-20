@@ -19,9 +19,12 @@ import {
   RefreshCw,
   ArrowUpRight,
   Zap,
+  Mail,
+  Download,
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
+import { generateInvoice } from '@/utils/generateInvoice';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 const fmt = (n) =>
@@ -210,14 +213,24 @@ function PaymentRow({ payment, onMarkPaid, isExpanded, onToggle }) {
               <button
                 onClick={(e) => { e.stopPropagation(); onMarkPaid(payment); }}
                 className="px-3 py-1.5 bg-accent text-black text-xs font-semibold rounded-lg hover:bg-accent-hover transition-colors whitespace-nowrap"
-              >
+              > 
                 Mark Paid
               </button>
             )}
             {payment.status === 'paid' && (
-              <div className="flex items-center gap-1 text-xs text-gray-500">
-                {METHOD_ICONS[payment.method] ?? METHOD_ICONS.cash}
-                <span className="capitalize">{payment.method?.replace('_', ' ')}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); generateInvoice(payment); }}
+                  className="px-2.5 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xs font-medium rounded-lg hover:bg-accent/20 transition-colors flex items-center gap-1"
+                  title="Download Invoice"
+                >
+                  <Download className="w-3 h-3" />
+                  Invoice
+                </button>
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  {METHOD_ICONS[payment.method] ?? METHOD_ICONS.cash}
+                  <span className="capitalize">{payment.method?.replace('_', ' ')}</span>
+                </div>
               </div>
             )}
             {isExpanded ? (
@@ -273,6 +286,7 @@ export default function PaymentsPage() {
 
   const [payments, setPayments] = useState([]);
   const [stats, setStats] = useState(null);
+  const [reminderLoading, setReminderLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -357,6 +371,32 @@ export default function PaymentsPage() {
     }
   };
 
+  // ── send reminders to unpaid members (current month only) ───────────────────
+  const handleSendReminders = async () => {
+    if (!token) return;
+    setReminderLoading(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/gym-owner/payments/send-reminders`,
+        { method: 'POST', headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        if (data.sentCount === 0) {
+          toast.success('No unpaid members this month — no reminders sent.');
+        } else {
+          toast.success(`Reminder email sent to ${data.sentCount} member(s).`);
+        }
+      } else {
+        toast.error(data.error || 'Failed to send reminders');
+      }
+    } catch {
+      toast.error('Network error');
+    } finally {
+      setReminderLoading(false);
+    }
+  };
+
   // ── derive gym list for filter ─────────────────────────────────────────────
   const gymOptions = useMemo(() => {
     const seen = new Map();
@@ -412,14 +452,25 @@ export default function PaymentsPage() {
             {stats?.currentMonth ? `Viewing ${monthLabel(stats.currentMonth)}` : 'All payment records'}
           </p>
         </div>
-        <button
-          onClick={() => fetchPayments(true)}
-          disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:border-accent/30 hover:text-accent transition-colors"
-        >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSendReminders}
+            disabled={reminderLoading}
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/30 rounded-xl text-sm font-medium text-amber-600 dark:text-amber-400 hover:border-amber-400 hover:bg-amber-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Email reminder to all members who have not paid for the current month"
+          >
+            <Mail className={`w-4 h-4 ${reminderLoading ? 'animate-pulse' : ''}`} />
+            {reminderLoading ? 'Sending…' : 'Remind unpaid members'}
+          </button>
+          <button
+            onClick={() => fetchPayments(true)}
+            disabled={refreshing}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:border-accent/30 hover:text-accent transition-colors"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* ── Stats Cards ── */}

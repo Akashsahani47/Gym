@@ -12,6 +12,7 @@ import {
   updateGymOwnerinfo,
   getPayments,
   markPaymentPaid,
+  sendPaymentReminders,
   createSubscriptionOrder,
   verifySubscriptionPayment,
   sendVerificationEmail,
@@ -31,6 +32,7 @@ router.post("/addmembers", verifyToken, addMember);
 router.get("/members", verifyToken, getAllMembers);
 router.get("/payments", verifyToken, getPayments);
 router.post("/payments/mark-paid/:paymentId", verifyToken, markPaymentPaid);
+router.post("/payments/send-reminders", verifyToken, sendPaymentReminders);
 router.post("/subscription/create-order", verifyToken, createSubscriptionOrder);
 router.post("/subscription/verify-payment", verifyToken, verifySubscriptionPayment);
 router.post("/send-verification", verifyToken, sendVerificationEmail);
