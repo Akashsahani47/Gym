@@ -363,7 +363,7 @@ const AddCustomerPage = () => {
         } else {
           toast.success('Member added successfully!');
         }
-        router.push('/dashboard/gymOwner/customers');
+        // router.push('/dashboard/gymOwner/all_members');
       } else {
         toast.error(data.error || 'Failed to add member');
       }
