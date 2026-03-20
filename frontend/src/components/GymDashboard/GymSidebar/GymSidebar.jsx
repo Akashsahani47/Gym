@@ -44,12 +44,8 @@ const GymSidebar = () => {
     { id: 'Members', label: 'All Members', href: "/dashboard/gymOwner/all_members", icon: <Users className="w-5 h-5" />, badge: null },
     //{ id: 'trainers', label: 'Trainers', href: "/dashboard/gymOwner/trainers", icon: <User className="w-5 h-5" />, badge: '5' },
     { id: 'payments', label: "Payments", href: "/dashboard/gymOwner/payments", icon: <Zap className="w-5 h-5" />},
-    { id: 'attendance', label: 'Attendance', href: "/dashboard/gymOwner/attendance", icon: <Calendar className="w-5 h-5" />, badge: null }
-    // { id: 'schedule', label: 'Schedule', href: "/dashboard/gymOwner/schedule", icon: <Calendar className="w-5 h-5" />, badge: null },
-    // { id: 'progress', label: 'Progress', href: "/dashboard/gymOwner/progress", icon: <BarChart className="w-5 h-5" />, badge: 'New' },
-    // { id: 'goals', label: 'Goals', href: "/dashboard/gymOwner/goals", icon: <Target className="w-5 h-5" />, badge: null },
-    // { id: 'analytics', label: 'Analytics', href: "/dashboard/gymOwner/analytics", icon: <BarChart className="w-5 h-5" />, badge: null },
-    // { id: 'achievements', label: 'Achievements', href: "/dashboard/gymOwner/achievements", icon: <Trophy className="w-5 h-5" />, badge: '2' },
+    { id: 'attendance', label: 'Attendance', href: "/dashboard/gymOwner/attendance", icon: <Calendar className="w-5 h-5" />, badge: null },
+    { id: 'analytics', label: 'Analytics', href: "/dashboard/gymOwner/analytics", icon: <BarChart className="w-5 h-5" />, badge: null },
   ];
 
   

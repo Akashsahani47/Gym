@@ -38,6 +38,7 @@ import {
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import NotificationBell from '@/components/Notifications/NotificationBell';
 
 // ── Razorpay loader ──────────────────────────────────────────────────────────
 const loadRazorpay = () =>
@@ -454,8 +455,10 @@ const token = useUserStore((s) => s.token);
       {/* Mobile Header */}
       <div className="lg:hidden mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl ml-40 font-bold">Profile</h1>
-          <div className="w-10"></div>
+          <h1 className="text-xl font-bold">Profile</h1>
+          <div className="mr-14">
+            <NotificationBell />
+          </div>
         </div>
       </div>
 
@@ -469,6 +472,7 @@ const token = useUserStore((s) => s.token);
           <p className="text-gray-600 dark:text-gray-400">Manage your account and business information</p>
         </div>
         <div className="flex items-center space-x-4">
+          <NotificationBell />
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

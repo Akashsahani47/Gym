@@ -15,6 +15,7 @@ import gymRouter from "./router/gym.js";
 import gymOwnerRoutes from "./router/gymOwner.js";
 import attendanceRoutes from "./router/attendance.js";
 import memberRoutes from "./router/member.js";
+import notificationRoutes from "./router/notification.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -90,6 +91,7 @@ app.use("/api/gym", gymRouter);
 app.use("/api/gym-owner", gymOwnerRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/member", memberRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Server running" });

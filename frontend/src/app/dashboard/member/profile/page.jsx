@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
+import NotificationBell from '@/components/Notifications/NotificationBell';
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -402,12 +403,17 @@ export default function MemberProfilePage() {
   return (
     <div className="min-h-screen bg-black text-white p-4 lg:p-8">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-2xl lg:text-3xl font-bold">
-            <span className="text-white">Member </span>
-            <span className="text-accent">Dashboard</span>
-          </h1>
-          <p className="text-gray-400 mt-1">Your profile and membership at a glance</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold">
+              <span className="text-white">Member </span>
+              <span className="text-accent">Dashboard</span>
+            </h1>
+            <p className="text-gray-400 mt-1">Your profile and membership at a glance</p>
+          </div>
+          <div className="mr-14 lg:mr-0">
+            <NotificationBell />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

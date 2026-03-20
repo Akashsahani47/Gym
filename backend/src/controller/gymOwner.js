@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { BrevoClient } from "@getbrevo/brevo";
+import { createNotification } from "../utils/notificationHelper.js";
 
 const getRazorpay = () => {
   if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
@@ -430,6 +431,18 @@ export const addMember = async (req, res) => {
       }
     }
 
+    // Notify gym owner: new member joined
+    createNotification({
+      recipientId: req.user._id,
+      recipientType: "gym_owner",
+      gymId: gym._id,
+      type: "new_member_joined",
+      title: "New Member Added",
+      message: `${member.profile.firstName} ${member.profile.lastName} has been added to ${gym.name}.`,
+      link: "/dashboard/gymOwner/all_members",
+      metadata: { memberId: member._id },
+    });
+
     return res.status(201).json({
       success: true,
       message: "Member added successfully",
@@ -635,6 +648,18 @@ export const markPaymentPaid = async (req, res) => {
     // Update gym monthly revenue cache
     await Gym.findByIdAndUpdate(payment.gymId, {
       $inc: { "stats.monthlyRevenue": payment.amount },
+    });
+
+    // Notify member: payment confirmed
+    createNotification({
+      recipientId: payment.memberId,
+      recipientType: "member",
+      gymId: payment.gymId,
+      type: "payment_received",
+      title: "Payment Confirmed",
+      message: `Your payment of ₹${payment.amount} for ${payment.month} has been confirmed.`,
+      link: "/dashboard/member/payments",
+      metadata: { paymentId: payment._id },
     });
 
     return res.status(200).json({

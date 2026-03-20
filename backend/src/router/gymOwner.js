@@ -18,6 +18,13 @@ import {
   sendVerificationEmail,
   verifyEmail,
 } from "../controller/gymOwner.js";
+import {
+  getRevenueAnalytics,
+  getMemberGrowthAnalytics,
+  getAttendanceHeatmap,
+  getRetentionAnalytics,
+  getAnalyticsOverview,
+} from "../controller/analytics.js";
 
 const router = express.Router();
 
@@ -37,4 +44,12 @@ router.post("/subscription/create-order", verifyToken, createSubscriptionOrder);
 router.post("/subscription/verify-payment", verifyToken, verifySubscriptionPayment);
 router.post("/send-verification", verifyToken, sendVerificationEmail);
 router.get("/verify-email", verifyEmail); // no auth — accessed via email link
+
+// ─── Analytics ──────────────────────────────────────────────────────────────
+router.get("/analytics/overview", verifyToken, getAnalyticsOverview);
+router.get("/analytics/revenue", verifyToken, getRevenueAnalytics);
+router.get("/analytics/member-growth", verifyToken, getMemberGrowthAnalytics);
+router.get("/analytics/attendance-heatmap", verifyToken, getAttendanceHeatmap);
+router.get("/analytics/retention", verifyToken, getRetentionAnalytics);
+
 export default router;
