@@ -172,6 +172,10 @@ const GymSchema = new mongoose.Schema(
       autoCheckout: {
         type: Boolean,
         default: true
+      },
+      dailyPin: {
+        pin: { type: String },
+        pinDate: { type: String }, // YYYY-MM-DD
       }
     },
 

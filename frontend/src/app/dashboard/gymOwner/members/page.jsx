@@ -589,7 +589,7 @@ const AddCustomerPage = () => {
                           onChange={handleChange}
                           required
                           className="bg-transparent focus:outline-none flex-1 min-w-0"
-                          placeholder="+1 (555) 123-4567"
+                          placeholder="+91 99999999"
                         />
                       </div>
                       {formErrors['profile.phone'] && (
@@ -642,7 +642,7 @@ const AddCustomerPage = () => {
                           value={formData.profile.address.street}
                           onChange={handleChange}
                           className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                          placeholder="123 Main Street"
+                          placeholder=" "
                         />
                       </div>
 
@@ -654,7 +654,7 @@ const AddCustomerPage = () => {
                           value={formData.profile.address.city}
                           onChange={handleChange}
                           className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                          placeholder="New York"
+                          placeholder=" "
                         />
                       </div>
 
@@ -666,7 +666,7 @@ const AddCustomerPage = () => {
                           value={formData.profile.address.state}
                           onChange={handleChange}
                           className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                          placeholder="NY"
+                          placeholder=" "
                         />
                       </div>
 
@@ -678,7 +678,7 @@ const AddCustomerPage = () => {
                           value={formData.profile.address.zipCode}
                           onChange={handleChange}
                           className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                          placeholder="10001"
+                          placeholder=" "
                         />
                       </div>
 
@@ -690,7 +690,7 @@ const AddCustomerPage = () => {
                           value={formData.profile.address.country}
                           onChange={handleChange}
                           className="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 focus:outline-none focus:border-accent"
-                          placeholder="United States"
+                          placeholder=" "
                         />
                       </div>
                     </div>

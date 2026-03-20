@@ -255,8 +255,18 @@ export const login = async (req, res) => {
       });
     }
     
+    // Member model has password with select: false — refetch with password for comparison
+    let userWithPassword = emailCheck.user;
+    if (emailCheck.type === 'member') {
+      const member = await Member.findById(emailCheck.user._id).select('+password');
+      if (!member) {
+        return res.status(401).json({ success: false, message: "Invalid email or password" });
+      }
+      userWithPassword = member;
+    }
+    
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, emailCheck.user.password);
+    const isPasswordValid = await bcrypt.compare(password, userWithPassword.password);
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -264,7 +274,7 @@ export const login = async (req, res) => {
       });
     }
     
-    const user = emailCheck.user;
+    const user = userWithPassword;
     
     // Update last login
     user.lastLogin = new Date();

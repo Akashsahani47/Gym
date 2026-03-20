@@ -13,6 +13,7 @@ import connectDB from "./config/db.js";
 import authRouter from "./router/auth.js";
 import gymRouter from "./router/gym.js";
 import gymOwnerRoutes from "./router/gymOwner.js";
+import attendanceRoutes from "./router/attendance.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -86,6 +87,7 @@ connectDB();
 app.use("/api/auth", authRouter);
 app.use("/api/gym", gymRouter);
 app.use("/api/gym-owner", gymOwnerRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Server running" });
