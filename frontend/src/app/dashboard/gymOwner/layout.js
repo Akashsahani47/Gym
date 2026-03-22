@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import GymSidebar from '@/components/GymDashboard/GymSidebar/GymSidebar';
 import AuthGuard from '@/components/important/AuthGuard';
+import GymOwnerStatusGuard from '@/components/important/GymOwnerStatusGuard';
 import useThemeStore from '@/store/useThemeStore';
 
 export default function OwnerLayout({ children }) {
@@ -14,12 +15,14 @@ export default function OwnerLayout({ children }) {
 
   return (
     <AuthGuard allowedRoles={['gym_owner']}>
-      <div className="flex min-h-screen bg-white dark:bg-black">
-        <GymSidebar />
-        <main className="flex-1 min-h-screen overflow-y-auto bg-white dark:bg-black">
-          {children}
-        </main>
-      </div>
+      <GymOwnerStatusGuard>
+        <div className="flex min-h-screen bg-white dark:bg-black">
+          <GymSidebar />
+          <main className="flex-1 min-h-screen overflow-y-auto bg-white dark:bg-black">
+            {children}
+          </main>
+        </div>
+      </GymOwnerStatusGuard>
     </AuthGuard>
   );
 }

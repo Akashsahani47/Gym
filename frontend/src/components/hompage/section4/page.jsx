@@ -57,7 +57,7 @@ export default function DashboardsSection() {
         "Membership details"
       ],
       accentIcon: Heart,
-      tagline: "Personal Fitness Hub"
+      tagline: "Personal Fitness "
     }
   ];
 

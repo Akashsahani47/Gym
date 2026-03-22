@@ -246,23 +246,31 @@ const AuthPage = () => {
       }
 
       toast.success('Login successful! Welcome back! 💪')
-      
-      setTimeout(() => {
-        if (data.user.status === 'active') {
-          switch (data.user.userType) {
-            case 'gym_owner':
-              router.push('/dashboard/gymOwner')
-              break
-            case 'trainer':
-              router.push('/dashboard/trainer')
-              break
-            default:
-              router.push('/dashboard/member')
-          }
-        } else {
-          router.push('/notice/waiting-approval')
+
+      const status = data.user?.status
+      const userType = data.user?.userType
+
+      if (status === 'suspended') {
+        router.replace('/notice/suspended')
+        return
+      }
+
+      if (status === 'active') {
+        switch (userType) {
+          case 'gym_owner':
+            router.replace('/dashboard/gymOwner')
+            break
+          case 'trainer':
+            router.replace('/dashboard/trainer')
+            break
+          default:
+            router.replace('/dashboard/member')
         }
-      }, 1000)
+        return
+      }
+
+      // pending, inactive, or unknown — approval / review flows
+      router.replace('/notice/waiting-approval')
       
     } catch (err) {
       toast.error(err.message || 'Login failed. Please try again.')

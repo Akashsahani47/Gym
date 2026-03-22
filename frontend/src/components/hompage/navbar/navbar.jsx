@@ -25,8 +25,12 @@ export default function Navbar() {
   // Determine dashboard link based on user type
   const getDashboardLink = () => {
     if (!user) return '/dashboard';
-    
-    switch(user.userType) {
+
+    const st = user.status;
+    if (st === 'suspended') return '/notice/suspended';
+    if (st === 'pending' || st === 'inactive') return '/notice/waiting-approval';
+
+    switch (user.userType) {
       case 'gym_owner':
         return '/dashboard/gymOwner';
       case 'trainer':

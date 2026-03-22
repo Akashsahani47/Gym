@@ -273,7 +273,7 @@ const GymSidebar = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 group-hover:bg-accent/10 group-hover:text-accent">
                 <Settings className="w-5 h-5" />
               </div>
@@ -290,7 +290,7 @@ const GymSidebar = () => {
                   </motion.span>
                 )}
               </AnimatePresence>
-            </div>
+            </div> */}
 
             {/* Tooltip for collapsed state */}
             {collapsed && isHovered && (
@@ -496,14 +496,14 @@ const GymSidebar = () => {
 
               {/* Mobile Footer */}
               <div className="p-4 border-t border-gray-200 dark:border-white/10 mt-auto">
-                <button className="flex items-center justify-between w-full p-3 rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-accent/20">
+                {/* <button className="flex items-center justify-between w-full p-3 rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-accent/20">
                   <div className="flex items-center space-x-3">
                     <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400">
                       <Settings className="w-5 h-5" />
                     </div>
                     <span className="font-medium">Settings</span>
                   </div>
-                </button>
+                </button> */}
                 <button
                   onClick={toggleTheme}
                   className="flex items-center justify-between w-full p-3 rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-accent/20 mb-2"
