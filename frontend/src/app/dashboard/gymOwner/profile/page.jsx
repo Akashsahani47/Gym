@@ -415,7 +415,7 @@ const token = useUserStore((s) => s.token);
     },
     {
       label: 'Monthly Revenue',
-      value: `$${stats.monthlyRevenue.toLocaleString()}`,
+      value: `${stats.monthlyRevenue.toLocaleString()}`,
       icon: <IndianRupee className="w-5 h-5" />,
       change: '+15%',
       color: 'from-purple-500 to-purple-600',

@@ -20,12 +20,11 @@ import {
   Award,
   X,
   Menu,
-  Zap,
-  Sun,
-  Moon
+  Zap
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
+import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 import Link from 'next/link';
 
 const GymSidebar = () => {
@@ -134,20 +133,8 @@ const GymSidebar = () => {
           </div>
 
           {/* Theme Toggle + Collapse Button */}
-          <div className={`flex items-center gap-1 ${collapsed ? 'flex-col' : ''}`}>
-            <motion.button
-              onClick={toggleTheme}
-              className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 transition-colors border border-gray-200 dark:border-white/10 hover:border-accent/30"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDark ? (
-                <Sun className="w-4 h-4 text-accent" />
-              ) : (
-                <Moon className="w-4 h-4 text-gray-600" />
-              )}
-            </motion.button>
+          <div className={`flex items-center gap-2 ${collapsed ? 'flex-col' : ''}`}>
+            {!collapsed && <ThemeToggle isDark={isDark} onToggle={toggleTheme} />}
 
             {/* Collapse Button */}
             <motion.button
@@ -504,17 +491,12 @@ const GymSidebar = () => {
                     <span className="font-medium">Settings</span>
                   </div>
                 </button> */}
-                <button
-                  onClick={toggleTheme}
-                  className="flex items-center justify-between w-full p-3 rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-accent/20 mb-2"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5">
-                      {isDark ? <Sun className="w-5 h-5 text-accent" /> : <Moon className="w-5 h-5 text-gray-600 dark:text-gray-400" />}
-                    </div>
-                    <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                  </div>
-                </button>
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 mb-2">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {isDark ? 'Dark Mode' : 'Light Mode'}
+                  </span>
+                  <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+                </div>
                 <button
                   onClick={logout}
                   className="flex items-center justify-between w-full p-3 rounded-xl bg-accent/10 text-accent hover:bg-accent/20 hover:text-black border border-accent/30 mt-2"
