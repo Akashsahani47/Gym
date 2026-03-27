@@ -1,4 +1,11 @@
 import { create } from 'zustand';
+import {
+  isPushSupported,
+  isPushSubscribed,
+  subscribeToPush,
+  unsubscribeFromPush,
+  getNotificationPermission,
+} from '@/utils/pushNotifications';
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -7,6 +14,51 @@ const useNotificationStore = create((set, get) => ({
   unreadCount: 0,
   loading: false,
   pagination: { page: 1, limit: 20, total: 0 },
+
+  // Push notification state
+  pushSupported: false,
+  pushSubscribed: false,
+  pushPermission: 'default', // 'default' | 'granted' | 'denied' | 'unsupported'
+  pushLoading: false,
+
+  // Initialize push state
+  initPushState: async () => {
+    const supported = isPushSupported();
+    set({ pushSupported: supported });
+
+    if (!supported) {
+      set({ pushPermission: 'unsupported' });
+      return;
+    }
+
+    const permission = getNotificationPermission();
+    const subscribed = await isPushSubscribed();
+    set({ pushPermission: permission, pushSubscribed: subscribed });
+  },
+
+  // Toggle push subscription
+  togglePush: async (token) => {
+    const { pushSubscribed } = get();
+    set({ pushLoading: true });
+
+    try {
+      if (pushSubscribed) {
+        const success = await unsubscribeFromPush(token);
+        if (success) set({ pushSubscribed: false });
+      } else {
+        const subscription = await subscribeToPush(token);
+        if (subscription) {
+          set({ pushSubscribed: true, pushPermission: 'granted' });
+        } else {
+          // Permission might have been denied
+          const permission = getNotificationPermission();
+          set({ pushPermission: permission });
+        }
+      }
+    } finally {
+      set({ pushLoading: false });
+    }
+  },
 
   fetchUnreadCount: async (token) => {
     if (!token) return;

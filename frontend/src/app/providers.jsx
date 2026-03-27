@@ -1,9 +1,15 @@
 // app/providers.jsx
 'use client';
 
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { registerServiceWorker } from '@/utils/pushNotifications';
 
 export function Providers({ children }) {
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     <>
       <Toaster

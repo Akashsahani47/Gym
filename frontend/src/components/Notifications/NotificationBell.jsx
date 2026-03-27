@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell,
+  BellRing,
+  BellOff,
   X,
   CheckCheck,
   Trash2,
@@ -54,10 +56,22 @@ export default function NotificationBell() {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    // Push state
+    pushSupported,
+    pushSubscribed,
+    pushPermission,
+    pushLoading,
+    initPushState,
+    togglePush,
   } = useNotificationStore();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const router = useRouter();
+
+  // Init push state on mount
+  useEffect(() => {
+    initPushState();
+  }, [initPushState]);
 
   // Poll unread count every 60s
   useEffect(() => {
@@ -87,6 +101,13 @@ export default function NotificationBell() {
       router.push(n.link);
       setOpen(false);
     }
+  };
+
+  const getPushLabel = () => {
+    if (!pushSupported) return null;
+    if (pushPermission === 'denied') return 'Blocked';
+    if (pushLoading) return 'Loading...';
+    return pushSubscribed ? 'Push On' : 'Push Off';
   };
 
   return (
@@ -122,6 +143,34 @@ export default function NotificationBell() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <h3 className="text-sm font-bold text-white">Notifications</h3>
               <div className="flex items-center gap-2">
+                {/* Push Toggle */}
+                {pushSupported && (
+                  <button
+                    onClick={() => togglePush(token)}
+                    disabled={pushLoading || pushPermission === 'denied'}
+                    className={`text-xs flex items-center gap-1 px-2 py-1 rounded-lg border transition-colors ${
+                      pushPermission === 'denied'
+                        ? 'text-red-400 border-red-500/20 bg-red-500/5 cursor-not-allowed'
+                        : pushSubscribed
+                        ? 'text-accent border-accent/20 bg-accent/5 hover:bg-accent/10'
+                        : 'text-gray-400 border-white/10 bg-white/5 hover:bg-white/10'
+                    }`}
+                    title={
+                      pushPermission === 'denied'
+                        ? 'Notifications blocked in browser settings'
+                        : pushSubscribed
+                        ? 'Disable push notifications'
+                        : 'Enable push notifications'
+                    }
+                  >
+                    {pushSubscribed ? (
+                      <BellRing className="w-3 h-3" />
+                    ) : (
+                      <BellOff className="w-3 h-3" />
+                    )}
+                    {getPushLabel()}
+                  </button>
+                )}
                 {unreadCount > 0 && (
                   <button
                     onClick={() => markAllAsRead(token)}

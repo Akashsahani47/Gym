@@ -18,8 +18,14 @@ import {
   sendVerificationEmail,
   verifyEmail,
   updateMemberStatus,
+  updateMember,
   deleteMember,
 } from "../controller/gymOwner.js";
+import {
+  addHoliday,
+  deleteHoliday,
+  getGymHolidays,
+} from "../controller/holiday.js";
 import {
   getRevenueAnalytics,
   getMemberGrowthAnalytics,
@@ -40,6 +46,7 @@ router.delete("/gyms/:id", verifyToken, deleteGym);
 router.post("/addmembers", verifyToken, addMember);
 router.get("/members", verifyToken, getAllMembers);
 router.patch("/members/:memberId/status", verifyToken, updateMemberStatus);
+router.put("/members/:memberId", verifyToken, updateMember);
 router.delete("/members/:memberId", verifyToken, deleteMember);
 router.get("/payments", verifyToken, getPayments);
 router.post("/payments/mark-paid/:paymentId", verifyToken, markPaymentPaid);
@@ -48,6 +55,11 @@ router.post("/subscription/create-order", verifyToken, createSubscriptionOrder);
 router.post("/subscription/verify-payment", verifyToken, verifySubscriptionPayment);
 router.post("/send-verification", verifyToken, sendVerificationEmail);
 router.get("/verify-email", verifyEmail); // no auth — accessed via email link
+
+// ─── Holidays ───────────────────────────────────────────────────────────────
+router.post("/holidays", verifyToken, addHoliday);
+router.get("/holidays/:gymId", verifyToken, getGymHolidays);
+router.delete("/holidays/:gymId/:holidayId", verifyToken, deleteHoliday);
 
 // ─── Analytics ──────────────────────────────────────────────────────────────
 router.get("/analytics/overview", verifyToken, getAnalyticsOverview);

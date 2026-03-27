@@ -116,7 +116,7 @@ export const updateGym = async (req, res) => {
 
     const allowed = [
       "name", "description", "contact", "address", "logo", "coverImage", "images",
-      "facilities", "operatingHours", "membershipPlans", "settings", "status"
+      "facilities", "operatingHours", "shifts", "membershipPlans", "settings", "status"
     ];
     for (const key of allowed) {
       if (data[key] !== undefined) {
@@ -135,7 +135,7 @@ export const updateGym = async (req, res) => {
     console.error("Update Gym Error:", error);
     return res.status(500).json({
       success: false,
-      error: "Failed to update gym"
+      error: error.message || "Failed to update gym"
     });
   }
 };
@@ -345,6 +345,7 @@ export const addMember = async (req, res) => {
       gymId,
       membership,
       healthMetrics,
+      shift,
       status,
       sendWelcomeEmail
     } = req.body;
@@ -386,6 +387,7 @@ export const addMember = async (req, res) => {
       gymId,
       membership: membership || {},
       healthMetrics: healthMetrics || {},
+      shift: shift || {},
       createdBy: gymOwnerId,
       assignedBy: gymOwnerId,
       assignedAt: new Date()
@@ -476,7 +478,7 @@ export const getAllMembers = async (req, res) => {
       createdBy: ownerId,
       isDeleted: false,
     })
-      .populate("gymId", "name")
+      .populate("gymId", "name membershipPlans shifts")
       .sort({ createdAt: -1 })
       .lean();
 
@@ -545,6 +547,75 @@ export const deleteMember = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────
+// UPDATE MEMBER DETAILS
+// ─────────────────────────────────────────────
+
+export const updateMember = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { memberId } = req.params;
+    const { profile, membership, healthMetrics, shift, status } = req.body;
+
+    const member = await Member.findOne({ _id: memberId, createdBy: ownerId, isDeleted: false });
+    if (!member) {
+      return res.status(404).json({ success: false, error: "Member not found" });
+    }
+
+    // Update profile
+    if (profile) {
+      if (profile.firstName) member.profile.firstName = profile.firstName.trim();
+      if (profile.lastName) member.profile.lastName = profile.lastName.trim();
+      if (profile.phone) member.profile.phone = profile.phone.trim();
+      if (profile.dateOfBirth !== undefined) member.profile.dateOfBirth = profile.dateOfBirth || null;
+      if (profile.emergencyContact !== undefined) member.profile.emergencyContact = profile.emergencyContact;
+      if (profile.address) {
+        member.profile.address = { ...member.profile.address?.toObject?.() || {}, ...profile.address };
+      }
+    }
+
+    // Update membership
+    if (membership) {
+      if (membership.planId !== undefined) member.membership.planId = membership.planId || null;
+      if (membership.planName !== undefined) member.membership.planName = membership.planName;
+      if (membership.startDate !== undefined) member.membership.startDate = membership.startDate || null;
+      if (membership.endDate !== undefined) member.membership.endDate = membership.endDate || null;
+      if (membership.status) member.membership.status = membership.status;
+    }
+
+    // Update shift
+    if (shift) {
+      member.shift = {
+        shiftId: shift.shiftId || null,
+        shiftName: shift.shiftName || '',
+        startTime: shift.startTime || '',
+        endTime: shift.endTime || '',
+      };
+    }
+
+    // Update health metrics
+    if (healthMetrics) {
+      if (healthMetrics.height !== undefined) member.healthMetrics.height = healthMetrics.height || null;
+      if (healthMetrics.weight !== undefined) member.healthMetrics.weight = healthMetrics.weight || null;
+      if (healthMetrics.fitnessGoals !== undefined) member.healthMetrics.fitnessGoals = healthMetrics.fitnessGoals;
+    }
+
+    // Update status
+    if (status && ['active', 'inactive', 'suspended', 'pending'].includes(status)) {
+      member.status = status;
+    }
+
+    await member.save();
+
+    const updated = await Member.findById(memberId).populate("gymId", "name membershipPlans shifts").lean();
+
+    return res.json({ success: true, member: updated });
+  } catch (error) {
+    console.error("updateMember error:", error);
+    return res.status(500).json({ success: false, error: "Failed to update member" });
+  }
+};
+
+// ─────────────────────────────────────────────
 // PAYMENTS
 // ─────────────────────────────────────────────
 
@@ -575,7 +646,7 @@ export const getPayments = async (req, res) => {
       createdBy: ownerId,
       isDeleted: false,
     })
-      .populate("gymId", "name membershipPlans")
+      .populate("gymId", "name membershipPlans shifts")
       .lean();
 
     for (const member of members) {

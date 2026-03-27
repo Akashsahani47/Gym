@@ -124,6 +124,28 @@ const GymSchema = new mongoose.Schema(
     ],
 
     /* =========================
+       SHIFTS
+    ========================== */
+    shifts: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        },
+        startTime: {
+          type: String, // HH:MM
+        },
+        endTime: {
+          type: String, // HH:MM
+        },
+        isActive: {
+          type: Boolean,
+          default: true,
+        },
+      },
+    ],
+
+    /* =========================
        MEMBERSHIP PLANS
     ========================== */
     membershipPlans: [
@@ -200,6 +222,31 @@ const GymSchema = new mongoose.Schema(
       default: "active",
       index: true
     },
+
+    /* =========================
+       HOLIDAYS / CLOSURES
+    ========================== */
+    holidays: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          auto: true,
+        },
+        date: {
+          type: String, // YYYY-MM-DD
+          required: true,
+        },
+        reason: {
+          type: String,
+          trim: true,
+          default: "Gym Closed",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
 
     /* =========================
        SOFT DELETE

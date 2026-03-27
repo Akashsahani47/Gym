@@ -20,8 +20,14 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  TrendingUp
+  TrendingUp,
+  Link2,
+  Check,
+  QrCode,
+  X,
+  Download,
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -35,6 +41,8 @@ const GymsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [deleteModal, setDeleteModal] = useState(null);
+  const [copiedSlug, setCopiedSlug] = useState(null);
+  const [qrGym, setQrGym] = useState(null); // { name, slug } for QR modal
   const [stats, setStats] = useState({
     totalGyms: 0,
     activeGyms: 0,
@@ -114,6 +122,46 @@ const GymsPage = () => {
     }
   };
 
+  const getJoinLink = (slug) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${origin}/join/${slug}`;
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrGym) return;
+    const svg = document.getElementById('gym-qr-svg');
+    if (!svg) return;
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = `${qrGym.slug}-join-qr.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+  };
+
+  const handleCopyJoinLink = (slug) => {
+    const link = getJoinLink(slug);
+    navigator.clipboard.writeText(link).then(() => {
+      setCopiedSlug(slug);
+      toast.success('Join link copied!');
+      setTimeout(() => setCopiedSlug(null), 2000);
+    });
+  };
+
   const filteredGyms = gyms.filter(gym => {
     const matchesSearch = gym.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          gym.address?.city?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -156,7 +204,7 @@ const GymsPage = () => {
     },
     {
       label: 'Monthly Revenue',
-      value: `$${stats.monthlyRevenue.toLocaleString()}`,
+      value: `${stats.monthlyRevenue.toLocaleString()}`,
       icon: <IndianRupee className="w-5 h-5" />,
       color: 'from-orange-500 to-orange-600',
       bgColor: 'bg-accent/10',
@@ -338,7 +386,7 @@ const GymsPage = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Revenue</p>
-                    <p className="font-semibold">${gym.stats?.monthlyRevenue || 0}</p>
+                    <p className="font-semibold">{gym.stats?.monthlyRevenue || 0}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Approval</p>
@@ -369,6 +417,35 @@ const GymsPage = () => {
                   </div>
                 )}
 
+                {/* Share Join Link + QR */}
+                {gym.slug && gym.status === 'active' && (
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      onClick={() => handleCopyJoinLink(gym.slug)}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent/5 hover:bg-accent/10 border border-accent/20 hover:border-accent/40 rounded-xl text-accent text-sm font-medium transition-colors"
+                    >
+                      {copiedSlug === gym.slug ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Link2 className="w-4 h-4" />
+                          <span>Copy Join Link</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setQrGym({ name: gym.name, slug: gym.slug })}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 rounded-xl text-gray-700 dark:text-gray-300 hover:text-accent text-sm font-medium transition-colors"
+                    >
+                      <QrCode className="w-4 h-4" />
+                      <span>QR</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Action Buttons */}
                 <div className="flex space-x-2">
                   <Link href={`/dashboard/gymOwner/gymInfo/${gym._id}`} className="flex-1">
@@ -396,6 +473,76 @@ const GymsPage = () => {
           ))
         )}
       </div>
+
+      {/* QR Code Modal */}
+      {qrGym && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setQrGym(null)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-[#111] rounded-2xl border border-gray-200 dark:border-white/10 p-6 max-w-sm w-full shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Join QR Code</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{qrGym.name}</p>
+              </div>
+              <button
+                onClick={() => setQrGym(null)}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* QR Code */}
+            <div className="bg-white rounded-xl p-6 flex items-center justify-center mb-4">
+              <QRCodeSVG
+                id="gym-qr-svg"
+                value={getJoinLink(qrGym.slug)}
+                size={220}
+                level="H"
+                bgColor="#ffffff"
+                fgColor="#000000"
+                marginSize={0}
+              />
+            </div>
+
+            {/* Link preview */}
+            <div className="bg-gray-50 dark:bg-white/5 rounded-lg px-3 py-2 mb-4 border border-gray-200 dark:border-white/10">
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {getJoinLink(qrGym.slug)}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  handleCopyJoinLink(qrGym.slug);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors"
+              >
+                <Link2 className="w-4 h-4" />
+                Copy Link
+              </button>
+              <button
+                onClick={handleDownloadQr}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-accent text-black rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+            </div>
+
+            <p className="text-center text-xs text-gray-400 mt-4">
+              Show this QR code to members so they can scan and register instantly
+            </p>
+          </motion.div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteModal && (

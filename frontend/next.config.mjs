@@ -1,6 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  headers: async () => [
+    {
+      // Allow service worker to control the entire site
+      source: "/sw.js",
+      headers: [
+        {
+          key: "Service-Worker-Allowed",
+          value: "/",
+        },
+        {
+          key: "Cache-Control",
+          value: "no-cache, no-store, must-revalidate",
+        },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;

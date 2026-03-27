@@ -59,6 +59,13 @@ const MemberSchema = new mongoose.Schema({
     }
   },
 
+  shift: {
+    shiftId: mongoose.Schema.Types.ObjectId,
+    shiftName: String,
+    startTime: String,
+    endTime: String,
+  },
+
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

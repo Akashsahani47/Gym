@@ -21,7 +21,8 @@ import {
   X,
   Plus,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import { toast } from 'react-hot-toast';
@@ -33,6 +34,7 @@ const AddCustomerPage = () => {
   const [loading, setLoading] = useState(false);
   const [gyms, setGyms] = useState([]);
   const [membershipPlans, setMembershipPlans] = useState([]);
+  const [gymShifts, setGymShifts] = useState([]);
   const [loadingGyms, setLoadingGyms] = useState(true);
   const [formErrors, setFormErrors] = useState({});
   const [newGoal, setNewGoal] = useState('');
@@ -69,6 +71,14 @@ const AddCustomerPage = () => {
       startDate: new Date().toISOString().split('T')[0],
       endDate: '',
       status: 'pending'
+    },
+
+    // Shift
+    shift: {
+      shiftId: '',
+      shiftName: '',
+      startTime: '',
+      endTime: '',
     },
 
     // Health Metrics
@@ -133,15 +143,18 @@ const AddCustomerPage = () => {
         planName: '',
         startDate: new Date().toISOString().split('T')[0],
         endDate: ''
-      }
+      },
+      shift: { shiftId: '', shiftName: '', startTime: '', endTime: '' }
     }));
 
     // Find the selected gym from the gyms array
     const selectedGym = gyms.find(gym => gym._id === gymId);
     if (selectedGym) {
       setMembershipPlans(selectedGym.membershipPlans || []);
+      setGymShifts((selectedGym.shifts || []).filter(s => s.isActive));
     } else {
       setMembershipPlans([]);
+      setGymShifts([]);
     }
   };
 
@@ -217,6 +230,26 @@ const AddCustomerPage = () => {
         endDate: endDateStr
       }
     }));
+  };
+
+  const handleShiftSelect = (shiftId) => {
+    const shift = gymShifts.find(s => s._id === shiftId);
+    if (shift) {
+      setFormData(prev => ({
+        ...prev,
+        shift: {
+          shiftId: shift._id,
+          shiftName: shift.name,
+          startTime: shift.startTime,
+          endTime: shift.endTime,
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        shift: { shiftId: '', shiftName: '', startTime: '', endTime: '' }
+      }));
+    }
   };
 
   const handleAddGoal = () => {
@@ -336,6 +369,7 @@ const AddCustomerPage = () => {
           ...(formData.healthMetrics.fitnessGoals.length > 0 && { fitnessGoals: formData.healthMetrics.fitnessGoals })
         }
       }),
+      ...(formData.shift.shiftId && { shift: formData.shift }),
       status: formData.status,
       sendWelcomeEmail: formData.sendWelcomeEmail
     };
@@ -828,6 +862,39 @@ const AddCustomerPage = () => {
                   )}
                 </div>
               </div>
+
+              {/* Section: Shift Selection */}
+              {formData.gymId && gymShifts.length > 0 && (
+                <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Clock className="w-5 h-5 text-accent shrink-0" />
+                    <h2 className="text-lg font-bold">Shift / Batch (Optional)</h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {gymShifts.map((shift) => (
+                      <div
+                        key={shift._id}
+                        onClick={() => handleShiftSelect(shift._id)}
+                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                          formData.shift.shiftId === shift._id
+                            ? 'bg-accent/10 border-accent'
+                            : 'bg-white dark:bg-black border-gray-200 dark:border-gray-800 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="font-semibold">{shift.name}</h4>
+                          {formData.shift.shiftId === shift._id && (
+                            <Check className="w-5 h-5 text-accent shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          {shift.startTime} — {shift.endTime}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Section 4: Health Metrics */}
               <div className="bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4">

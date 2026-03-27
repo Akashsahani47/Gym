@@ -16,6 +16,8 @@ import gymOwnerRoutes from "./router/gymOwner.js";
 import attendanceRoutes from "./router/attendance.js";
 import memberRoutes from "./router/member.js";
 import notificationRoutes from "./router/notification.js";
+import pushRoutes from "./router/push.js";
+import publicRoutes from "./router/public.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -92,6 +94,8 @@ app.use("/api/gym-owner", gymOwnerRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/push", pushRoutes);
+app.use("/api/public", publicRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Server running" });

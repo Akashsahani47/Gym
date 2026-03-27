@@ -82,6 +82,12 @@ const sections = [
     fullTitle: 'Operating Hours'
   },
   {
+    id: 'shifts',
+    title: 'Shifts',
+    icon: <Clock className="w-4 h-4" />,
+    fullTitle: 'Shifts / Batches'
+  },
+  {
     id: 'plans',
     title: 'Plans',
     icon: <IndianRupee className="w-4 h-4" />,
@@ -149,6 +155,13 @@ const AddGymPage = () => {
       close: '22:00',
       isClosed: false
     })),
+
+    // Shifts
+    shifts: [
+      { name: 'Morning', startTime: '06:00', endTime: '10:00', isActive: true },
+      { name: 'Afternoon', startTime: '12:00', endTime: '16:00', isActive: true },
+      { name: 'Evening', startTime: '17:00', endTime: '21:00', isActive: true },
+    ],
 
     // Membership Plans
     membershipPlans: [
@@ -336,6 +349,33 @@ const AddGymPage = () => {
     setFormData(prev => ({
       ...prev,
       membershipPlans: updatedPlans
+    }));
+  };
+
+  // ─── Shift Handlers ───
+  const handleShiftChange = (index, field, value) => {
+    const updated = [...formData.shifts];
+    updated[index][field] = value;
+    setFormData(prev => ({ ...prev, shifts: updated }));
+  };
+
+  const handleShiftToggle = (index) => {
+    const updated = [...formData.shifts];
+    updated[index].isActive = !updated[index].isActive;
+    setFormData(prev => ({ ...prev, shifts: updated }));
+  };
+
+  const handleAddShift = () => {
+    setFormData(prev => ({
+      ...prev,
+      shifts: [...prev.shifts, { name: '', startTime: '08:00', endTime: '12:00', isActive: true }]
+    }));
+  };
+
+  const handleRemoveShift = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      shifts: prev.shifts.filter((_, i) => i !== index)
     }));
   };
 
@@ -792,6 +832,98 @@ const AddGymPage = () => {
                       </div>
                     </div>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'shifts':
+        return (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold">Shifts / Batches</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Define time slots members can choose from</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddShift}
+                className="flex items-center justify-center space-x-2 px-4 py-2 bg-accent text-black font-semibold hover:bg-accent-hover rounded-lg transition-colors w-full sm:w-auto"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Shift</span>
+              </button>
+            </div>
+
+            {formData.shifts.length === 0 && (
+              <div className="text-center py-10 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800">
+                <Clock className="w-10 h-10 text-gray-500 mx-auto mb-2" />
+                <p className="text-gray-500 text-sm">No shifts added yet. Click &quot;Add Shift&quot; to create one.</p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {formData.shifts.map((shift, index) => (
+                <div key={index} className="bg-white dark:bg-black rounded-lg p-4 sm:p-5 border border-gray-200 dark:border-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-5 h-5 text-accent" />
+                      </div>
+                      <input
+                        type="text"
+                        value={shift.name}
+                        onChange={(e) => handleShiftChange(index, 'name', e.target.value)}
+                        className="bg-transparent text-lg font-semibold focus:outline-none focus:text-accent w-full"
+                        placeholder="e.g. Morning, Afternoon, Night"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-end space-x-2">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Active</span>
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={shift.isActive}
+                            onChange={() => handleShiftToggle(index)}
+                            className="sr-only"
+                          />
+                          <div className={`w-10 h-6 rounded-full transition-colors ${shift.isActive ? 'bg-green-500' : 'bg-gray-700'}`}>
+                            <div className={`w-4 h-4 rounded-full bg-white transition-transform transform ${shift.isActive ? 'translate-x-5' : 'translate-x-1'} mt-1`}></div>
+                          </div>
+                        </div>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveShift(index)}
+                        className="p-2 hover:bg-red-600/20 text-red-400 hover:text-red-300 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">Start Time</label>
+                      <input
+                        type="time"
+                        value={shift.startTime}
+                        onChange={(e) => handleShiftChange(index, 'startTime', e.target.value)}
+                        className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">End Time</label>
+                      <input
+                        type="time"
+                        value={shift.endTime}
+                        onChange={(e) => handleShiftChange(index, 'endTime', e.target.value)}
+                        className="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-accent"
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

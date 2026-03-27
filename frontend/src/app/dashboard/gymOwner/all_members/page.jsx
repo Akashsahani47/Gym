@@ -1,7 +1,7 @@
 // /app/dashboard/gymOwner/customers/page.jsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Users,
@@ -47,6 +47,7 @@ const CustomersPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -119,6 +120,24 @@ const CustomersPage = () => {
     setStats(statsData);
   };
 
+  // Close action menu on outside click
+  const menuRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (openMenuId && menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [openMenuId]);
+
+  const pendingMembers = members.filter(m => m.status === 'pending');
+
   useEffect(() => {
     let filtered = [...members];
 
@@ -170,7 +189,7 @@ const CustomersPage = () => {
   };
 
   const handleEditMember = (memberId) => {
-    router.push(`/dashboard/gymOwner/customers/edit/${memberId}`);
+    router.push(`/dashboard/gymOwner/members/edit/${memberId}`);
   };
 
   const handleDeleteMember = async (memberId) => {
@@ -391,6 +410,58 @@ const CustomersPage = () => {
         </div>
       </div>
 
+      {/* Pending Join Requests */}
+      {pendingMembers.length > 0 && (
+        <div className="mb-6 bg-amber-500/5 border border-amber-500/20 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm md:text-base font-semibold text-amber-400 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Pending Join Requests ({pendingMembers.length})
+            </h2>
+          </div>
+          <div className="space-y-2">
+            {pendingMembers.map((member) => (
+              <div
+                key={member._id}
+                className="flex items-center justify-between bg-white dark:bg-black/40 border border-amber-500/10 rounded-lg px-3 py-2.5 md:px-4 md:py-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0">
+                    <User className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {member.profile?.firstName} {member.profile?.lastName}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">{member.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 ml-2">
+                  <button
+                    onClick={() => handleStatusChange(member._id, 'active')}
+                    className="px-3 py-1.5 bg-accent text-black text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleDeleteMember(member._id)}
+                    className="px-3 py-1.5 bg-red-500/10 text-red-400 text-xs font-medium rounded-lg border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => handleViewDetails(member)}
+                    className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 transition-colors hidden sm:block"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Search and Filters - Mobile Optimized */}
       <div className="bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-3 mb-6">
         <div className="flex flex-col gap-3">
@@ -567,47 +638,52 @@ const CustomersPage = () => {
                       <button
                         onClick={() => handleEditMember(member._id)}
                         className="p-1.5 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/30 transition-colors"
-                        title="Edit"
+                        title="View Details"
                       >
                         <Edit className="w-4 h-4 text-accent" />
                       </button>
-                      <div className="relative group">
-                        <button className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors">
-                          <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
+                      <div className="relative" ref={openMenuId === `m-${member._id}` ? menuRef : null}>
+                        <button
+                          onClick={() => setOpenMenuId(openMenuId === `m-${member._id}` ? null : `m-${member._id}`)}
+                          className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors"
+                        >
+                          <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                         </button>
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                          <div className="py-1">
-                            <button
-                              onClick={() => handleStatusChange(member._id, 'active')}
-                              className="w-full text-left px-3 py-2 hover:bg-accent/10 text-xs flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
-                            >
-                              <UserCheck className="w-3 h-3 mr-2 text-accent" />
-                              Set Active
-                            </button>
-                            <button
-                              onClick={() => handleStatusChange(member._id, 'inactive')}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
-                            >
-                              <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
-                              Set Inactive
-                            </button>
-                            <button
-                              onClick={() => handleStatusChange(member._id, 'suspended')}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
-                            >
-                              <XCircle className="w-3 h-3 mr-2 text-red-400" />
-                              Suspend
-                            </button>
-                            <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
-                            <button
-                              onClick={() => handleDeleteMember(member._id)}
-                              className="w-full text-left px-3 py-2 hover:bg-red-500/20 text-xs flex items-center text-red-400"
-                            >
-                              <Trash2 className="w-3 h-3 mr-2" />
-                              Delete
-                            </button>
+                        {openMenuId === `m-${member._id}` && (
+                          <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-20">
+                            <div className="py-1">
+                              <button
+                                onClick={() => { handleStatusChange(member._id, 'active'); setOpenMenuId(null); }}
+                                className="w-full text-left px-3 py-2 hover:bg-accent/10 text-xs flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
+                              >
+                                <UserCheck className="w-3 h-3 mr-2 text-accent" />
+                                Set Active
+                              </button>
+                              <button
+                                onClick={() => { handleStatusChange(member._id, 'inactive'); setOpenMenuId(null); }}
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
+                              >
+                                <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
+                                Set Inactive
+                              </button>
+                              <button
+                                onClick={() => { handleStatusChange(member._id, 'suspended'); setOpenMenuId(null); }}
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-xs flex items-center text-gray-700 dark:text-gray-300"
+                              >
+                                <XCircle className="w-3 h-3 mr-2 text-red-400" />
+                                Suspend
+                              </button>
+                              <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
+                              <button
+                                onClick={() => { handleDeleteMember(member._id); setOpenMenuId(null); }}
+                                className="w-full text-left px-3 py-2 hover:bg-red-500/20 text-xs flex items-center text-red-400"
+                              >
+                                <Trash2 className="w-3 h-3 mr-2" />
+                                Delete
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -711,47 +787,52 @@ const CustomersPage = () => {
                           <button
                             onClick={() => handleEditMember(member._id)}
                             className="p-2 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/30 transition-colors"
-                            title="Edit"
+                            title="View Details"
                           >
                             <Edit className="w-4 h-4 text-accent" />
                           </button>
-                          <div className="relative group">
-                            <button className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors">
-                              <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-accent" />
+                          <div className="relative" ref={openMenuId === `d-${member._id}` ? menuRef : null}>
+                            <button
+                              onClick={() => setOpenMenuId(openMenuId === `d-${member._id}` ? null : `d-${member._id}`)}
+                              className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-accent/10 border border-gray-200 dark:border-white/10 hover:border-accent/30 transition-colors"
+                            >
+                              <MoreVertical className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                             </button>
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                              <div className="py-1">
-                                <button
-                                  onClick={() => handleStatusChange(member._id, 'active')}
-                                  className="w-full text-left px-4 py-2 hover:bg-accent/10 text-sm flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
-                                >
-                                  <UserCheck className="w-3 h-3 mr-2 text-accent" />
-                                  Set Active
-                                </button>
-                                <button
-                                  onClick={() => handleStatusChange(member._id, 'inactive')}
-                                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
-                                >
-                                  <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
-                                  Set Inactive
-                                </button>
-                                <button
-                                  onClick={() => handleStatusChange(member._id, 'suspended')}
-                                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
-                                >
-                                  <XCircle className="w-3 h-3 mr-2 text-red-400" />
-                                  Suspend
-                                </button>
-                                <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
-                                <button
-                                  onClick={() => handleDeleteMember(member._id)}
-                                  className="w-full text-left px-4 py-2 hover:bg-red-500/20 text-sm flex items-center text-red-400"
-                                >
-                                  <Trash2 className="w-3 h-3 mr-2" />
-                                  Delete Member
-                                </button>
+                            {openMenuId === `d-${member._id}` && (
+                              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg z-20">
+                                <div className="py-1">
+                                  <button
+                                    onClick={() => { handleStatusChange(member._id, 'active'); setOpenMenuId(null); }}
+                                    className="w-full text-left px-4 py-2 hover:bg-accent/10 text-sm flex items-center text-gray-700 dark:text-gray-300 hover:text-accent"
+                                  >
+                                    <UserCheck className="w-3 h-3 mr-2 text-accent" />
+                                    Set Active
+                                  </button>
+                                  <button
+                                    onClick={() => { handleStatusChange(member._id, 'inactive'); setOpenMenuId(null); }}
+                                    className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
+                                  >
+                                    <UserX className="w-3 h-3 mr-2 text-gray-600 dark:text-gray-400" />
+                                    Set Inactive
+                                  </button>
+                                  <button
+                                    onClick={() => { handleStatusChange(member._id, 'suspended'); setOpenMenuId(null); }}
+                                    className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-sm flex items-center text-gray-700 dark:text-gray-300"
+                                  >
+                                    <XCircle className="w-3 h-3 mr-2 text-red-400" />
+                                    Suspend
+                                  </button>
+                                  <div className="border-t border-gray-200 dark:border-white/10 my-1"></div>
+                                  <button
+                                    onClick={() => { handleDeleteMember(member._id); setOpenMenuId(null); }}
+                                    className="w-full text-left px-4 py-2 hover:bg-red-500/20 text-sm flex items-center text-red-400"
+                                  >
+                                    <Trash2 className="w-3 h-3 mr-2" />
+                                    Delete Member
+                                  </button>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -988,7 +1069,6 @@ const CustomersPage = () => {
                   }}
                   className="px-4 md:px-6 py-2 bg-accent text-black rounded-xl font-semibold hover:bg-accent-hover transition-colors text-sm md:text-base"
                 >
-                  <Edit className="w-4 h-4 inline mr-2" />
                   Edit Member
                 </button>
               </div>

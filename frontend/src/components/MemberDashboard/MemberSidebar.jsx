@@ -15,6 +15,7 @@ import {
   Sun,
   Moon,
   ClipboardCheck,
+  CalendarOff,
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
@@ -26,6 +27,7 @@ const menuItems = [
   { id: 'my-gym', label: 'My Gym', href: '/dashboard/member/my-gym', icon: <Dumbbell className="w-5 h-5" /> },
   { id: 'membership', label: 'Membership', href: '/dashboard/member/membership', icon: <CreditCard className="w-5 h-5" /> },
   { id: 'attendance', label: 'Attendance', href: '/dashboard/member/attendance', icon: <ClipboardCheck className="w-5 h-5" /> },
+  { id: 'holidays', label: 'Holidays', href: '/dashboard/member/holidays', icon: <CalendarOff className="w-5 h-5" /> },
   { id: 'payments', label: 'Payments', href: '/dashboard/member/payments', icon: <CreditCard className="w-5 h-5" /> },
 ];
 
