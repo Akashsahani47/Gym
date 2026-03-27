@@ -16,6 +16,8 @@ import {
   Moon,
   ClipboardCheck,
   CalendarOff,
+  Flame,
+  Scale,
 } from 'lucide-react';
 import useUserStore from '@/store/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
@@ -26,6 +28,9 @@ const menuItems = [
   { id: 'profile', label: 'Dashboard', href: '/dashboard/member/profile', icon: <Home className="w-5 h-5" /> },
   { id: 'my-gym', label: 'My Gym', href: '/dashboard/member/my-gym', icon: <Dumbbell className="w-5 h-5" /> },
   { id: 'membership', label: 'Membership', href: '/dashboard/member/membership', icon: <CreditCard className="w-5 h-5" /> },
+  { id: 'workouts', label: 'Workouts', href: '/dashboard/member/workouts', icon: <Dumbbell className="w-5 h-5" /> },
+  { id: 'streaks', label: 'Streaks', href: '/dashboard/member/streaks', icon: <Flame className="w-5 h-5" /> },
+  { id: 'bmi', label: 'BMI Tracker', href: '/dashboard/member/bmi', icon: <Scale className="w-5 h-5" /> },
   { id: 'attendance', label: 'Attendance', href: '/dashboard/member/attendance', icon: <ClipboardCheck className="w-5 h-5" /> },
   { id: 'holidays', label: 'Holidays', href: '/dashboard/member/holidays', icon: <CalendarOff className="w-5 h-5" /> },
   { id: 'payments', label: 'Payments', href: '/dashboard/member/payments', icon: <CreditCard className="w-5 h-5" /> },

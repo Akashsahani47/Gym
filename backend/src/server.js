@@ -18,6 +18,7 @@ import memberRoutes from "./router/member.js";
 import notificationRoutes from "./router/notification.js";
 import pushRoutes from "./router/push.js";
 import publicRoutes from "./router/public.js";
+import workoutRoutes from "./router/workout.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -96,6 +97,7 @@ app.use("/api/member", memberRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/push", pushRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/workouts", workoutRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Server running" });

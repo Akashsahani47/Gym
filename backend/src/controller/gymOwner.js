@@ -367,6 +367,15 @@ export const addMember = async (req, res) => {
       });
     }
 
+    /* ---------- CHECK IF EMAIL IS A GYM OWNER ---------- */
+    const ownerExists = await GymOwner.findOne({ email: email.toLowerCase() });
+    if (ownerExists) {
+      return res.status(409).json({
+        success: false,
+        error: "This email belongs to a gym owner and cannot be used for a member account"
+      });
+    }
+
     /* ---------- CHECK MEMBER EXISTENCE (PER GYM) ---------- */
     const existingMember = await Member.findOne({ email, gymId });
     if (existingMember) {
